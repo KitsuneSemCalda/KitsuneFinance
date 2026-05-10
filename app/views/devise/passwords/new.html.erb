@@ -1,0 +1,25 @@
+<div class="max-w-md w-full mx-auto p-8 bg-zinc-900/60 backdrop-blur-xl border border-zinc-800/60 shadow-2xl rounded-3xl relative overflow-hidden">
+  <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500"></div>
+  
+  <div class="text-center mb-8">
+    <h2 class="text-3xl font-extrabold text-white mb-2 tracking-tight">Esqueceu a senha?</h2>
+    <p class="text-zinc-400 text-sm">Enviaremos instruções para redefinir sua senha.</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-5" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div>
+      <%= f.label :email, class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-4 py-3 bg-zinc-950/50 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all", placeholder: "seu@email.com" %>
+    </div>
+
+    <div class="pt-2">
+      <%= f.submit "Enviar instruções por email", class: "w-full flex justify-center py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-indigo-500 transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <div class="mt-8 pt-6 border-t border-zinc-800/80">
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

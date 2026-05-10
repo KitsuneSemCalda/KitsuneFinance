@@ -1,0 +1,29 @@
+<div class="flex flex-col space-y-3 mt-4 text-center">
+  <%- if controller_name != 'sessions' %>
+    <%= link_to "Já possui uma conta? Faça login", new_session_path(resource_name), class: "text-sm text-zinc-400 hover:text-indigo-400 transition-colors font-medium" %>
+  <% end %>
+
+  <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+    <%= link_to "Não possui uma conta? Cadastre-se", new_registration_path(resource_name), class: "text-sm text-zinc-400 hover:text-emerald-400 transition-colors font-medium" %>
+  <% end %>
+
+  <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+    <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: "text-sm text-zinc-400 hover:text-indigo-400 transition-colors font-medium" %>
+  <% end %>
+
+  <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+    <%= link_to "Não recebeu as instruções de confirmação?", new_confirmation_path(resource_name), class: "text-sm text-zinc-400 hover:text-indigo-400 transition-colors font-medium" %>
+  <% end %>
+
+  <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+    <%= link_to "Não recebeu as instruções de desbloqueio?", new_unlock_path(resource_name), class: "text-sm text-zinc-400 hover:text-indigo-400 transition-colors font-medium" %>
+  <% end %>
+
+  <%- if devise_mapping.omniauthable? %>
+    <div class="pt-2 border-t border-zinc-800">
+      <%- resource_class.omniauth_providers.each do |provider| %>
+        <%= button_to "Entrar com #{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "w-full py-2.5 px-4 rounded-xl text-sm font-medium text-zinc-300 bg-zinc-800 hover:bg-zinc-700 transition-colors border border-zinc-700 mt-2" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
