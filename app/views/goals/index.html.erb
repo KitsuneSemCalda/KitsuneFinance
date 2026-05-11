@@ -62,7 +62,7 @@
         <%= form_with url: contribute_dashboard_goal_path(goal), method: :patch, class: "flex flex-col gap-2" do |f| %>
           <div class="flex gap-2">
             <%= f.select :account_id, options_from_collection_for_select(@accounts, :id, :name), {}, class: "flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-[10px] text-zinc-300 focus:border-#{goal.color}-500 outline-none" %>
-            <%= f.number_field :amount, step: 0.01, placeholder: "Valor", class: "w-24 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-[10px] text-zinc-100 focus:border-#{goal.color}-500 outline-none" %>
+            <%= f.number_field :amount, step: 1, placeholder: "Valor (centavos)", class: "w-24 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-[10px] text-zinc-100 focus:border-#{goal.color}-500 outline-none" %>
           </div>
           <%= f.submit "Registrar Contribuição", class: "w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer border border-zinc-700" %>
         <% end %>

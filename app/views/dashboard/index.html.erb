@@ -286,7 +286,7 @@
 
     <div class="space-y-4">
       <% @goals.each do |goal| %>
-        <% pct = ((goal[:current].to_f / goal[:target]) * 100).round(1) %>
+        <% pct = goal[:target].positive? ? ((goal[:current] * 100) / goal[:target]).round(1) : 0 %>
         <% color_map = { "indigo" => "from-indigo-500 to-violet-500", "emerald" => "from-emerald-500 to-teal-500", "sky" => "from-sky-500 to-blue-500" } %>
         <div>
           <div class="flex items-center justify-between mb-1.5">
