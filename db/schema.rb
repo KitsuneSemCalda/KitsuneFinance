@@ -162,7 +162,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044003) do
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "locale"
+    t.string "locale", default: "pt-BR"
     t.integer "monthly_salary"
     t.string "ntfy_url"
     t.string "primary_currency"

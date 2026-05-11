@@ -3,11 +3,9 @@ services:
     build: .
     image: kitsune_finance:latest
     ports:
-      - "3000:3000"
+      - "13522:80"
     environment:
       - RAILS_ENV=development
       - DATABASE_PATH=/rails/db/development.sqlite3
     volumes:
       - ~/.local/share/KitsuneFinance/db:/rails/db
-      - .:/rails
-
