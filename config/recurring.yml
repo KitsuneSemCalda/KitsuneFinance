@@ -1,15 +1,89 @@
-# examples:
-#   periodic_cleanup:
-#     class: CleanSoftDeletedRecordsJob
-#     queue: background
-#     args: [ 1000, { batch_size: 500 } ]
-#     schedule: every hour
-#   periodic_cleanup_with_command:
-#     command: "SoftDeletedRecord.due.delete_all"
-#     priority: 2
-#     schedule: at 5am every day
-
 production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
+
+  sync_indicators:
+    class: SyncIndicatorsJob
+    queue: default
+    schedule: every day at 9am
+
+  update_investment_prices:
+    class: InvestmentPriceUpdateJob
+    queue: default
+    schedule: every day at 10am
+
+  process_recurring_transactions:
+    class: RecurringTransactionsJob
+    queue: default
+    schedule: every day at 2am
+
+  auto_renew_budgets:
+    class: AutoRenewBudgetsJob
+    queue: default
+    schedule: every day at 1am
+
+  snapshot_balances:
+    class: SnapshotBalanceJob
+    queue: default
+    schedule: every day at 11:30pm
+
+  check_budget_alerts:
+    class: BudgetAlertCheckJob
+    queue: default
+    schedule: every day at 12pm
+
+  check_goal_status:
+    class: GoalStatusCheckJob
+    queue: default
+    schedule: every day at 2:30am
+
+  check_holidays:
+    class: CheckHolidaysJob
+    queue: default
+    schedule: every day at 8am
+
+development:
+  clear_solid_queue_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 12
+
+  sync_indicators:
+    class: SyncIndicatorsJob
+    queue: default
+    schedule: every day at 9am
+
+  update_investment_prices:
+    class: InvestmentPriceUpdateJob
+    queue: default
+    schedule: every day at 10am
+
+  process_recurring_transactions:
+    class: RecurringTransactionsJob
+    queue: default
+    schedule: every day at 2am
+
+  auto_renew_budgets:
+    class: AutoRenewBudgetsJob
+    queue: default
+    schedule: every day at 1am
+
+  snapshot_balances:
+    class: SnapshotBalanceJob
+    queue: default
+    schedule: every day at 11:30pm
+
+  check_budget_alerts:
+    class: BudgetAlertCheckJob
+    queue: default
+    schedule: every day at 12pm
+
+  check_goal_status:
+    class: GoalStatusCheckJob
+    queue: default
+    schedule: every day at 2:30am
+
+  check_holidays:
+    class: CheckHolidaysJob
+    queue: default
+    schedule: every day at 8am

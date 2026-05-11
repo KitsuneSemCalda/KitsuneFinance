@@ -1,0 +1,50 @@
+<div class="max-w-2xl mx-auto bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+  <h2 class="text-2xl font-bold text-zinc-100 mb-8"><%= @page_title %></h2>
+
+  <%= form_with model: [:dashboard, @category], class: "space-y-6" do |f| %>
+    <div class="space-y-2">
+      <%= f.label :name, "Nome da Categoria", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.text_field :name, placeholder: "Ex: Alimentação, Jogos, Dividendos...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :transaction_type, "Tipo de Transação", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.select :transaction_type, [["Despesa", "expense"], ["Receita", "income"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :color, "Cor", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.select :color, [["Índigo", "indigo"], ["Esmeralda", "emerald"], ["Céu", "sky"], ["Âmbar", "amber"], ["Rosa", "rose"], ["Roxo", "purple"], ["Laranja", "orange"], ["Vermelho", "red"], ["Zinco", "zinc"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+    </div>
+
+    <div class="space-y-2" x-data="{ open: false, selected: '<%= @category.icon || '💰' %>' }">
+      <%= f.label :icon, "Ícone", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.hidden_field :icon, 'x-model': 'selected' %>
+      
+      <div class="relative">
+        <button type="button" 
+                @click="console.log('Button clicked'); open = !open" 
+                class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-left text-zinc-100 focus:border-indigo-500 outline-none transition-all flex items-center justify-between">
+          <span x-text="selected" class="text-xl"></span>
+          <svg class="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <div x-show="open" 
+             @click.away="open = false" 
+             x-cloak
+             class="absolute z-10 mt-2 w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 grid grid-cols-6 gap-2 shadow-2xl">
+          <% %w[💰 💸 💳 🏦 📈 📉 🍔 🍕 🍎 🛒 🚕 🚌 ✈️ ⛽ 🏠 🔌 💊 🩺 ⚽ 🎨 🎮 📚 🎁 👔].each do |emoji| %>
+            <button type="button" @click="selected = '<%= emoji %>'; open = false" class="text-xl hover:bg-zinc-800 p-2 rounded-lg transition-colors"><%= emoji %></button>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-4 pt-4">
+      <%= link_to "Cancelar", dashboard_categories_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
+      <%= f.submit "Salvar Categoria", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

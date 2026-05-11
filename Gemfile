@@ -68,4 +68,14 @@ end
 gem "devise"
 gem "devise-i18n"
 
+# HTTP client for external API services
+gem "faraday"
+
+gem "caxlsx_rails"
+gem "csv"
+
 gem "axe-core-capybara", "~> 4.11", group: :test
+
+gem "ofx", "~> 0.3.2"
+
+gem "nkf", "~> 0.2.0"

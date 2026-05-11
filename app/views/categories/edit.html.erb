@@ -1,0 +1,34 @@
+<%= render "form" %>
+
+<% if @category.persisted? %>
+  <div class="max-w-2xl mx-auto mt-8 bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h3 class="text-xl font-bold text-zinc-100">Regras de Automatização</h3>
+        <p class="text-sm text-zinc-500">Defina palavras-chave que identificam esta categoria automaticamente.</p>
+      </div>
+    </div>
+
+    <%# List of existing rules %>
+    <div class="space-y-3 mb-8">
+      <% if @category.categorization_rules.any? %>
+        <% @category.categorization_rules.each do |rule| %>
+          <div class="flex items-center justify-between bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3">
+            <span class="text-zinc-300 font-medium"><%= rule.keyword %></span>
+            <%= button_to dashboard_category_categorization_rule_path(@category, rule), method: :delete, class: "text-red-400 hover:text-red-300 transition-colors" do %>
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-center py-4 text-zinc-600 text-sm">Nenhuma regra definida.</p>
+      <% end %>
+    </div>
+
+    <%# Form to add new rule %>
+    <%= form_with model: [:dashboard, @category, CategorizationRule.new], class: "flex gap-3" do |f| %>
+      <%= f.text_field :keyword, placeholder: "Ex: IFOOD, UBER, MERCADO...", class: "flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2 text-zinc-100 focus:border-indigo-500 outline-none transition-all text-sm" %>
+      <%= f.submit "Adicionar Regra", class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-medium px-4 py-2 rounded-xl transition-all border border-zinc-700 cursor-pointer" %>
+    <% end %>
+  </div>
+<% end %>

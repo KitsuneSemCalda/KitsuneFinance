@@ -1,0 +1,51 @@
+<div class="max-w-2xl mx-auto bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+  <h2 class="text-2xl font-bold text-zinc-100 mb-8"><%= @page_title %></h2>
+
+  <%= form_with model: [:dashboard, @goal], class: "space-y-6" do |f| %>
+    <div class="space-y-2">
+      <%= f.label :name, "Nome da Meta", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.text_field :name, placeholder: "Ex: Reserva de Emergência, Viagem...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :target_amount, "Valor Objetivo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :target_amount, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :current_amount, "Valor Já Acumulado", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :current_amount, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :deadline, "Prazo (opcional)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.date_field :deadline, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :color, "Cor", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.select :color, [["Índigo", "indigo"], ["Esmeralda", "emerald"], ["Céu", "sky"], ["Âmbar", "amber"], ["Rosa", "rose"], ["Roxo", "purple"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :icon, "Ícone", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.text_field :icon, placeholder: "🎯, ✈️, 🛡️...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :status, "Status", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.select :status, [["Ativa", "active"], ["Pausada", "paused"], ["Concluída", "completed"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+    </div>
+
+    <div class="flex gap-4 pt-4">
+      <%= link_to "Cancelar", dashboard_goals_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
+      <%= f.submit "Salvar Meta", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,61 @@
+<div class="max-w-2xl mx-auto py-8">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Importar Transações</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400">Envie arquivos OFX ou CSV para automatizar seus registros.</p>
+    </div>
+    <%= link_to dashboard_transactions_path, class: "inline-flex items-center text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" do %>
+      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      Voltar
+    <% end %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <%= form_with url: do_import_dashboard_transactions_path, local: true, multipart: true, class: "p-6 space-y-6" do |f| %>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Conta de Destino</label>
+        <%= f.select :account_id, options_from_collection_for_select(@accounts, :id, :name), {}, class: "block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Arquivo (OFX ou CSV)</label>
+        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg">
+          <div class="space-y-1 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <div class="flex text-sm text-gray-600 dark:text-gray-400">
+              <label for="file-upload" class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                <span>Clique para selecionar</span>
+                <%= f.file_field :file, id: "file-upload", class: "sr-only", required: true %>
+              </label>
+              <p class="pl-1">ou arraste e solte</p>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400">OFX ou CSV de até 10MB</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">Dica sobre o formato CSV</h3>
+            <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+              <p>O CSV deve conter os cabeçalhos: <strong>date</strong>, <strong>description</strong>, <strong>amount</strong> e <strong>type</strong> (income/expense).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Cancelar", dashboard_transactions_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        <%= f.submit "Iniciar Importação", class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      </div>
+    <% end %>
+  </div>
+</div>

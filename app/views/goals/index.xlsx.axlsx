@@ -1,0 +1,26 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Metas") do |sheet|
+  # Styles
+  header_style = wb.styles.add_style(bg_color: "4F46E5", fg_color: "FFFFFF", b: true, alignment: { horizontal: :center })
+  currency_style = wb.styles.add_style(format_code: "R$ #,##0.00")
+  pct_style = wb.styles.add_style(format_code: "0.0%")
+
+  # Header
+  sheet.add_row ["Nome", "Objetivo", "Atual", "Progresso", "Prazo", "Status"], style: header_style
+
+  # Data
+  @goals.each do |goal|
+    sheet.add_row [
+      goal.name,
+      goal.target_amount,
+      goal.current_amount,
+      (goal.progress_pct / 100.0),
+      goal.deadline&.strftime("%d/%m/%Y"),
+      goal.status.capitalize
+    ], style: [nil, currency_style, currency_style, pct_style, nil, nil]
+  end
+
+  # Column widths
+  sheet.column_widths 20, 15, 15, 12, 15, 12
+end

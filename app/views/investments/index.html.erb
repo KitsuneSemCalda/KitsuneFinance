@@ -1,0 +1,79 @@
+<div class="flex justify-between items-center mb-8">
+  <div>
+    <h2 class="text-2xl font-bold text-zinc-100">Investimentos</h2>
+    <p class="text-zinc-500 text-sm">Acompanhe seu portfólio de ativos.</p>
+  </div>
+  <div class="flex gap-4">
+    <%= link_to new_dashboard_investment_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Novo Ativo
+    <% end %>
+  </div>
+</div>
+
+<%# Summary Cards %>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-xs text-zinc-500 uppercase tracking-wider block mb-1">Valor Total</span>
+    <p class="text-3xl font-bold text-zinc-100"><%= number_to_currency(@total_value, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+  </div>
+  <%# Add more summary cards if needed %>
+</div>
+
+<div class="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl overflow-hidden backdrop-blur-xl">
+  <table class="w-full text-left">
+    <thead>
+      <tr class="bg-zinc-900/60 border-b border-zinc-800/60">
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Ativo</th>
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Tipo</th>
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Qtd</th>
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">P. Médio</th>
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">P. Atual</th>
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Valor Total</th>
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Ganho/Perda</th>
+        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-center">Ações</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-zinc-800/60">
+      <% @investments.each do |inv| %>
+        <tr class="hover:bg-zinc-800/40 transition-colors">
+          <td class="px-6 py-4">
+            <p class="text-sm font-bold text-zinc-100"><%= inv.ticker %></p>
+            <p class="text-xs text-zinc-500"><%= inv.name %></p>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-xs text-zinc-400"><%= inv.asset_type.capitalize %></span>
+          </td>
+          <td class="px-6 py-4 text-right text-sm text-zinc-100">
+            <%= inv.quantity %>
+          </td>
+          <td class="px-6 py-4 text-right text-sm text-zinc-400">
+            <%= number_to_currency(inv.avg_price, unit: "R$ ", separator: ",", delimiter: ".") %>
+          </td>
+          <td class="px-6 py-4 text-right text-sm text-zinc-100">
+            <%= number_to_currency(inv.current_price, unit: "R$ ", separator: ",", delimiter: ".") %>
+          </td>
+          <td class="px-6 py-4 text-right text-sm font-bold text-zinc-100">
+            <%= number_to_currency(inv.current_value, unit: "R$ ", separator: ",", delimiter: ".") %>
+          </td>
+          <td class="px-6 py-4 text-right">
+            <div class="<%= inv.gain_loss >= 0 ? 'text-emerald-400' : 'text-red-400' %> text-sm font-bold">
+              <%= number_to_currency(inv.gain_loss, unit: "R$ ", separator: ",", delimiter: ".") %>
+              <p class="text-[10px] font-medium"><%= number_to_percentage(inv.gain_loss_pct, precision: 2) %></p>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-center">
+            <div class="flex justify-center gap-2">
+              <%= link_to edit_dashboard_investment_path(inv), class: "p-1 text-zinc-500 hover:text-zinc-100 transition-colors" do %>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <% end %>
+              <%= button_to dashboard_investment_path(inv), method: :delete, class: "p-1 text-zinc-500 hover:text-red-400 transition-colors", data: { turbo_confirm: "Tem certeza?" } do %>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,11 @@
+one:
+  name: "Alimentação"
+  user: one
+  transaction_type: "expense"
+  system_default: false
+
+two:
+  name: "Salário"
+  user: two
+  transaction_type: "income"
+  system_default: false

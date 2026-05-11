@@ -1,0 +1,70 @@
+<div class="flex justify-between items-center mb-8">
+  <div>
+    <h2 class="text-2xl font-bold text-zinc-100">Orçamento</h2>
+    <p class="text-zinc-500 text-sm">Controle seus gastos mensais por categoria.</p>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="flex items-center bg-zinc-900/60 border border-zinc-800/60 rounded-xl px-3 py-2 text-sm text-zinc-400">
+      <%= link_to dashboard_budgets_path(month: @month == 1 ? 12 : @month - 1, year: @month == 1 ? @year - 1 : @year), class: "hover:text-zinc-100 p-1" do %>
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <% end %>
+      <span class="mx-4 font-medium text-zinc-200"><%= t("date.month_names")[@month] %> <%= @year %></span>
+      <%= link_to dashboard_budgets_path(month: @month == 12 ? 1 : @month + 1, year: @month == 12 ? @year + 1 : @year), class: "hover:text-zinc-100 p-1" do %>
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <% end %>
+    </div>
+    
+    <%= link_to new_dashboard_budget_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Definir Limite
+    <% end %>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+  <% @budgets.each do |budget| %>
+    <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-<%= budget.category.color %>-500/10 flex items-center justify-center text-xl">
+            <%= budget.category.icon %>
+          </div>
+          <h3 class="font-bold text-zinc-100"><%= budget.category.name %></h3>
+        </div>
+        <%= link_to edit_dashboard_budget_path(budget), class: "p-2 text-zinc-500 hover:text-zinc-100 transition-colors" do %>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <% end %>
+      </div>
+
+      <div class="mb-4">
+        <div class="flex justify-between items-end mb-2">
+          <span class="text-xs text-zinc-500">Gasto vs Limite</span>
+          <span class="text-sm font-bold <%= budget.over_budget? ? 'text-red-400' : 'text-zinc-100' %>">
+            <%= number_to_percentage(budget.progress_pct, precision: 1) %>
+          </span>
+        </div>
+        <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+          <div class="h-full bg-<%= budget.over_budget? ? 'red' : 'emerald' %>-500 rounded-full transition-all duration-700" style="width: <%= budget.progress_pct %>%"></div>
+        </div>
+      </div>
+
+      <div class="flex justify-between">
+        <div>
+          <span class="text-[10px] text-zinc-500 block uppercase tracking-wider">Gasto</span>
+          <p class="text-sm font-bold text-zinc-100"><%= number_to_currency(budget.spent_amount, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] text-zinc-500 block uppercase tracking-wider">Limite</span>
+          <p class="text-sm font-bold text-zinc-400"><%= number_to_currency(budget.limit_amount, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<% if @budgets.empty? %>
+  <div class="bg-zinc-900/40 border border-dashed border-zinc-800 rounded-2xl py-12 text-center">
+    <p class="text-zinc-500 mb-4">Nenhum orçamento definido para este mês.</p>
+    <%= link_to "Começar agora", new_dashboard_budget_path(month: @month, year: @year), class: "text-indigo-400 hover:text-indigo-300 font-medium" %>
+  </div>
+<% end %>

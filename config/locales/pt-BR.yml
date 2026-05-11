@@ -20,3 +20,14 @@
     sessions:
       signed_in: "Login efetuado com sucesso."
       signed_out: "Logout efetuado com sucesso."
+
+  activerecord:
+    enums:
+      investment:
+        asset_type:
+          stock_br: "Ações BR"
+          fixed_income: "Renda Fixa"
+          fii: "FIIs"
+          international: "Internacional"
+          crypto: "Cripto"
+          other: "Outros"
