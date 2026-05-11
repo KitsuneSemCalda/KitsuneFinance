@@ -3,6 +3,9 @@
 
 set -e
 
+echo "🔄 Atualizando repositório..."
+git pull
+
 echo "🚀 Iniciando build da imagem docker..."
 docker build -t kitsune_finance .
 
