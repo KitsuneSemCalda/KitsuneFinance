@@ -6,6 +6,6 @@ services:
       - "13522:80"
     environment:
       - RAILS_ENV=development
-      - DATABASE_PATH=/rails/db/development.sqlite3
+      - DATABASE_PATH=/rails/data/development.sqlite3
     volumes:
-      - ~/.local/share/KitsuneFinance/db:/rails/db
+      - ~/kitsune_finance_data:/rails/data

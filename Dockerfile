@@ -3,7 +3,7 @@
 
 # This Dockerfile is the official way to run the application.
 # Build: docker build -t kitsune_finance .
-# Run: docker run -d --name kitsune_finance -p 13522:80 -v ~/.local/share/KitsuneFinance/db:/rails/db --restart unless-stopped kitsune_finance:latest
+# Run: docker run -d --name kitsune_finance -p 13522:80 -v ~/kitsune_finance_data:/rails/data --restart unless-stopped kitsune_finance:latest
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.3
