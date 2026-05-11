@@ -21,18 +21,18 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="space-y-2">
-        <%= f.label :quantity, "Quantidade", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.label :quantity, "Quantidade (frações permitidas)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
         <%= f.number_field :quantity, step: 0.000001, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
       </div>
 
       <div class="space-y-2">
-        <%= f.label :avg_price, "Preço Médio", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :avg_price, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <%= f.label :avg_price, "Preço Médio (em centavos)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :avg_price, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
       </div>
 
       <div class="space-y-2">
-        <%= f.label :current_price, "Preço Atual", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :current_price, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <%= f.label :current_price, "Preço Atual (em centavos)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :current_price, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
       </div>
     </div>
 

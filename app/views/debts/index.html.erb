@@ -19,8 +19,8 @@
         <% @debts.each do |debt| %>
           <tr>
             <td class="py-4 font-medium text-zinc-100"><%= debt.name %></td>
-            <td class="py-4"><%= number_to_currency(debt.total_amount, unit: "R$ ", separator: ",", delimiter: ".") %></td>
-            <td class="py-4"><%= number_to_currency(debt.monthly_payment, unit: "R$ ", separator: ",", delimiter: ".") %></td>
+            <td class="py-4"><%= number_to_currency(debt.total_amount / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></td>
+            <td class="py-4"><%= number_to_currency(debt.monthly_payment / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></td>
             <td class="py-4"><%= debt.remaining_installments %>/<%= debt.installments_count %></td>
             <td class="py-4">
               <%= link_to "Editar", edit_dashboard_debt_path(debt), class: "text-indigo-400 hover:text-indigo-300 mr-3" %>

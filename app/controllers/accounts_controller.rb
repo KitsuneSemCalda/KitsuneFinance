@@ -14,6 +14,7 @@ class AccountsController < ApplicationController
   end
 
   def create
+    params[:account][:balance] = (params[:account][:balance].to_f * 100).to_i if params[:account][:balance].present?
     @account = current_user.accounts.new(account_params)
     if @account.save
       redirect_to dashboard_accounts_path, notice: "Conta criada com sucesso."
@@ -27,6 +28,7 @@ class AccountsController < ApplicationController
   end
 
   def update
+    params[:account][:balance] = (params[:account][:balance].to_f * 100).to_i if params[:account][:balance].present?
     if @account.update(account_params)
       redirect_to dashboard_accounts_path, notice: "Conta atualizada com sucesso."
     else

@@ -49,7 +49,7 @@
             <td class="px-6 py-4 text-right whitespace-nowrap">
               <span class="text-sm font-bold <%= tx.transaction_type == 'income' ? 'text-emerald-400' : 'text-red-400' %>">
                 <%= tx.transaction_type == 'income' ? '+' : '-' %>
-                <%= number_to_currency(tx.amount.abs, unit: "R$ ", separator: ",", delimiter: ".") %>
+                <%= number_to_currency(tx.amount.abs / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
               </span>
             </td>
             <td class="px-6 py-4 text-center whitespace-nowrap">

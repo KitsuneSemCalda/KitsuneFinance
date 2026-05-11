@@ -9,13 +9,13 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="space-y-2">
-        <%= f.label :target_amount, "Valor Objetivo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :target_amount, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <%= f.label :target_amount, "Valor Objetivo (em centavos)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :target_amount, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
       </div>
 
       <div class="space-y-2">
-        <%= f.label :current_amount, "Valor Já Acumulado", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :current_amount, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <%= f.label :current_amount, "Valor Já Acumulado (em centavos)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :current_amount, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
       </div>
     </div>
 

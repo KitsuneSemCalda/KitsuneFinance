@@ -54,8 +54,8 @@
           <%= f.text_field :ntfy_url, placeholder: "https://ntfy.sh/seu-topico", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
         </div>
         <div class="space-y-1.5 md:col-span-2">
-          <%= f.label :monthly_salary, "Salário Mensal (R$)", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
-          <%= f.number_field :monthly_salary, value: (@user.monthly_salary.to_f / 100), step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
+          <%= f.label :monthly_salary, "Salário Mensal (em centavos)", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
+          <%= f.number_field :monthly_salary, value: @user.monthly_salary, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
         </div>
       </div>
     </div>

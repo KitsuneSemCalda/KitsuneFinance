@@ -21,8 +21,8 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="space-y-2">
-        <%= f.label :amount, "Valor", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :amount, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <%= f.label :amount, "Valor (em centavos)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :amount, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
       </div>
 
       <div class="space-y-2">

@@ -27,7 +27,7 @@
       </div>
     </div>
     <p class="text-2xl font-bold text-zinc-100">
-      <%= number_to_currency(@net_worth, unit: "R$ ", separator: ",", delimiter: ".") %>
+      <%= number_to_currency(@net_worth / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
     </p>
     <p class="text-xs text-indigo-300/60 mt-1">atualizado hoje</p>
   </div>
@@ -270,7 +270,7 @@
             <p class="text-xs text-zinc-500"><%= tx[:category] %> · <%= tx[:date] %></p>
           </div>
           <span class="text-sm font-semibold shrink-0 <%= tx[:type] == :income ? 'text-emerald-400' : 'text-red-400' %>">
-            <%= tx[:type] == :income ? "+" : "" %><%= number_to_currency(tx[:amount].abs, unit: "R$ ", separator: ",", delimiter: ".") %>
+            <%= tx[:type] == :income ? "+" : "" %><%= number_to_currency(tx[:amount].abs / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
           </span>
         </div>
       <% end %>

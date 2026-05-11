@@ -51,11 +51,11 @@
       <div class="flex justify-between">
         <div>
           <span class="text-[10px] text-zinc-500 block uppercase tracking-wider">Gasto</span>
-          <p class="text-sm font-bold text-zinc-100"><%= number_to_currency(budget.spent_amount, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+          <p class="text-sm font-bold text-zinc-100"><%= number_to_currency(budget.spent_amount / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
         </div>
         <div class="text-right">
           <span class="text-[10px] text-zinc-500 block uppercase tracking-wider">Limite</span>
-          <p class="text-sm font-bold text-zinc-400"><%= number_to_currency(budget.limit_amount, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+          <p class="text-sm font-bold text-zinc-400"><%= number_to_currency(budget.limit_amount / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
         </div>
       </div>
     </div>
