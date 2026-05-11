@@ -10,14 +10,13 @@ gem "sqlite3", ">= 2.1"
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
+# Hotwire gems have been removed in favor of HTMX and AlpineJS
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem "cssbundling-rails"
+# gem "cssbundling-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
+
+gem "tailwindcss-rails"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -66,3 +65,17 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+gem "devise"
+gem "devise-i18n"
+
+# HTTP client for external API services
+gem "faraday"
+
+gem "caxlsx_rails"
+gem "csv"
+
+gem "axe-core-capybara", "~> 4.11", group: :test
+
+gem "ofx", "~> 0.3.2"
+
+gem "nkf", "~> 0.2.0"

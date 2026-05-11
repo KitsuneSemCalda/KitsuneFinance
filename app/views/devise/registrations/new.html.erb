@@ -1,0 +1,38 @@
+<div class="max-w-md w-full mx-auto p-8 bg-zinc-900/60 backdrop-blur-xl border border-zinc-800/60 shadow-2xl rounded-3xl relative overflow-hidden">
+  <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500"></div>
+  
+  <div class="text-center mb-8">
+    <h2 class="text-3xl font-extrabold text-white mb-2 tracking-tight">Criar Conta</h2>
+    <p class="text-zinc-400 text-sm">Junte-se ao Kitsune Finance</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div>
+      <%= f.label :email, class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-4 py-3 bg-zinc-950/50 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all", placeholder: "seu@email.com" %>
+    </div>
+
+    <div>
+      <%= f.label :password, "Senha", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <% if @minimum_password_length %>
+        <span class="text-xs text-zinc-500 ml-1">(mínimo <%= @minimum_password_length %> caracteres)</span>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "w-full px-4 py-3 bg-zinc-950/50 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all", placeholder: "••••••••" %>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation, "Confirmar Senha", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full px-4 py-3 bg-zinc-950/50 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all", placeholder: "••••••••" %>
+    </div>
+
+    <div class="pt-2">
+      <%= f.submit "Cadastrar", class: "w-full flex justify-center py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-emerald-500 transition-all shadow-lg shadow-emerald-500/25 cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <div class="mt-8 pt-6 border-t border-zinc-800/80">
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

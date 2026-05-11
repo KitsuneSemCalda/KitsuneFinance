@@ -1,0 +1,56 @@
+<div class="max-w-2xl mx-auto bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+  <h2 class="text-2xl font-bold text-zinc-100 mb-8"><%= @page_title %></h2>
+
+  <%= form_with model: [:dashboard, @transaction], class: "space-y-6" do |f| %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :date, "Data", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.date_field :date, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :transaction_type, "Tipo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.select :transaction_type, [["Despesa", "expense"], ["Receita", "income"], ["Transferência", "transfer"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :description, "Descrição", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.text_field :description, placeholder: "Ex: Supermercado, Aluguel...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :amount, "Valor", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :amount, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :account_id, "Conta", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.collection_select :account_id, current_user.accounts, :id, :name, { prompt: "Selecione a conta" }, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :category_id, "Categoria", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.collection_select :category_id, current_user.categories, :id, :name, { prompt: "Selecione a categoria" }, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :goal_id, "Vincular à Meta", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.collection_select :goal_id, current_user.goals, :id, :name, { include_blank: "Nenhuma" }, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :notes, "Notas (opcional)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.text_area :notes, rows: 3, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    </div>
+
+    <div class="flex gap-4 pt-4">
+      <%= link_to "Cancelar", dashboard_transactions_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
+      <%= f.submit "Salvar Transação", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

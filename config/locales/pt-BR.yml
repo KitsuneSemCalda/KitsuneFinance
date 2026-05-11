@@ -1,0 +1,33 @@
+'pt-BR':
+  devise:
+    confirmations:
+      confirmed: "Seu endereço de e-mail foi confirmado com sucesso."
+      send_instructions: "Você receberá um e-mail com instruções para confirmar seu e-mail em alguns minutos."
+    failure:
+      already_authenticated: "Você já está logado."
+      inactive: "Sua conta ainda não foi ativada."
+      invalid: "E-mail ou senha inválidos."
+      locked: "Sua conta está bloqueada."
+      not_found_in_database: "E-mail ou senha inválidos."
+      unauthenticated: "Você precisa fazer login ou se cadastrar antes de continuar."
+      unconfirmed: "Você precisa confirmar seu e-mail antes de continuar."
+    passwords:
+      send_instructions: "Você receberá um e-mail com instruções para redefinir sua senha em alguns minutos."
+      updated: "Sua senha foi alterada com sucesso."
+    registrations:
+      signed_up: "Bem-vindo! Você se cadastrou com sucesso."
+      updated: "Sua conta foi atualizada com sucesso."
+    sessions:
+      signed_in: "Login efetuado com sucesso."
+      signed_out: "Logout efetuado com sucesso."
+
+  activerecord:
+    enums:
+      investment:
+        asset_type:
+          stock_br: "Ações BR"
+          fixed_income: "Renda Fixa"
+          fii: "FIIs"
+          international: "Internacional"
+          crypto: "Cripto"
+          other: "Outros"

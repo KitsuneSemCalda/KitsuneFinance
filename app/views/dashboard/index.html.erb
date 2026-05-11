@@ -1,0 +1,313 @@
+<%# ══════════════════════════════════════════════════════════════════ %>
+<%# DASHBOARD INDEX — Visão Geral %>
+<%# ══════════════════════════════════════════════════════════════════ %>
+
+<%# ── Greeting ── %>
+<div class="mb-8">
+  <h2 class="text-2xl font-bold text-zinc-100">
+    Olá, <span class="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent"><%= current_user.email.split('@').first.capitalize %></span> 👋
+  </h2>
+  <p class="text-zinc-500 mt-1 text-sm">Aqui está o resumo do seu patrimônio e das suas finanças.</p>
+</div>
+
+<%# ══════════════════════════════════════════════════════════════════ %>
+<%# ROW 1 — KPI Cards (Patrimônio + Receitas/Despesas + Portfólio) %>
+<%# ══════════════════════════════════════════════════════════════════ %>
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+
+  <%# Card: Patrimônio Líquido %>
+  <div class="animate-fade-in-up hover-lift xl:col-span-1 relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600/20 to-violet-600/10 border border-indigo-500/20 p-5" style="animation-delay: 0.1s">
+    <div class="absolute -top-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-medium text-indigo-300/80 uppercase tracking-wider">Patrimônio Líquido</span>
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/20">
+        <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold text-zinc-100">
+      <%= number_to_currency(@net_worth, unit: "R$ ", separator: ",", delimiter: ".") %>
+    </p>
+    <p class="text-xs text-indigo-300/60 mt-1">atualizado hoje</p>
+  </div>
+
+  <%# Card: Receitas do Mês %>
+  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-emerald-500/20 transition-colors">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Receitas — Mai</span>
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold text-emerald-400">
+      <%= number_to_currency(@monthly_income, unit: "R$ ", separator: ",", delimiter: ".") %>
+    </p>
+    <p class="text-xs text-zinc-600 mt-1">+12% vs mês anterior</p>
+  </div>
+
+  <%# Card: Despesas do Mês %>
+  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-red-500/20 transition-colors">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Despesas — Mai</span>
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10">
+        <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6"/>
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold text-red-400">
+      <%= number_to_currency(@monthly_expense, unit: "R$ ", separator: ",", delimiter: ".") %>
+    </p>
+    <p class="text-xs text-zinc-600 mt-1">-5% vs mês anterior</p>
+  </div>
+
+  <%# Card: Dívidas do Mês %>
+  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-amber-500/20 transition-colors">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Dívidas — Mai</span>
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10">
+        <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c1.657 0 3 .895 3 2s-1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold text-amber-400">
+      <%= number_to_currency(@monthly_debts, unit: "R$ ", separator: ",", delimiter: ".") %>
+    </p>
+    <p class="text-xs text-zinc-600 mt-1">parcelas fixas recorrentes</p>
+  </div>
+
+  <%# Card: Economia do Mês %>
+  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-sky-500/20 transition-colors">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Economia — Mai</span>
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-sky-500/10">
+        <svg class="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold text-sky-400">
+      <%= number_to_currency(@monthly_savings, unit: "R$ ", separator: ",", delimiter: ".") %>
+    </p>
+    <p class="text-xs text-zinc-600 mt-1">taxa de poupança: <%= @monthly_income.positive? ? ((@monthly_savings / @monthly_income) * 100).round(1) : 0 %>%</p>
+  </div>
+</div>
+
+<%# ══════════════════════════════════════════════════════════════════ %>
+<%# ROW 2 — Portfólio + Fluxo de Caixa (dynamic charts) %>
+<%# ══════════════════════════════════════════════════════════════════ %>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+
+  <%# Portfólio de Investimentos %>
+  <div class="animate-fade-in-up hover-lift lg:col-span-1 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5" style="animation-delay: 0.3s"
+       x-data="{
+         init() {
+           const ctx = document.getElementById('allocationChart').getContext('2d');
+           const data = JSON.parse(this.$el.dataset.allocation);
+           new Chart(ctx, {
+             type: 'doughnut',
+             data: {
+               labels: data.map(d => d.label),
+               datasets: [{
+                 data: data.map(d => d.value),
+                 backgroundColor: ['#6366f1', '#10b981', '#0ea5e9', '#f59e0b', '#f43f5e', '#71717a'],
+                 borderWidth: 0,
+                 hoverOffset: 4
+               }]
+             },
+             options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               cutout: '75%',
+               plugins: {
+                 legend: { display: false },
+                 tooltip: {
+                   backgroundColor: '#18181b',
+                   borderColor: '#27272a',
+                   borderWidth: 1
+                 }
+               }
+             }
+           });
+         }
+       }"
+       data-allocation="<%= @allocation_json %>">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-zinc-200">Portfólio</h3>
+      <%= link_to dashboard_investments_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver tudo →<% end %>
+    </div>
+
+    <div class="flex items-center gap-6 mb-5">
+      <div class="relative h-28 w-28 shrink-0">
+        <canvas id="allocationChart"></canvas>
+        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span class="text-[10px] uppercase tracking-wider text-zinc-500 font-medium">Total</span>
+          <span class="text-xs font-bold text-zinc-200"><%= number_to_human(@portfolio_total, precision: 2, units: { thousand: 'k', million: 'M' }) %></span>
+        </div>
+      </div>
+      <div>
+        <p class="text-2xl font-bold text-zinc-100">
+          <%= number_to_currency(@portfolio_total, unit: "R$ ", separator: ",", delimiter: ".") %>
+        </p>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="flex items-center gap-1 text-xs font-medium text-emerald-400">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5"/>
+            </svg>
+            +<%= number_to_currency(@portfolio_change, unit: "R$ ", separator: ",", delimiter: ".") %>
+          </span>
+          <span class="text-[10px] text-zinc-500">(<%= @portfolio_change_pct.round(1) %>% total)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <% color_map_hex = { "stock_br" => "#6366f1", "fixed_income" => "#10b981", "fii" => "#0ea5e9", "international" => "#f59e0b", "crypto" => "#f43f5e", "other" => "#71717a" } %>
+      <% asset_labels = { "stock_br" => "Ações BR", "fixed_income" => "Renda Fixa", "fii" => "FIIs", "international" => "Internacional", "crypto" => "Cripto", "other" => "Outros" } %>
+      
+      <% @allocation.each do |type, value| %>
+        <% pct = @allocation_total.positive? ? (value / @allocation_total * 100).round(1) : 0 %>
+        <div class="flex items-center justify-between group">
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full" style="background-color: <%= color_map_hex[type] || '#71717a' %>"></span>
+            <span class="text-[11px] text-zinc-400 group-hover:text-zinc-200 transition-colors"><%= asset_labels[type] || type.capitalize %></span>
+          </div>
+          <span class="text-[11px] text-zinc-500 font-medium"><%= pct %>%</span>
+        </div>
+      <% end %>
+
+      <% if @allocation.empty? %>
+        <p class="text-xs text-zinc-600 text-center py-4">Nenhum investimento cadastrado.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Fluxo de Caixa — mini sparkline chart (Chart.js) %>
+  <div class="animate-fade-in-up hover-lift lg:col-span-2 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5" style="animation-delay: 0.35s"
+       x-data="{
+         init() {
+           const ctx = document.getElementById('cashFlowChart').getContext('2d');
+           const labels = JSON.parse(this.$el.dataset.labels);
+           const income = JSON.parse(this.$el.dataset.income);
+           const expense = JSON.parse(this.$el.dataset.expense);
+           
+           new Chart(ctx, {
+             type: 'line',
+             data: {
+               labels: labels,
+               datasets: [
+                 {
+                   label: 'Receitas',
+                   data: income,
+                   borderColor: '#10b981',
+                   backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                   fill: true,
+                   tension: 0.4,
+                   pointRadius: 0
+                 },
+                 {
+                   label: 'Despesas',
+                   data: expense,
+                   borderColor: '#f43f5e',
+                   backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                   fill: true,
+                   tension: 0.4,
+                   pointRadius: 0
+                 }
+               ]
+             },
+             options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               plugins: {
+                 legend: { display: false },
+                 tooltip: {
+                   mode: 'index',
+                   intersect: false,
+                   backgroundColor: '#18181b',
+                   titleColor: '#94a3b8',
+                   bodyColor: '#f8fafc',
+                   borderColor: '#27272a',
+                   borderWidth: 1
+                 }
+               },
+               scales: {
+                 x: {
+                   display: true,
+                   grid: { display: false },
+                   ticks: { color: '#52525b', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 7 }
+                 },
+                 y: {
+                   display: false
+                 }
+               }
+    </div>
+  </div>
+</div>
+
+<%# ══════════════════════════════════════════════════════════════════ %>
+<%# ROW 3 — Últimas Transações + Metas %>
+<%# ══════════════════════════════════════════════════════════════════ %>
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+  <%# Últimas Transações %>
+  <div class="lg:col-span-3 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-zinc-200">Últimas Transações</h3>
+      <%= link_to dashboard_transactions_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver todas →<% end %>
+    </div>
+
+    <div class="space-y-1">
+      <% @recent_transactions.each do |tx| %>
+        <div class="flex items-center gap-4 px-3 py-2.5 rounded-xl hover:bg-zinc-800/40 transition-colors group">
+          <span class="text-xl shrink-0"><%= tx[:icon] %></span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-zinc-200 truncate"><%= tx[:description] %></p>
+            <p class="text-xs text-zinc-500"><%= tx[:category] %> · <%= tx[:date] %></p>
+          </div>
+          <span class="text-sm font-semibold shrink-0 <%= tx[:type] == :income ? 'text-emerald-400' : 'text-red-400' %>">
+            <%= tx[:type] == :income ? "+" : "" %><%= number_to_currency(tx[:amount].abs, unit: "R$ ", separator: ",", delimiter: ".") %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Metas Financeiras %>
+  <div class="animate-fade-in-up hover-lift lg:col-span-2 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5" style="animation-delay: 0.45s">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-zinc-200">Metas</h3>
+      <%= link_to dashboard_goals_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver todas →<% end %>
+    </div>
+
+    <div class="space-y-4">
+      <% @goals.each do |goal| %>
+        <% pct = ((goal[:current].to_f / goal[:target]) * 100).round(1) %>
+        <% color_map = { "indigo" => "from-indigo-500 to-violet-500", "emerald" => "from-emerald-500 to-teal-500", "sky" => "from-sky-500 to-blue-500" } %>
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center gap-2">
+              <span class="text-base"><%= goal[:icon] %></span>
+              <span class="text-xs font-medium text-zinc-300"><%= goal[:name] %></span>
+            </div>
+            <span class="text-xs font-bold text-zinc-400"><%= pct %>%</span>
+          </div>
+          <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r <%= color_map[goal[:color]] %> rounded-full transition-all duration-700"
+                 style="width: <%= pct %>%">
+            </div>
+          </div>
+          <div class="flex justify-between mt-1">
+            <span class="text-[10px] text-zinc-600"><%= number_to_currency(goal[:current], unit: "R$ ", separator: ",", delimiter: ".") %></span>
+            <span class="text-[10px] text-zinc-600"><%= number_to_currency(goal[:target], unit: "R$ ", separator: ",", delimiter: ".") %></span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

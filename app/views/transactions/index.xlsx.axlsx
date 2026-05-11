@@ -1,0 +1,26 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Transações") do |sheet|
+  # Styles
+  header_style = wb.styles.add_style(bg_color: "4F46E5", fg_color: "FFFFFF", b: true, alignment: { horizontal: :center })
+  currency_style = wb.styles.add_style(format_code: "R$ #,##0.00")
+  date_style = wb.styles.add_style(format_code: "dd/mm/yyyy")
+
+  # Header
+  sheet.add_row ["Data", "Descrição", "Categoria", "Valor", "Tipo", "Notas"], style: header_style
+
+  # Data
+  @transactions.each do |tx|
+    sheet.add_row [
+      tx.date,
+      tx.description,
+      tx.category&.name || "Sem categoria",
+      tx.amount,
+      tx.transaction_type.capitalize,
+      tx.notes
+    ], style: [date_style, nil, nil, currency_style, nil, nil]
+  end
+
+  # Column widths
+  sheet.column_widths 15, 30, 20, 15, 12, 40
+end

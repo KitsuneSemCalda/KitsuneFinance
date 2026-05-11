@@ -1,0 +1,92 @@
+<div class="mb-8">
+  <h2 class="text-2xl font-bold text-zinc-100">Relatórios Financeiros</h2>
+  <p class="text-zinc-500 text-sm">Análise detalhada de suas receitas, despesas e objetivos.</p>
+</div>
+
+<%# ── SUMMARY CARDS ── %>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1 block">Total Recebido</span>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_income, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+  </div>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-1 block">Total Gasto</span>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_expense, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+  </div>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-1 block">Saldo Geral</span>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@balance, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+  <%# ── MONTHLY EVOLUTION ── %>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <h3 class="text-lg font-bold text-zinc-100 mb-6">Evolução Mensal</h3>
+    <div class="space-y-6">
+      <% @monthly_data.each do |data| %>
+        <div>
+          <div class="flex justify-between text-xs mb-2">
+            <span class="text-zinc-400"><%= data[:month] %></span>
+            <span class="text-zinc-100 font-medium">
+              <span class="text-emerald-400">+<%= number_to_currency(data[:income], unit: "") %></span> / 
+              <span class="text-red-400">-<%= number_to_currency(data[:expense], unit: "") %></span>
+            </span>
+          </div>
+          <div class="h-2 bg-zinc-800 rounded-full overflow-hidden flex">
+            <% total = data[:income] + data[:expense] %>
+            <% if total > 0 %>
+              <div class="h-full bg-emerald-500" style="width: <%= (data[:income] / total * 100) %>%"></div>
+              <div class="h-full bg-red-500" style="width: <%= (data[:expense] / total * 100) %>%"></div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── TOP CATEGORIES ── %>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <h3 class="text-lg font-bold text-zinc-100 mb-6">Maiores Gastos por Categoria</h3>
+    <div class="space-y-4">
+      <% @category_distribution.each do |name, amount| %>
+        <div class="flex items-center gap-4">
+          <div class="flex-1">
+            <div class="flex justify-between text-xs mb-1.5">
+              <span class="text-zinc-300 font-medium"><%= name %></span>
+              <span class="text-zinc-400"><%= number_to_currency(amount, unit: "R$ ") %></span>
+            </div>
+            <div class="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full bg-indigo-500/60" style="width: <%= @total_expense > 0 ? (amount / @total_expense * 100) : 0 %>%"></div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <% if @category_distribution.empty? %>
+        <p class="text-zinc-500 text-sm text-center py-10">Nenhum dado de despesa disponível.</p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%# ── EXPORT CENTER ── %>
+<div class="bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-8">
+  <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+    <div>
+      <h3 class="text-lg font-bold text-zinc-100 mb-1">Central de Exportação</h3>
+      <p class="text-zinc-400 text-sm">Baixe seus dados completos para uso externo em Excel ou CSV.</p>
+    </div>
+    <div class="grid grid-cols-2 gap-3 w-full md:w-auto">
+      <% @export_formats.each do |export| %>
+        <%= link_to export[:path], class: "flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs font-bold text-zinc-200 transition-all" do %>
+          <% if export[:icon] == "csv" %>
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <% else %>
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <% end %>
+          <%= export[:name] %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

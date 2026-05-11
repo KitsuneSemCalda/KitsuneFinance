@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
     <title><%= content_for(:title) || "Kitsune Finance" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,6 +11,10 @@
 
     <%= yield :head %>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
@@ -20,10 +24,22 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-zinc-950 text-zinc-100 font-[Inter] antialiased min-h-screen flex flex-col">
+    <div class="fixed top-5 w-full flex flex-col items-center gap-2 z-50 pointer-events-none">
+      <% if notice %>
+        <p class="notice bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-6 py-3 rounded-full shadow-lg backdrop-blur-md pointer-events-auto transition-all animate-fade-in-down"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert bg-red-500/10 text-red-400 border border-red-500/20 px-6 py-3 rounded-full shadow-lg backdrop-blur-md pointer-events-auto transition-all animate-fade-in-down"><%= alert %></p>
+      <% end %>
+    </div>
+    
+    <main class="container mx-auto px-6 flex-grow flex flex-col justify-center">
+      <%= yield %>
+    </main>
   </body>
 </html>
