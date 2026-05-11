@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_11_020343) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_11_044003) do
   create_table "accounts", force: :cascade do |t|
     t.string "account_type", default: "checking", null: false
     t.integer "balance", default: 0
@@ -158,6 +158,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_020343) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "brapi_token"
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false

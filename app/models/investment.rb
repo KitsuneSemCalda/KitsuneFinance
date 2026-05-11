@@ -35,7 +35,7 @@ class Investment < ApplicationRecord
 
     price = case asset_type
             when "stock_br", "fii"
-              PriceService.fetch_stock_price(ticker)
+              PriceService.fetch_stock_price(ticker, user.brapi_token)
             when "crypto"
               PriceService.fetch_crypto_price(ticker.downcase)
             end

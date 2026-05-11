@@ -35,32 +35,59 @@
   </div>
 
   <%# ── APP PREFERENCES ── %>
-  <%= form_with model: @user, url: dashboard_settings_path, method: :patch, class: "bg-zinc-900/60 border border-zinc-800/60 rounded-2xl overflow-hidden" do |f| %>
-    <div class="px-6 py-4 border-b border-zinc-800/60 bg-zinc-800/20">
-      <h3 class="text-sm font-bold text-zinc-100">Preferências do Sistema</h3>
-    </div>
-    <div class="p-6 space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="space-y-1.5">
-          <%= f.label :primary_currency, "Moeda Principal", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
-          <%= f.select :primary_currency, [["Real Brasileiro (R$)", "BRL"], ["Dólar Americano (US$)", "USD"], ["Euro (€)", "EUR"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
-        </div>
-        <div class="space-y-1.5">
-          <%= f.label :locale, "Idioma", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
-          <%= f.select :locale, [["Português (Brasil)", "pt-BR"], ["English", "en"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
-        </div>
-        <div class="space-y-1.5 md:col-span-2">
-          <%= f.label :ntfy_url, "URL para Notificações (ntfy/Gotify)", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
-          <%= f.text_field :ntfy_url, placeholder: "https://ntfy.sh/seu-topico", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
-        </div>
-        <div class="space-y-1.5 md:col-span-2">
-          <%= f.label :monthly_salary, "Salário Mensal (em centavos)", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
-          <%= f.number_field :monthly_salary, value: @user.monthly_salary, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
+  <%= form_with model: @user, url: dashboard_settings_path, method: :patch, class: "space-y-8" do |f| %>
+    
+    <%# Preferências Gerais %>
+    <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-zinc-800/60 bg-zinc-800/20">
+        <h3 class="text-sm font-bold text-zinc-100">Preferências Gerais</h3>
+      </div>
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-1.5">
+            <%= f.label :primary_currency, "Moeda Principal", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
+            <%= f.select :primary_currency, [["Real Brasileiro (R$)", "BRL"], ["Dólar Americano (US$)", "USD"], ["Euro (€)", "EUR"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
+          </div>
+          <div class="space-y-1.5">
+            <%= f.label :locale, "Idioma", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
+            <%= f.select :locale, [["Português (Brasil)", "pt-BR"], ["English", "en"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
+          </div>
+          <div class="space-y-1.5 md:col-span-2">
+            <%= f.label :monthly_salary, "Salário Mensal (em centavos)", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
+            <%= f.number_field :monthly_salary, value: @user.monthly_salary, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
+          </div>
         </div>
       </div>
     </div>
-    <div class="px-6 py-4 bg-zinc-800/20 border-t border-zinc-800/60 flex justify-end">
-      <%= f.submit "Salvar Configurações", class: "bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/20 cursor-pointer" %>
+
+    <%# Integrações (Tokens API) %>
+    <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-zinc-800/60 bg-zinc-800/20">
+        <h3 class="text-sm font-bold text-zinc-100">Integrações de API (Tokens)</h3>
+      </div>
+      <div class="p-6 space-y-6">
+        <div class="space-y-1.5">
+          <%= f.label :brapi_token, "Token BRAPI (Ações e FIIs)", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
+          <%= f.password_field :brapi_token, placeholder: "Seu token da BRAPI", value: @user.brapi_token, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Notificações e URLs %>
+    <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-zinc-800/60 bg-zinc-800/20">
+        <h3 class="text-sm font-bold text-zinc-100">Notificações e Webhooks</h3>
+      </div>
+      <div class="p-6 space-y-6">
+        <div class="space-y-1.5">
+          <%= f.label :ntfy_url, "URL para Notificações (ntfy/Gotify)", class: "text-[10px] font-bold uppercase tracking-widest text-zinc-500" %>
+          <%= f.text_field :ntfy_url, placeholder: "https://ntfy.sh/seu-topico", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:border-indigo-500 outline-none transition-colors" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end">
+      <%= f.submit "Salvar Configurações", class: "bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-indigo-500/20 cursor-pointer" %>
     </div>
   <% end %>
 

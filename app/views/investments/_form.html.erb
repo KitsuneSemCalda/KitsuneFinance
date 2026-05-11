@@ -9,8 +9,8 @@
       </div>
 
       <div class="space-y-2">
-        <%= f.label :asset_type, "Tipo de Ativo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.select :asset_type, [["Ação BR", "stock_br"], ["FII", "fii"], ["Renda Fixa", "fixed_income"], ["Internacional", "international"], ["Cripto", "crypto"], ["Outros", "other"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <%= f.label :quantity, "Quantidade", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :quantity, step: 1, value: @investment.quantity.to_i, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
       </div>
     </div>
 
@@ -18,26 +18,14 @@
       <%= f.label :name, "Nome do Ativo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
       <%= f.text_field :name, placeholder: "Ex: Petrobras PN", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="space-y-2">
-        <%= f.label :quantity, "Quantidade (frações permitidas)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :quantity, step: 0.000001, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-
-      <div class="space-y-2">
-        <%= f.label :avg_price, "Preço Médio (em centavos)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :avg_price, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-
-      <div class="space-y-2">
-        <%= f.label :current_price, "Preço Atual (em centavos)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :current_price, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
+    
+    <div class="space-y-2">
+      <%= f.label :asset_type, "Tipo de Ativo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.select :asset_type, [["Ação BR", "stock_br"], ["FII", "fii"], ["Renda Fixa", "fixed_income"], ["Internacional", "international"], ["Cripto", "crypto"], ["Outros", "other"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
     </div>
 
     <div class="space-y-2 text-zinc-500 text-[10px] bg-indigo-500/5 border border-indigo-500/10 rounded-lg p-3">
-      💡 <strong>Dica:</strong> O sistema tentará atualizar o <em>Preço Atual</em> automaticamente usando as APIs integradas baseadas no Ticker.
+      💡 <strong>Dica:</strong> O sistema buscará o preço atual automaticamente após o cadastro.
     </div>
 
     <div class="flex gap-4 pt-4">

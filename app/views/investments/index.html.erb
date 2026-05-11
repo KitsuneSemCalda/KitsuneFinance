@@ -45,7 +45,7 @@
             <span class="text-xs text-zinc-400"><%= inv.asset_type.capitalize %></span>
           </td>
           <td class="px-6 py-4 text-right text-sm text-zinc-100">
-            <%= inv.quantity %>
+            <%= (inv.quantity || 0).to_i %>
           </td>
           <td class="px-6 py-4 text-right text-sm text-zinc-400">
             <%= number_to_currency(inv.avg_price / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>

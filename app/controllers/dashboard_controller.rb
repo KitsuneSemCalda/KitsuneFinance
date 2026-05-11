@@ -143,6 +143,6 @@ class DashboardController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:primary_currency, :locale, :ntfy_url, :monthly_salary)
+    params.require(:user).permit(:primary_currency, :locale, :ntfy_url, :monthly_salary, :brapi_token)
   end
 end

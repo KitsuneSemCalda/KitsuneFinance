@@ -15,9 +15,6 @@ class InvestmentsController < ApplicationController
   end
 
   def create
-    params[:investment][:avg_price] = (params[:investment][:avg_price].to_f * 100).to_i if params[:investment][:avg_price].present?
-    params[:investment][:current_price] = (params[:investment][:current_price].to_f * 100).to_i if params[:investment][:current_price].present?
-    
     @investment = current_user.investments.new(investment_params)
     if @investment.save
       redirect_to dashboard_investments_path, notice: "Investimento cadastrado com sucesso."
@@ -27,9 +24,6 @@ class InvestmentsController < ApplicationController
   end
 
   def update
-    params[:investment][:avg_price] = (params[:investment][:avg_price].to_f * 100).to_i if params[:investment][:avg_price].present?
-    params[:investment][:current_price] = (params[:investment][:current_price].to_f * 100).to_i if params[:investment][:current_price].present?
-
     if @investment.update(investment_params)
       redirect_to dashboard_investments_path, notice: "Investimento atualizado com sucesso."
     else
@@ -49,6 +43,6 @@ class InvestmentsController < ApplicationController
   end
 
   def investment_params
-    params.require(:investment).permit(:name, :ticker, :asset_type, :quantity, :avg_price, :current_price, :currency, :purchased_at, :notes)
+    params.require(:investment).permit(:name, :ticker, :asset_type, :quantity, :currency, :purchased_at, :notes)
   end
 end
