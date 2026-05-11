@@ -1,0 +1,39 @@
+<div class="mb-6">
+  <h2 class="text-2xl font-bold text-zinc-100">Simulação Financeira</h2>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-1 bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <%= form_with url: dashboard_simulation_path, method: :get, class: "space-y-4" do |f| %>
+      <div>
+        <%= f.label :salary_adj, "Ajuste de Salário (%)", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :salary_adj, value: params[:salary_adj] || 0, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+      <div>
+        <%= f.label :expense_adj, "Corte de Gastos (%)", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :expense_adj, value: params[:expense_adj] || 0, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+      <%= f.submit "Simular", class: "w-full bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition cursor-pointer" %>
+    <% end %>
+  </div>
+
+  <div class="lg:col-span-2 bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6 space-y-6">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="p-4 bg-zinc-800/40 rounded-xl">
+        <p class="text-xs text-zinc-500 uppercase">Salário Projetado</p>
+        <p class="text-xl font-bold text-emerald-400"><%= number_to_currency(@results[:projected_salary], unit: "R$ ", separator: ",", delimiter: ".") %></p>
+      </div>
+      <div class="p-4 bg-zinc-800/40 rounded-xl">
+        <p class="text-xs text-zinc-500 uppercase">Despesas Projetadas</p>
+        <p class="text-xl font-bold text-red-400"><%= number_to_currency(@results[:projected_expenses], unit: "R$ ", separator: ",", delimiter: ".") %></p>
+      </div>
+    </div>
+    
+    <div class="p-4 bg-zinc-800/40 rounded-xl border border-zinc-700/50">
+      <p class="text-xs text-zinc-500 uppercase">Saldo Final Estimado</p>
+      <p class="text-3xl font-bold <%= @results[:balance] >= 0 ? 'text-sky-400' : 'text-red-500' %>">
+        <%= number_to_currency(@results[:balance], unit: "R$ ", separator: ",", delimiter: ".") %>
+      </p>
+    </div>
+  </div>
+</div>
