@@ -17,7 +17,7 @@ A forma oficial de rodar o Kitsune Finance é utilizando Docker.
 1. **Build da imagem:**
 
    ```bash
-   docker build -t kitsune_finance .
+   ./bin/docker-build
    ```
 
 2. **Execução:**
