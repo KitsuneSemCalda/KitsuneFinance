@@ -12,19 +12,23 @@ Kitsune Finance é uma plataforma de gestão financeira pessoal focada em contro
 
 ## Como rodar o projeto
 
-1. **Requisitos:** Certifique-se de ter Ruby (versão especificada em `.ruby-version`) e as dependências do sistema instaladas.
-2. **Instalação:**
+A forma oficial de rodar o Kitsune Finance é utilizando Docker.
+
+1. **Build da imagem:**
 
    ```bash
-   bundle install
-   bin/rails db:prepare
+   docker build -t kitsune_finance .
    ```
 
-3. **Execução:**
+2. **Execução:**
 
    ```bash
-   ./bin/dev
+   docker run -d --name kitsune_finance -p 13522:80 \
+     -v ~/.local/share/KitsuneFinance/db:/rails/db \
+     --restart unless-stopped \
+     kitsune_finance:latest
    ```
+
 
 ## Visão Geral
 
