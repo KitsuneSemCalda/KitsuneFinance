@@ -1,0 +1,33 @@
+<div class="mb-6">
+  <h2 class="text-2xl font-bold text-zinc-100">Nova Dívida</h2>
+</div>
+
+<div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+  <%= form_with model: [:dashboard, @debt], class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :name, "Nome da Dívida", class: "block text-sm text-zinc-400 mb-1" %>
+      <%= f.text_field :name, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :total_amount, "Valor Total (em centavos)", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :total_amount, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+      <div>
+        <%= f.label :monthly_payment, "Valor da Parcela", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :monthly_payment, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :installments_count, "Total de Parcelas", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :installments_count, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+      <div>
+        <%= f.label :remaining_installments, "Parcelas Restantes", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :remaining_installments, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+    </div>
+    <%= f.submit "Salvar Dívida", class: "bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition cursor-pointer" %>
+  <% end %>
+</div>

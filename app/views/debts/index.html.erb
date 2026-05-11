@@ -1,0 +1,36 @@
+<div class="mb-6 flex justify-between items-center">
+  <h2 class="text-2xl font-bold text-zinc-100">Minhas Dívidas</h2>
+  <%= link_to "Nova Dívida", new_dashboard_debt_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition" %>
+</div>
+
+<div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+  <% if @debts.any? %>
+    <table class="w-full text-left text-zinc-300">
+      <thead>
+        <tr class="text-xs uppercase text-zinc-500 border-b border-zinc-800">
+          <th class="pb-3">Dívida</th>
+          <th class="pb-3">Valor Total</th>
+          <th class="pb-3">Parcela</th>
+          <th class="pb-3">Restante</th>
+          <th class="pb-3">Ações</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-zinc-800">
+        <% @debts.each do |debt| %>
+          <tr>
+            <td class="py-4 font-medium text-zinc-100"><%= debt.name %></td>
+            <td class="py-4"><%= number_to_currency(debt.total_amount, unit: "R$ ", separator: ",", delimiter: ".") %></td>
+            <td class="py-4"><%= number_to_currency(debt.monthly_payment, unit: "R$ ", separator: ",", delimiter: ".") %></td>
+            <td class="py-4"><%= debt.remaining_installments %>/<%= debt.installments_count %></td>
+            <td class="py-4">
+              <%= link_to "Editar", edit_dashboard_debt_path(debt), class: "text-indigo-400 hover:text-indigo-300 mr-3" %>
+              <%= button_to "Remover", dashboard_debt_path(debt), method: :delete, data: { confirm: "Tem certeza?" }, class: "text-red-400 hover:text-red-300" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-zinc-500 text-center py-8">Nenhuma dívida cadastrada.</p>
+  <% end %>
+</div>
