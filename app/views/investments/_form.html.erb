@@ -19,13 +19,26 @@
       <%= f.text_field :name, placeholder: "Ex: Petrobras PN", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
     </div>
     
-    <div class="space-y-2">
-      <%= f.label :asset_type, "Tipo de Ativo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-      <%= f.select :asset_type, [["Ação BR", "stock_br"], ["FII", "fii"], ["Renda Fixa", "fixed_income"], ["Internacional", "international"], ["Cripto", "crypto"], ["Outros", "other"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <%= f.label :asset_type, "Tipo de Ativo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.select :asset_type, [["Ação BR", "stock_br"], ["FII", "fii"], ["Renda Fixa", "fixed_income"], ["Tesouro Direto BR", "treasury_br"], ["Tesouro Direto Internacional", "treasury_intl"], ["Internacional", "international"], ["Cripto", "crypto"], ["Outros", "other"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :avg_price, "Preço Médio (R$) — deixe vazio se for usar Operações", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+        <%= f.number_field :avg_price, step: 0.01, value: number_to_human(f.object.avg_price.to_f / 100, precision: 4), class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      </div>
     </div>
 
-    <div class="space-y-2 text-zinc-500 text-[10px] bg-indigo-500/5 border border-indigo-500/10 rounded-lg p-3">
-      💡 <strong>Dica:</strong> O sistema buscará o preço atual automaticamente após o cadastro.
+    <div class="space-y-2">
+      <%= f.label :current_price, "Preço Atual (R$) — opcional, deixe vazio para buscar automático", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.number_field :current_price, step: 0.01, value: number_to_human(f.object.current_price.to_f / 100, precision: 4), class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :price_feed_url, "Feed de Preço (URL) — RSS/Atom/JSON/CSV, opcional", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+      <%= f.url_field :price_feed_url, placeholder: "https://...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
     </div>
 
     <div class="flex gap-4 pt-4">

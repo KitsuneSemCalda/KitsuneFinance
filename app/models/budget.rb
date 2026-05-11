@@ -10,7 +10,7 @@ class Budget < ApplicationRecord
     user.transactions
         .expense
         .where(category_id: category_id)
-        .where("extract(month from date) = ? AND extract(year from date) = ?", month, year)
+        .where(date: Date.new(year, month, 1)..Date.new(year, month, -1))
         .sum(:amount)
   end
 

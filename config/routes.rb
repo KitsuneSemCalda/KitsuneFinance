@@ -6,11 +6,11 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#index", as: :dashboard
 
   scope as: :dashboard do
-    resources :accounts
-    resources :categories do
+    resources :accounts, except: :show
+    resources :categories, except: :show do
       resources :categorization_rules, only: [:create, :destroy], module: :categories
     end
-    resources :transactions do
+    resources :transactions, except: :show do
       collection do
         get :import
         post :do_import
@@ -21,17 +21,27 @@ Rails.application.routes.draw do
         post :mark_all_as_read
       end
     end
-    resources :investments
+    resources :investments do
+      resources :trades, only: [:index, :create, :edit, :update, :destroy], module: :investments do
+        collection do
+          delete :clear
+        end
+      end
+      member do
+        post :refresh_price
+      end
+    end
     resources :goals do
       member do
         patch :contribute
       end
     end
-    resources :debts
+    resources :debts, except: :show
     resources :budgets
     
     get "reports", to: "dashboard#reports"
     get "simulation", to: "dashboard#simulation"
+    get "health", to: "dashboard#health"
     get "settings", to: "dashboard#settings"
     patch "settings", to: "dashboard#update_settings"
   end

@@ -1,0 +1,43 @@
+<div class="max-w-xl mx-auto">
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="text-2xl font-bold text-zinc-100">Editar Operação</h2>
+    <%= link_to dashboard_investment_trades_path(@investment), class: "text-zinc-500 hover:text-zinc-100 transition-colors text-sm" do %>
+      ← Voltar
+    <% end %>
+  </div>
+
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+    <%= form_with model: [@investment, @trade], url: dashboard_investment_trade_path(@investment, @trade), method: :patch, class: "space-y-6" do |f| %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <%= f.label :trade_type, "Tipo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+          <%= f.select :trade_type, [["Compra", "buy"], ["Venda", "sell"]], {},
+              class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+        <div class="space-y-2">
+          <%= f.label :date, "Data", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+          <%= f.date_field :date, required: true,
+              class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <%= f.label :quantity, "Quantidade", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+          <%= f.number_field :quantity, step: 1, min: 0.000001, required: true,
+              class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+        <div class="space-y-2">
+          <%= f.label :price, "Preço (R$)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
+          <%= f.number_field :price, step: 0.01, min: 0, required: true,
+              class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+      </div>
+
+      <div class="flex gap-4 pt-4">
+        <%= link_to "Cancelar", dashboard_investment_trades_path(@investment), class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
+        <%= f.submit "Salvar", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

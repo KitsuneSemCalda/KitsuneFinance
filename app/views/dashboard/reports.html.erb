@@ -4,7 +4,15 @@
 </div>
 
 <%# ── SUMMARY CARDS ── %>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<% salary = current_user.monthly_salary || 0 %>
+<% salary_present = salary > 0 %>
+<% monthly_income = @total_income %>
+<% monthly_expense = @total_expense %>
+<% expense_ratio = salary_present ? (monthly_expense.to_f / salary) * 100 : nil %>
+<% savings_rate = salary_present ? ((monthly_income - monthly_expense).to_f / salary) * 100 : nil %>
+<% dti = salary_present ? (current_user.debts.sum(:monthly_payment).to_f / salary) * 100 : nil %>
+
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-10">
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1 block">Total Recebido</span>
     <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_income / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
@@ -12,10 +20,26 @@
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-1 block">Total Gasto</span>
     <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_expense / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <% if expense_ratio %>
+      <p class="text-xs text-zinc-500 mt-1"><%= number_to_percentage(expense_ratio, precision: 1) %> do salário</p>
+    <% end %>
   </div>
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-1 block">Saldo Geral</span>
     <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@balance / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <% if savings_rate %>
+      <p class="text-xs text-zinc-500 mt-1"><%= number_to_percentage(savings_rate, precision: 1) %> do salário poupado</p>
+    <% end %>
+  </div>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-amber-500 mb-1 block">DTI</span>
+    <p class="text-2xl font-bold text-zinc-100"><%= dti ? number_to_percentage(dti, precision: 1) : "—" %></p>
+    <p class="text-xs text-zinc-500 mt-1"><%= dti ? (dti <= 30 ? 'Saudável' : 'Elevado') : 'Configure seu salário' %></p>
+  </div>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-sky-500 mb-1 block">Salário</span>
+    <p class="text-2xl font-bold text-zinc-100"><%= salary_present ? number_to_currency(salary / 100.0, unit: "R$ ", separator: ",", delimiter: ".") : "—" %></p>
+    <p class="text-xs text-zinc-500 mt-1"><%= salary_present ? number_to_currency(salary * 12 / 100.0, unit: "R$ ", separator: ",", delimiter: ".") + "/ano" : 'Configure nas Configurações' %></p>
   </div>
 </div>
 

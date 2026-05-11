@@ -22,6 +22,8 @@
       signed_out: "Logout efetuado com sucesso."
 
   activerecord:
+    models:
+      user: "usuário"
     enums:
       investment:
         asset_type:

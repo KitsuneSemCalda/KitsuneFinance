@@ -1,4 +1,36 @@
-<div>
-  <h1 class="font-bold text-4xl">Debts#edit</h1>
-  <p>Find me in app/views/debts/edit.html.erb</p>
+<div class="mb-6">
+  <h2 class="text-2xl font-bold text-zinc-100">Editar Dívida</h2>
+</div>
+
+<div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+  <%= form_with model: [:dashboard, @debt], class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :name, "Nome da Dívida", class: "block text-sm text-zinc-400 mb-1" %>
+      <%= f.text_field :name, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :total_amount, "Valor Total (R$)", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :total_amount, step: 1, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+      <div>
+        <%= f.label :monthly_payment, "Valor da Parcela (R$)", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :monthly_payment, step: 1, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :installments_count, "Total de Parcelas", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :installments_count, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+      <div>
+        <%= f.label :remaining_installments, "Parcelas Restantes", class: "block text-sm text-zinc-400 mb-1" %>
+        <%= f.number_field :remaining_installments, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
+      </div>
+    </div>
+    <div class="flex gap-4 pt-2">
+      <%= link_to "Cancelar", dashboard_debts_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
+      <%= f.submit "Salvar Dívida", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
+    </div>
+  <% end %>
 </div>

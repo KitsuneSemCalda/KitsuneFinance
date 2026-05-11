@@ -4,7 +4,7 @@ class FinancialSimulationService
   end
 
   def monthly_forecast
-    salary = @user.salary || 0
+    salary = @user.monthly_salary || 0
     expenses = @user.transactions.expense.current_month.sum(:amount)
     monthly_debts = @user.debts.sum(:monthly_payment)
     

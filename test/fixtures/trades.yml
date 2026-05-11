@@ -1,0 +1,15 @@
+one:
+  user: one
+  investment: one
+  trade_type: buy
+  quantity: 5
+  price: 2200
+  date: 2026-01-15
+
+two:
+  user: one
+  investment: one
+  trade_type: buy
+  quantity: 5
+  price: 2800
+  date: 2026-03-10

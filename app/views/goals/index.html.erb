@@ -57,6 +57,15 @@
         </div>
       </div>
 
+      <% if current_user.monthly_salary&.positive? %>
+        <% remaining = goal.target_amount - goal.current_amount %>
+        <% monthly_savings_est = current_user.monthly_salary * 0.1 %>
+        <% if remaining > 0 && monthly_savings_est > 0 %>
+          <% estimated_months = (remaining.to_f / monthly_savings_est).ceil %>
+          <p class="text-xs text-zinc-500 text-center mb-4">~<%= estimated_months %> meses reservando 10% do salário</p>
+        <% end %>
+      <% end %>
+
       <div class="mt-4 flex flex-col gap-2">
         <p class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Contribuir</p>
         <%= form_with url: contribute_dashboard_goal_path(goal), method: :patch, class: "flex flex-col gap-2" do |f| %>

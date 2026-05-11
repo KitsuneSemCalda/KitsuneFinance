@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_11_044003) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
   create_table "accounts", force: :cascade do |t|
     t.string "account_type", default: "checking", null: false
     t.integer "balance", default: 0
@@ -111,6 +111,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044003) do
     t.integer "current_price", default: 0
     t.string "name", null: false
     t.text "notes"
+    t.string "price_feed_url"
     t.date "purchased_at"
     t.decimal "quantity", precision: 15, scale: 6, default: "0.0", null: false
     t.string "ticker"
@@ -130,6 +131,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044003) do
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "trades", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.integer "investment_id", null: false
+    t.text "notes"
+    t.integer "price", default: 0, null: false
+    t.decimal "quantity", precision: 15, scale: 6, null: false
+    t.string "trade_type", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["investment_id", "date"], name: "index_trades_on_investment_id_and_date"
+    t.index ["investment_id"], name: "index_trades_on_investment_id"
+    t.index ["user_id"], name: "index_trades_on_user_id"
   end
 
   create_table "transactions", force: :cascade do |t|
@@ -162,7 +178,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044003) do
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "locale", default: "pt-BR"
+    t.string "locale"
     t.integer "monthly_salary"
     t.string "ntfy_url"
     t.string "primary_currency"
@@ -185,6 +201,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044003) do
   add_foreign_key "goals", "users"
   add_foreign_key "investments", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "trades", "investments"
+  add_foreign_key "trades", "users"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "goals"

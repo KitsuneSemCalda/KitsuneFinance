@@ -12,6 +12,9 @@
           <th class="pb-3">Valor Total</th>
           <th class="pb-3">Parcela</th>
           <th class="pb-3">Restante</th>
+          <% if current_user.monthly_salary&.positive? %>
+            <th class="pb-3">DTI</th>
+          <% end %>
           <th class="pb-3">Ações</th>
         </tr>
       </thead>
@@ -22,6 +25,9 @@
             <td class="py-4"><%= number_to_currency(debt.total_amount / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></td>
             <td class="py-4"><%= number_to_currency(debt.monthly_payment / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></td>
             <td class="py-4"><%= debt.remaining_installments %>/<%= debt.installments_count %></td>
+            <% if current_user.monthly_salary&.positive? %>
+              <td class="py-4"><%= number_to_percentage((debt.monthly_payment.to_f / current_user.monthly_salary) * 100, precision: 1) %></td>
+            <% end %>
             <td class="py-4">
               <%= link_to "Editar", edit_dashboard_debt_path(debt), class: "text-indigo-400 hover:text-indigo-300 mr-3" %>
               <%= button_to "Remover", dashboard_debt_path(debt), method: :delete, data: { confirm: "Tem certeza?" }, class: "text-red-400 hover:text-red-300" %>
