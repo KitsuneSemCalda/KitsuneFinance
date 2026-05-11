@@ -23,4 +23,6 @@ Kitsune Finance é uma plataforma de gestão financeira pessoal focada em contro
    ./bin/dev
    ```
 
-*(Nota: Adicione screenshots aqui para ilustrar o Painel, a listagem de Dívidas e a tela de Simulação.)*
+## Visão Geral
+
+![Dashboard Kitsune Finance](app/assets/screenshot/dashboard.png)
