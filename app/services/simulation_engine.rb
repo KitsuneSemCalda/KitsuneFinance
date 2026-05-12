@@ -4,23 +4,29 @@ class SimulationEngine
   end
 
   def forecast(scenario = {})
-    base_salary = @user.monthly_salary || 0
+    metrics = @user.financial_health_metrics
+
+    base_salary = metrics[:salary]
     salary = base_salary * (1 + (scenario[:salary_adjustment] || 0))
-    
-    base_expenses = @user.transactions.expense.current_month.sum(:amount)
+
+    base_expenses = metrics[:monthly_expense]
     expenses = base_expenses * (1 - (scenario[:expense_adjustment] || 0))
-    
-    monthly_debts = @user.debts.sum(:monthly_payment)
+
+    monthly_debts = metrics[:monthly_debts]
     balance = salary - (expenses + monthly_debts)
-    
+
     # Debt payoff projection
-    total_debt_remaining = @user.debts.sum { |d| d.total_remaining }
+    total_debt_remaining = metrics[:monthly_debts] * 12 # fallback if not detailed
+    # Better: use real debt remaining
+    real_debt_remaining = @user.debts.sum { |d| d.total_remaining }
+    total_debt_remaining = real_debt_remaining if real_debt_remaining > 0
+
     debt_months_to_payoff = monthly_debts > 0 ? (total_debt_remaining.to_f / monthly_debts).ceil : nil
-    
+
     # Savings projection (12 months)
-    monthly_savings = [balance, 0].max
+    monthly_savings = [ balance, 0 ].max
     projected_net_worth_12m = monthly_savings * 12
-    
+
     # Goal funding projections
     goal_projections = @user.goals.active.map do |goal|
       remaining = goal.target_amount - goal.current_amount
@@ -34,7 +40,7 @@ class SimulationEngine
         estimated_months: months
       }
     end.compact
-    
+
     {
       projected_salary: salary,
       projected_expenses: expenses,

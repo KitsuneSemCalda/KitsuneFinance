@@ -1,0 +1,42 @@
+<div class="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl p-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-lg font-bold text-zinc-100">Regras de Categorização</h3>
+      <p class="text-zinc-500 text-sm">Palavras-chave que automatizam a categorização de transações.</p>
+    </div>
+  </div>
+
+  <% rules = current_user.categorization_rules.includes(:category).order(:keyword) %>
+  <% if rules.any? %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-zinc-800/60">
+            <th class="px-4 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Palavra-chave</th>
+            <th class="px-4 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Categoria</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-800/40">
+          <% rules.each do |rule| %>
+            <tr class="hover:bg-zinc-800/40 transition-all">
+              <td class="px-4 py-3 text-sm font-bold text-zinc-200"><%= rule.keyword %></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-<%= rule.category.color %>-500/10 text-<%= rule.category.color %>-400 border border-<%= rule.category.color %>-500/20">
+                  <%= rule.category.icon %> <%= rule.category.name %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="text-center py-10">
+      <div class="w-12 h-12 bg-zinc-800/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
+      </div>
+      <p class="text-zinc-400 text-sm font-medium">Nenhuma regra de categorização criada.</p>
+      <p class="text-zinc-600 text-xs mt-1">As regras são criadas automaticamente quando você re-categoriza transações.</p>
+    </div>
+  <% end %>
+</div>

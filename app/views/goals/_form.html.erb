@@ -1,62 +1,82 @@
-<div class="max-w-2xl mx-auto bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
-  <h2 class="text-2xl font-bold text-zinc-100 mb-8"><%= @page_title %></h2>
+<div class="max-w-2xl mx-auto">
+  <div class="mb-8">
+    <h2 class="text-2xl font-bold text-zinc-100"><%= @page_title %></h2>
+    <p class="text-zinc-500 text-sm">Defina metas financeiras e acompanhe seu progresso.</p>
+  </div>
 
   <%= form_with model: [:dashboard, @goal], class: "space-y-6" do |f| %>
-    <div class="space-y-2">
-      <%= f.label :name, "Nome da Meta", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-      <%= f.text_field :name, placeholder: "Ex: Reserva de Emergência, Viagem...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl space-y-8">
       <div class="space-y-2">
-        <%= f.label :target_amount, "Valor Objetivo (R$)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :target_amount, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-        <% if current_user.monthly_salary&.positive? %>
-          <% suggested_monthly = (current_user.monthly_salary * 0.1).to_i %>
-          <p class="text-xs text-zinc-500 mt-1">10% do salário = R$ <%= number_with_delimiter(suggested_monthly / 100.0, separator: ",", delimiter: ".") %>/mês</p>
-        <% end %>
+        <%= f.label :name, "Nome da Meta", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+        <%= f.text_field :name, placeholder: "Ex: Reserva de Emergência, Viagem...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 outline-none transition-all placeholder:text-zinc-700" %>
       </div>
 
-      <div class="space-y-2">
-        <%= f.label :current_amount, "Valor Já Acumulado (R$)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :current_amount, step: 1, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <%= f.label :deadline, "Prazo (opcional)", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.date_field :deadline, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-        <% if current_user.monthly_salary&.positive? && @goal.target_amount.present? && @goal.target_amount > 0 %>
-          <% remaining = @goal.target_amount - (@goal.current_amount || 0) %>
-          <% if remaining > 0 %>
-            <% est_months = (remaining.to_f / (current_user.monthly_salary * 0.1)).ceil %>
-            <p class="text-xs text-zinc-500 mt-1">~<%= est_months %> meses reservando 10% do salário</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-2">
+          <%= f.label :target_amount, "Valor Objetivo (R$)", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.number_field :target_amount, step: 0.01, value: @goal.target_amount.present? && @goal.target_amount > 0 ? @goal.target_amount / 100.0 : nil, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 outline-none transition-all tabular-nums" %>
+          <% if current_user.monthly_salary&.positive? %>
+            <% suggested_monthly = (current_user.monthly_salary * 0.1).to_i %>
+            <p class="text-xs text-zinc-500 mt-1 ml-1">10% do salário = <%= number_to_currency(suggested_monthly / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>/mês</p>
           <% end %>
+        </div>
+        <div class="space-y-2">
+          <%= f.label :current_amount, "Valor Acumulado (R$)", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.number_field :current_amount, step: 0.01, value: @goal.current_amount.present? && @goal.current_amount > 0 ? @goal.current_amount / 100.0 : nil, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all tabular-nums" %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-2">
+          <%= f.label :deadline, "Prazo (Opcional)", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.date_field :deadline, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+          <% if current_user.monthly_salary&.positive? && @goal.target_amount.present? && @goal.target_amount > 0 %>
+            <% remaining = @goal.target_amount - (@goal.current_amount || 0) %>
+            <% if remaining > 0 %>
+              <% est_months = (remaining.to_f / (current_user.monthly_salary * 0.1)).ceil %>
+              <p class="text-xs text-zinc-500 mt-1 ml-1">~<%= est_months %> meses reservando 10% do salário</p>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="space-y-2">
+          <%= f.label :color, "Cor", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            <% [["Índigo", "indigo"], ["Esmeralda", "emerald"], ["Céu", "sky"], ["Âmbar", "amber"], ["Rosa", "rose"], ["Roxo", "purple"]].each do |label, color| %>
+              <label class="cursor-pointer group">
+                <%= f.radio_button :color, color, class: "peer sr-only" %>
+                <div class="flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-zinc-800 bg-zinc-950/50 peer-checked:border-<%= color %>-500 peer-checked:bg-<%= color %>-500/10 transition-all hover:border-zinc-700">
+                  <div class="w-5 h-5 rounded-full bg-<%= color %>-500"></div>
+                  <span class="text-[8px] font-bold text-zinc-500 peer-checked:text-<%= color %>-400 uppercase tracking-tighter"><%= label %></span>
+                </div>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-2">
+          <%= f.label :icon, "Ícone (Emoji)", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.text_field :icon, placeholder: "🎯, ✈️, 🛡️...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-2xl text-center focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+        <div class="space-y-2">
+          <%= f.label :status, "Status", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.select :status, [["Ativa", "active"], ["Pausada", "paused"], ["Concluída", "completed"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+      <%= link_to "Cancelar", dashboard_goals_path, class: "flex-1 text-center bg-zinc-900 hover:bg-zinc-800 text-zinc-500 font-bold py-4 rounded-2xl border border-zinc-800 transition-all" %>
+      <%= f.submit "Salvar Meta", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-indigo-500/25 cursor-pointer" %>
+    </div>
+
+    <% if @goal.persisted? %>
+      <div class="pt-8 border-t border-zinc-800/60 mt-8 flex justify-center">
+        <%= button_to dashboard_goal_path(@goal), method: :delete, class: "text-red-500/60 hover:text-red-400 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors", data: { turbo_confirm: "Excluir esta meta permanentemente?" } do %>
+          Excluir Meta
         <% end %>
       </div>
-
-      <div class="space-y-2">
-        <%= f.label :color, "Cor", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.select :color, [["Índigo", "indigo"], ["Esmeralda", "emerald"], ["Céu", "sky"], ["Âmbar", "amber"], ["Rosa", "rose"], ["Roxo", "purple"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <%= f.label :icon, "Ícone", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.text_field :icon, placeholder: "🎯, ✈️, 🛡️...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-
-      <div class="space-y-2">
-        <%= f.label :status, "Status", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.select :status, [["Ativa", "active"], ["Pausada", "paused"], ["Concluída", "completed"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-    </div>
-
-    <div class="flex gap-4 pt-4">
-      <%= link_to "Cancelar", dashboard_goals_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
-      <%= f.submit "Salvar Meta", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
-    </div>
+    <% end %>
   <% end %>
 </div>

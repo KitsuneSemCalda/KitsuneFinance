@@ -1,14 +1,14 @@
 Rails.application.routes.draw do
-  root to: "home#index"
+  root to: "dashboard#index"
   devise_for :users
 
   # Authenticated dashboard area
   get "dashboard", to: "dashboard#index", as: :dashboard
 
-  scope as: :dashboard do
+  scope '/dashboard', as: :dashboard do
     resources :accounts, except: :show
     resources :categories, except: :show do
-      resources :categorization_rules, only: [:create, :destroy], module: :categories
+      resources :categorization_rules, only: [:index, :create, :destroy], module: :categories
     end
     resources :transactions, except: :show do
       collection do
@@ -27,10 +27,15 @@ Rails.application.routes.draw do
           delete :clear
         end
       end
+      collection do
+        get :cards
+        post :refresh_all_prices
+      end
       member do
         post :refresh_price
       end
     end
+    resources :bill_reminders, except: :show
     resources :goals do
       member do
         patch :contribute
@@ -44,6 +49,7 @@ Rails.application.routes.draw do
     get "health", to: "dashboard#health"
     get "settings", to: "dashboard#settings"
     patch "settings", to: "dashboard#update_settings"
+    get "backup", to: "dashboard#backup"
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

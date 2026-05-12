@@ -12,11 +12,16 @@ class Investments::TradesController < ApplicationController
     @trade.user = current_user
 
     if @trade.save
-      redirect_to dashboard_investment_trades_path(@investment),
-                  notice: "Operação registrada com sucesso."
+      @investment.reload
+      respond_to do |format|
+        format.html { redirect_to dashboard_investment_trades_path(@investment), notice: "Operação registrada com sucesso." }
+        format.json { render json: { investment: investment_json(@investment) }, status: :created }
+      end
     else
-      redirect_to dashboard_investment_trades_path(@investment),
-                  alert: @trade.errors.full_messages.to_sentence
+      respond_to do |format|
+        format.html { redirect_to dashboard_investment_trades_path(@investment), alert: @trade.errors.full_messages.to_sentence }
+        format.json { render json: { errors: @trade.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -57,5 +62,18 @@ class Investments::TradesController < ApplicationController
     params.require(:trade).permit(:trade_type, :quantity, :price, :date, :notes).tap do |p|
       p[:price] = (p[:price].to_f * 100).to_i if p[:price].present?
     end
+  end
+
+  def investment_json(inv)
+    {
+      id: inv.id,
+      quantity: inv.quantity,
+      avg_price: inv.avg_price,
+      current_price: inv.current_price,
+      current_value: inv.current_value,
+      total_cost: inv.total_cost,
+      gain_loss: inv.gain_loss,
+      gain_loss_pct: inv.gain_loss_pct
+    }
   end
 end

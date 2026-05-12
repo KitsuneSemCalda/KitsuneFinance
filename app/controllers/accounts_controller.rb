@@ -6,6 +6,11 @@ class AccountsController < ApplicationController
   def index
     @page_title = "Contas"
     @accounts = current_user.accounts
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @accounts.select(:id, :name, :account_type, :balance, :currency) }
+    end
   end
 
   def new

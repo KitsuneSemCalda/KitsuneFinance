@@ -1,127 +1,135 @@
-<%# ══════════════════════════════════════════════════════════════════ %>
-<%# DASHBOARD INDEX — Visão Geral %>
-<%# ══════════════════════════════════════════════════════════════════ %>
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<%# DASHBOARD — Visão Geral (Full-Screen) %>
+<%# ═══════════════════════════════════════════════════════════════════════ %>
 
-<%# ── Greeting ── %>
-<div class="mb-8">
-  <h2 class="text-2xl font-bold text-zinc-100">
-    Olá, <span class="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent"><%= current_user.email.split('@').first.capitalize %></span> 👋
-  </h2>
-  <p class="text-zinc-500 mt-1 text-sm">Aqui está o resumo do seu patrimônio e das suas finanças.</p>
+<%# ── GREETING + QUICK SUMMARY BAR ── %>
+<div class="mb-6 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+  <div>
+    <h2 class="text-2xl font-bold text-zinc-100">
+      Olá, <span class="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent"><%= current_user.email.split('@').first.capitalize %></span>
+    </h2>
+    <p class="text-zinc-500 mt-0.5 text-sm"><%= l(Date.today, format: "%A, %d de %B de %Y") %></p>
+  </div>
+  <div class="flex flex-wrap items-center gap-3 text-xs">
+    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800/60">
+      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      Saldo: <strong class="text-zinc-100"><%= number_to_currency(@net_worth / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></strong>
+    </span>
+    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800/60">
+      <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+      Disponível: <strong class="text-zinc-100"><%= number_to_currency(@available_balance / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></strong>
+    </span>
+    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800/60">
+      <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+      Investido: <strong class="text-zinc-100"><%= number_to_currency(@portfolio_total / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></strong>
+      <span class="text-zinc-600">(<%= @investment_count %>)</span>
+    </span>
+    <% if @bills_overdue_count > 0 %>
+      <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01"/></svg>
+        <%= @bills_overdue_count %> vencida(s)
+      </span>
+    <% end %>
+  </div>
 </div>
 
-<%# ══════════════════════════════════════════════════════════════════ %>
-<%# ROW 1 — KPI Cards (Patrimônio + Receitas/Despesas + Dívidas + Economia) %>
-<%# ══════════════════════════════════════════════════════════════════ %>
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<%# ROW 1 — KPI Cards (Full-width, 7 columns on 2xl) %>
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<div id="widget-kpi" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-7 gap-4 mb-6 dashboard-widget">
 
-  <%# Card: Patrimônio Líquido %>
-  <div class="animate-fade-in-up hover-lift xl:col-span-1 relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600/20 to-violet-600/10 border border-indigo-500/20 p-5" style="animation-delay: 0.1s">
+  <%# Patrimônio Líquido %>
+  <div class="animate-fade-in-up relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600/20 to-violet-600/10 border border-indigo-500/20 p-5" style="animation-delay: 0.1s">
     <div class="absolute -top-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
     <div class="flex items-center justify-between mb-3">
       <span class="text-xs font-medium text-indigo-300/80 uppercase tracking-wider">Patrimônio Líquido</span>
       <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/20">
-        <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
+        <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-zinc-100">
-      <%= number_to_currency(@net_worth / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
-    </p>
-    <% if @net_worth_to_annual %>
-      <p class="text-xs text-indigo-300/60 mt-1"><%= number_to_percentage(@net_worth_to_annual * 100, precision: 0) %> da renda anual</p>
-    <% else %>
-      <p class="text-xs text-zinc-600 mt-1">atualizado hoje</p>
-    <% end %>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@net_worth / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-xs text-zinc-600 mt-1"><%= @net_worth_to_annual ? "#{number_to_percentage(@net_worth_to_annual * 100, precision: 0)} da renda anual" : "atualizado hoje" %></p>
   </div>
 
-  <%# Card: Receitas do Mês %>
-  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-emerald-500/20 transition-colors">
+  <%# Disponivel %>
+  <div class="animate-fade-in-up relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5" style="animation-delay: 0.15s">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Receitas — <%= t("date.abbreviated_month_names")[Date.today.month] %></span>
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Disponível</span>
       <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10">
-        <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
-        </svg>
+        <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-emerald-400">
-      <%= number_to_currency(@monthly_income / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
-    </p>
-    <p class="text-xs text-zinc-600 mt-1">receita total registrada</p>
+    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@available_balance / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-xs text-zinc-600 mt-1">contas corrente + poupança</p>
   </div>
 
-  <%# Card: Despesas do Mês %>
-  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-red-500/20 transition-colors">
+  <%# Receitas do Mês %>
+  <div class="animate-fade-in-up relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-emerald-500/20 transition-colors" style="animation-delay: 0.2s">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Despesas — <%= t("date.abbreviated_month_names")[Date.today.month] %></span>
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Receitas <span class="text-zinc-600">· <%= t("date.abbreviated_month_names")[Date.today.month] %></span></span>
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@monthly_income / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+  </div>
+
+  <%# Despesas do Mês %>
+  <div class="animate-fade-in-up relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-red-500/20 transition-colors" style="animation-delay: 0.25s">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Despesas <span class="text-zinc-600">· <%= t("date.abbreviated_month_names")[Date.today.month] %></span></span>
       <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10">
-        <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6"/>
-        </svg>
+        <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-red-400">
-      <%= number_to_currency(@monthly_expense / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
-    </p>
-    <% if @expense_ratio %>
-      <p class="text-xs <%= @expense_ratio > 50 ? 'text-red-400' : 'text-zinc-600' %> mt-1"><%= number_to_percentage(@expense_ratio, precision: 1) %> do salário</p>
-    <% else %>
-      <p class="text-xs text-zinc-600 mt-1">configure seu salário</p>
-    <% end %>
+    <p class="text-2xl font-bold text-red-400"><%= number_to_currency(@monthly_expense / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-xs mt-1 <%= @expense_ratio && @expense_ratio > 50 ? 'text-red-400' : 'text-zinc-600' %>"><%= number_to_percentage(@expense_ratio, precision: 1) %> do salário</p>
   </div>
 
-  <%# Card: Dívidas do Mês %>
-  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-amber-500/20 transition-colors">
+  <%# Dívidas do Mês %>
+  <div class="animate-fade-in-up relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-amber-500/20 transition-colors" style="animation-delay: 0.3s">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Dívidas — <%= t("date.abbreviated_month_names")[Date.today.month] %></span>
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Dívidas <span class="text-zinc-600">· <%= t("date.abbreviated_month_names")[Date.today.month] %></span></span>
       <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10">
-        <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c1.657 0 3 .895 3 2s-1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
+        <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c1.657 0 3 .895 3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-amber-400">
-      <%= number_to_currency(@monthly_debts / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
-    </p>
-    <% if @dti %>
-      <p class="text-xs <%= @dti > 30 ? 'text-red-400' : 'text-zinc-600' %> mt-1"><%= number_to_percentage(@dti, precision: 1) %> da renda (DTI)</p>
-    <% else %>
-      <p class="text-xs text-zinc-600 mt-1">parcelas fixas recorrentes</p>
-    <% end %>
+    <p class="text-2xl font-bold text-amber-400"><%= number_to_currency(@monthly_debts / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-xs mt-1 <%= @dti && @dti > 30 ? 'text-red-400' : 'text-zinc-600' %>"><%= number_to_percentage(@dti, precision: 1) if @dti %> DTI</p>
   </div>
 
-  <%# Card: Economia do Mês %>
-  <div class="relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-sky-500/20 transition-colors">
+  <%# Economia do Mês %>
+  <div class="animate-fade-in-up relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-sky-500/20 transition-colors" style="animation-delay: 0.35s">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Economia — <%= t("date.abbreviated_month_names")[Date.today.month] %></span>
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Economia <span class="text-zinc-600">· <%= t("date.abbreviated_month_names")[Date.today.month] %></span></span>
       <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-sky-500/10">
-        <svg class="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-        </svg>
+        <svg class="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-sky-400">
-      <%= number_to_currency(@monthly_savings / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
-    </p>
-    <% if @savings_rate %>
-      <p class="text-xs <%= @savings_rate > 20 ? 'text-emerald-400' : (@savings_rate > 0 ? 'text-sky-400' : 'text-red-400') %> mt-1">
-        <%= number_to_percentage(@savings_rate, precision: 1) %> do salário
-      </p>
-    <% else %>
-      <p class="text-xs text-zinc-600 mt-1">configure seu salário</p>
-    <% end %>
+    <p class="text-2xl font-bold text-sky-400"><%= number_to_currency(@monthly_savings / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-xs mt-1 <%= @savings_rate && @savings_rate > 20 ? 'text-emerald-400' : 'text-zinc-600' %>"><%= number_to_percentage(@savings_rate, precision: 1) if @savings_rate %> poupado</p>
+  </div>
+
+  <%# Contas a Pagar (Pendentes) %>
+  <div class="animate-fade-in-up relative overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 hover:border-rose-500/20 transition-colors" style="animation-delay: 0.4s">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Contas a Pagar</span>
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500/10">
+        <svg class="w-4 h-4 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold text-rose-400"><%= number_to_currency(@bills_pending / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-xs mt-1 text-zinc-600"><%= @bills_overdue_count %> vencida(s) este mês</p>
   </div>
 </div>
 
-<%# ══════════════════════════════════════════════════════════════════ %>
-<%# ROW 2 — Portfólio + Fluxo de Caixa (dynamic charts) %>
-<%# ══════════════════════════════════════════════════════════════════ %>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<%# ROW 2 — Portfólio + Fluxo de Caixa (expandido) %>
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
 
-  <%# Portfólio de Investimentos %>
-  <div class="animate-fade-in-up hover-lift lg:col-span-1 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5" style="animation-delay: 0.3s"
+  <%# Portfolio de Investimentos %>
+  <div id="widget-portfolio" class="animate-fade-in-up lg:col-span-1 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget" style="animation-delay: 0.3s"
        x-data="{
          init() {
            const ctx = document.getElementById('allocationChart').getContext('2d');
@@ -159,23 +167,19 @@
       <%= link_to dashboard_investments_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver tudo →<% end %>
     </div>
 
-    <div class="flex items-center gap-6 mb-5">
-      <div class="relative h-28 w-28 shrink-0">
+    <div class="flex flex-col xl:flex-row items-center gap-4 mb-5">
+      <div class="relative h-28 w-28 xl:h-36 xl:w-36 shrink-0">
         <canvas id="allocationChart"></canvas>
         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <span class="text-[10px] uppercase tracking-wider text-zinc-500 font-medium">Total</span>
           <span class="text-xs font-bold text-zinc-200"><%= number_to_human(@portfolio_total / 100.0, precision: 2, units: { thousand: 'k', million: 'M' }) %></span>
         </div>
       </div>
-      <div>
-        <p class="text-2xl font-bold text-zinc-100">
-          <%= number_to_currency(@portfolio_total / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
-        </p>
-        <div class="flex items-center gap-2 mt-1">
+      <div class="text-center xl:text-left">
+        <p class="text-xl font-bold text-zinc-100"><%= number_to_currency(@portfolio_total / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        <div class="flex items-center gap-2 mt-1 justify-center xl:justify-start">
           <span class="flex items-center gap-1 text-xs font-medium text-emerald-400">
-            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5"/>
-            </svg>
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5"/></svg>
             +<%= number_to_currency(@portfolio_change / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
           </span>
           <span class="text-[10px] text-zinc-500">(<%= @portfolio_change_pct.round(1) %>% total)</span>
@@ -186,7 +190,6 @@
     <div class="space-y-2">
       <% color_map_hex = { "stock_br" => "#6366f1", "fixed_income" => "#10b981", "fii" => "#0ea5e9", "international" => "#f59e0b", "crypto" => "#f43f5e", "other" => "#71717a" } %>
       <% asset_labels = { "stock_br" => "Ações BR", "fixed_income" => "Renda Fixa", "fii" => "FIIs", "international" => "Internacional", "crypto" => "Cripto", "other" => "Outros" } %>
-      
       <% @allocation.each do |type, value| %>
         <% pct = @allocation_total.positive? ? (value / @allocation_total * 100).round(1) : 0 %>
         <div class="flex items-center justify-between group">
@@ -197,18 +200,17 @@
           <span class="text-[11px] text-zinc-500 font-medium"><%= pct %>%</span>
         </div>
       <% end %>
-
       <% if @allocation.empty? %>
         <p class="text-xs text-zinc-600 text-center py-4">Nenhum investimento cadastrado.</p>
       <% end %>
     </div>
   </div>
 
-  <%# Fluxo de Caixa — mini sparkline chart (Chart.js) %>
-  <div class="animate-fade-in-up hover-lift lg:col-span-2 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5" style="animation-delay: 0.35s"
-       data-labels="<%= @cash_flow_labels.to_json %>"
-       data-income="<%= @income_series.map { |v| v / 100.0 }.to_json %>"
-       data-expense="<%= @expense_series.map { |v| v / 100.0 }.to_json %>"
+  <%# Fluxo de Caixa — 60 dias, gráfico maior %>
+  <div id="widget-cashflow" class="animate-fade-in-up lg:col-span-2 xl:col-span-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget" style="animation-delay: 0.35s"
+       data-labels="<%= @cash_flow_labels_60.to_json %>"
+       data-income="<%= @income_series_60.map { |v| v / 100.0 }.to_json %>"
+       data-expense="<%= @expense_series_60.map { |v| v / 100.0 }.to_json %>"
        x-data="{
          init() {
            const ctx = document.getElementById('cashFlowChart').getContext('2d');
@@ -223,18 +225,20 @@
                  label: 'Receitas',
                  data: income,
                  borderColor: '#10b981',
-                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                 backgroundColor: 'rgba(16, 185, 129, 0.08)',
                  fill: true,
                  tension: 0.4,
-                 pointRadius: 0
+                 pointRadius: 0,
+                 borderWidth: 2
                }, {
                  label: 'Despesas',
                  data: expense,
                  borderColor: '#f43f5e',
-                 backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                 backgroundColor: 'rgba(244, 63, 94, 0.08)',
                  fill: true,
                  tension: 0.4,
-                 pointRadius: 0
+                 pointRadius: 0,
+                 borderWidth: 2
                }]
              },
              options: {
@@ -256,7 +260,7 @@
                  x: {
                    display: true,
                    grid: { display: false },
-                   ticks: { color: '#52525b', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 7 }
+                   ticks: { color: '#52525b', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 }
                  },
                  y: { display: false }
                }
@@ -264,18 +268,24 @@
            });
          }
        }">
-    <h3 class="text-sm font-semibold text-zinc-200 mb-4">Fluxo de Caixa (30 dias)</h3>
-    <canvas id="cashFlowChart" class="w-full h-32"></canvas>
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-zinc-200">Fluxo de Caixa (60 dias)</h3>
+      <div class="flex items-center gap-4 text-xs">
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Receitas</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> Despesas</span>
+      </div>
+    </div>
+    <canvas id="cashFlowChart" class="w-full h-48 xl:h-64"></canvas>
   </div>
 </div>
 
-<%# ══════════════════════════════════════════════════════════════════ %>
-<%# ROW 3 — Orçamento + Dívidas + Health Score %>
-<%# ══════════════════════════════════════════════════════════════════ %>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<%# ROW 3 — Orçamento + Dívidas + Saúde + Contas a Pagar + Trades %>
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mb-6">
 
   <%# Orçamento do Mês %>
-  <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
+  <div id="widget-budget" class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-sm font-semibold text-zinc-200">Orçamento — <%= t("date.month_names")[Date.today.month] %></h3>
       <%= link_to dashboard_budgets_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Gerenciar →<% end %>
@@ -302,7 +312,7 @@
   </div>
 
   <%# Progresso das Dívidas %>
-  <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
+  <div id="widget-debts" class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-sm font-semibold text-zinc-200">Dívidas</h3>
       <%= link_to dashboard_debts_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Gerenciar →<% end %>
@@ -328,14 +338,14 @@
   </div>
 
   <%# Health Score %>
-  <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
+  <div id="widget-health" class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-sm font-semibold text-zinc-200">Saúde Financeira</h3>
-      <span class="text-xs <%= @health_score >= 70 ? 'text-emerald-400' : @health_score >= 40 ? 'text-amber-400' : 'text-red-400' %> font-bold"><%= @health_score %>/100</span>
+      <span class="text-xs text-<%= current_user.health_color_class %>-400 font-bold"><%= @health_score %>/100</span>
     </div>
     <div class="mb-4">
       <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
-        <div class="h-full rounded-full transition-all duration-700 <%= @health_score >= 70 ? 'bg-emerald-500' : @health_score >= 40 ? 'bg-amber-500' : 'bg-red-500' %>" style="width: <%= @health_score %>%"></div>
+        <div class="h-full rounded-full transition-all duration-700 bg-<%= current_user.health_color_class %>-500" style="width: <%= @health_score %>%"></div>
       </div>
     </div>
     <div class="space-y-2 text-xs">
@@ -366,30 +376,86 @@
       <% end %>
     </div>
   </div>
+
+  <%# Contas a Pagar (Resumo) %>
+  <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-zinc-200">Contas a Pagar</h3>
+      <%= link_to dashboard_bill_reminders_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver todas →<% end %>
+    </div>
+    <% upcoming_bills = current_user.bill_reminders.this_month.where(paid: false).ordered.limit(4) %>
+    <% if upcoming_bills.any? %>
+      <div class="space-y-2">
+        <% upcoming_bills.each do |bill| %>
+          <div class="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-zinc-800/40 transition-colors">
+            <div class="min-w-0">
+              <p class="text-xs font-medium text-zinc-200 truncate"><%= bill.name %></p>
+              <p class="text-[10px] text-zinc-500">Vence <%= l(bill.due_date, format: "%d/%m") %></p>
+            </div>
+            <span class="text-xs font-bold text-red-400 shrink-0"><%= number_to_currency(bill.amount / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-xs text-zinc-600 text-center py-6">Nenhuma conta pendente 🎉</p>
+    <% end %>
+    <div class="mt-3 pt-3 border-t border-zinc-800/60 flex justify-between text-xs">
+      <span class="text-zinc-500">Total pendente</span>
+      <span class="font-bold text-zinc-100"><%= number_to_currency(@bills_pending / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+    </div>
+  </div>
+
+  <%# Trades Recentes %>
+  <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-zinc-200">Movimentações</h3>
+      <%= link_to dashboard_investments_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver tudo →<% end %>
+    </div>
+    <% if @recent_trades.any? %>
+      <div class="space-y-2">
+        <% @recent_trades.each do |trade| %>
+          <div class="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-zinc-800/40 transition-colors">
+            <div class="min-w-0">
+              <p class="text-xs font-medium text-zinc-200"><%= trade.investment&.name || trade.investment&.ticker %></p>
+              <p class="text-[10px] text-zinc-500"><%= trade.trade_type == "buy" ? "Compra" : "Venda" %> · <%= trade.date.strftime("%d/%m") %></p>
+            </div>
+            <span class="text-xs font-bold <%= trade.trade_type == 'buy' ? 'text-emerald-400' : 'text-red-400' %>">
+              <%= trade.trade_type == 'buy' ? '+' : '—' %><%= number_to_currency(trade.quantity * trade.price / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-xs text-zinc-600 text-center py-6">Nenhuma movimentação recente.</p>
+    <% end %>
+  </div>
 </div>
 
-<%# ══════════════════════════════════════════════════════════════════ %>
+<%# ═══════════════════════════════════════════════════════════════════════ %>
 <%# ROW 4 — Últimas Transações + Metas %>
-<%# ══════════════════════════════════════════════════════════════════ %>
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<div class="grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-7 gap-4">
 
   <%# Últimas Transações %>
-  <div class="lg:col-span-3 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
+  <div id="widget-transactions" class="lg:col-span-3 xl:col-span-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-sm font-semibold text-zinc-200">Últimas Transações</h3>
       <%= link_to dashboard_transactions_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver todas →<% end %>
     </div>
 
-    <div class="space-y-1">
-      <% @recent_transactions.each do |tx| %>
+    <div class="space-y-1 max-h-96 overflow-y-auto pr-1 custom-scrollbar">
+      <% @recent_transactions_more.each do |tx| %>
+        <% tx_type = tx.transaction_type.to_sym %>
+        <% icon = tx.category&.icon || "💰" %>
+        <% cat_name = tx.category&.name || "Sem categoria" %>
         <div class="flex items-center gap-4 px-3 py-2.5 rounded-xl hover:bg-zinc-800/40 transition-colors group">
-          <span class="text-xl shrink-0"><%= tx[:icon] %></span>
+          <span class="text-xl shrink-0"><%= icon %></span>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-zinc-200 truncate"><%= tx[:description] %></p>
-            <p class="text-xs text-zinc-500"><%= tx[:category] %> · <%= tx[:date] %></p>
+            <p class="text-sm font-medium text-zinc-200 truncate"><%= tx.description %></p>
+            <p class="text-xs text-zinc-500"><%= cat_name %> · <%= tx.date.strftime("%d %b") %></p>
           </div>
-          <span class="text-sm font-semibold shrink-0 <%= tx[:type] == :income ? 'text-emerald-400' : 'text-red-400' %>">
-            <%= tx[:type] == :income ? "+" : "" %><%= number_to_currency(tx[:amount].abs / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+          <span class="text-sm font-semibold shrink-0 <%= tx_type == :income ? 'text-emerald-400' : 'text-red-400' %>">
+            <%= tx_type == :income ? "+" : "" %><%= number_to_currency(tx.amount.abs / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
           </span>
         </div>
       <% end %>
@@ -397,7 +463,7 @@
   </div>
 
   <%# Metas Financeiras %>
-  <div class="animate-fade-in-up hover-lift lg:col-span-2 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5" style="animation-delay: 0.45s">
+  <div id="widget-goals" class="animate-fade-in-up lg:col-span-2 xl:col-span-2 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5 dashboard-widget" style="animation-delay: 0.45s">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-sm font-semibold text-zinc-200">Metas</h3>
       <%= link_to dashboard_goals_path, class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>Ver todas →<% end %>
@@ -432,3 +498,52 @@
   </div>
 </div>
 
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<%# ROW 5 — Ano em Números (Full-width, dynamic bars) %>
+<%# ═══════════════════════════════════════════════════════════════════════ %>
+<% has_data = @yearly_data.any? { |d| d[:income] > 0 || d[:expense] > 0 } %>
+<div class="mt-6 rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-6 dashboard-widget">
+  <h3 class="text-sm font-semibold text-zinc-200 mb-6">Ano em Números</h3>
+  <% if has_data %>
+    <% max_val = [@yearly_data.map { |d| d[:income] }.max, @yearly_data.map { |d| d[:expense] }.max].max %>
+    <div class="overflow-x-auto -mx-6 px-6 custom-scrollbar">
+      <div class="grid grid-cols-12 gap-2 items-end min-w-[480px]" style="height: 160px;">
+        <% @yearly_data.each do |data| %>
+          <% income_h = max_val > 0 ? (data[:income].to_f / max_val) * 100 : 0 %>
+          <% expense_h = max_val > 0 ? (data[:expense].to_f / max_val) * 100 : 0 %>
+          <% bar_h = [income_h, expense_h].max %>
+          <% bar_h = bar_h < 2 && bar_h > 0 ? 2 : bar_h %>
+          <div class="flex flex-col items-center gap-1 justify-end h-full">
+            <div class="w-full flex flex-col-reverse gap-0.5 rounded-t-sm overflow-hidden" style="height: <%= bar_h %>%">
+              <% if income_h > 0 %>
+                <div class="w-full bg-emerald-500/80 transition-all hover:bg-emerald-400"
+                     style="height: <%= income_h %>%"
+                     title="Receitas <%= data[:month] %>: <%= number_to_currency(data[:income] / 100.0) %>"></div>
+              <% end %>
+              <% if expense_h > 0 %>
+                <div class="w-full bg-red-500/80 transition-all hover:bg-red-400"
+                     style="height: <%= expense_h %>%"
+                     title="Despesas <%= data[:month] %>: <%= number_to_currency(data[:expense] / 100.0) %>"></div>
+              <% end %>
+            </div>
+            <span class="text-[10px] text-zinc-500 font-semibold whitespace-nowrap"><%= data[:month] %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex items-center justify-center gap-6 mt-4 text-xs text-zinc-500">
+      <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Receitas</span>
+      <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> Despesas</span>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center justify-center py-10 text-center">
+      <div class="w-12 h-12 bg-zinc-800/40 rounded-2xl flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
+        </svg>
+      </div>
+      <p class="text-zinc-500 text-sm font-medium">Nenhum dado financeiro neste período</p>
+      <p class="text-zinc-600 text-xs mt-1">Registre transações para ver seu gráfico anual.</p>
+    </div>
+  <% end %>
+</div>

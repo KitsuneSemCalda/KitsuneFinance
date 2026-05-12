@@ -1,13 +1,11 @@
 class DashboardController < ApplicationController
-  include FinancialHealth
-
   before_action :authenticate_user!
   layout "dashboard"
 
   def index
     @page_title = "Visão Geral"
     @accounts = current_user.accounts
-    m = compute_health_metrics(current_user)
+    m = current_user.financial_health_metrics
     @net_worth = m[:net_worth]
     @monthly_income = m[:monthly_income]
     @monthly_expense = m[:monthly_expense]
@@ -21,10 +19,22 @@ class DashboardController < ApplicationController
     @net_worth_to_annual = m[:net_worth_to_annual]
     @health_score = m[:health_score]
 
-    @portfolio_total = current_user.investments.sum { |i| i.current_value }
-    total_cost = current_user.investments.sum { |i| i.total_cost }
-    @portfolio_change = @portfolio_total - total_cost
-    @portfolio_change_pct = (total_cost.present? && total_cost.to_f > 0) ? ((@portfolio_total.to_f / total_cost.to_f) - 1) * 100 : 0
+    @recent_transactions_more = current_user.transactions.recent.limit(15)
+
+    # Yeary summary (last 12 months)
+    @yearly_data = (0..11).reverse_each.map do |i|
+      date = i.months.ago.beginning_of_month
+      {
+        month: l(date, format: "%b"),
+        income: current_user.transactions.income.where(date: date..date.end_of_month).sum(:amount),
+        expense: current_user.transactions.expense.where(date: date..date.end_of_month).sum(:amount)
+      }
+    end
+
+    pm = current_user.portfolio_metrics
+    @portfolio_total = pm[:total_value]
+    @portfolio_change = pm[:change]
+    @portfolio_change_pct = pm[:change_pct]
 
     @recent_transactions = current_user.transactions.recent.map do |tx|
       {
@@ -39,8 +49,8 @@ class DashboardController < ApplicationController
 
     @goals = current_user.goals.limit(3).map do |goal|
       remaining = goal.target_amount - goal.current_amount
-      monthly_savings_est = @salary_present ? @salary * 0.1 : nil
-      estimated_months = remaining > 0 && monthly_savings_est&.positive? ? (remaining.to_f / monthly_savings_est).ceil : nil
+      monthly_savings_est = current_user.suggested_monthly_savings
+      estimated_months = remaining > 0 && monthly_savings_est > 0 ? (remaining.to_f / monthly_savings_est).ceil : nil
       {
         name: goal.name,
         icon: goal.icon,
@@ -67,6 +77,21 @@ class DashboardController < ApplicationController
     @expense_series = (29.days.ago.to_date..Date.today).map { |d| expense_data[d] || 0 }
 
     # Budget progress
+    @available_balance = current_user.accounts.where(account_type: %w[checking savings]).sum(:balance)
+    @investment_count = current_user.investments.count
+    @bills_pending = current_user.bill_reminders.this_month.where(paid: false).sum(:amount)
+    @bills_overdue_count = current_user.bill_reminders.overdue.count
+
+    # Recent trades for dashboard widget
+    @recent_trades = Trade.where(user: current_user).order(date: :desc).includes(:investment).limit(5)
+
+    # 60-day cash flow for wide screens
+    @cash_flow_labels_60 = (59.days.ago.to_date..Date.today).map { |d| d.strftime("%d/%m") }
+    income_60 = current_user.transactions.income.where(date: 59.days.ago..Date.today).group(:date).sum(:amount)
+    expense_60 = current_user.transactions.expense.where(date: 59.days.ago..Date.today).group(:date).sum(:amount)
+    @income_series_60 = (59.days.ago.to_date..Date.today).map { |d| income_60[d] || 0 }
+    @expense_series_60 = (59.days.ago.to_date..Date.today).map { |d| expense_60[d] || 0 }
+
     @month_budgets = current_user.budgets.where(month: Date.today.month, year: Date.today.year)
     @budgets_with_progress = @month_budgets.map do |b|
       {
@@ -91,7 +116,7 @@ class DashboardController < ApplicationController
 
   def health
     @page_title = "Saúde Financeira"
-    m = compute_health_metrics(current_user)
+    m = current_user.financial_health_metrics
     @salary = m[:salary]
     @salary_present = m[:salary_present]
     @monthly_income = m[:monthly_income]
@@ -116,13 +141,6 @@ class DashboardController < ApplicationController
     total_debt = current_user.debts.sum(:total_amount)
     total_debt_remaining = current_user.debts.sum { |d| d.total_remaining }
     @debt_progress = total_debt > 0 ? ((total_debt - total_debt_remaining).to_f / total_debt) * 100 : 0
-
-    score = 0
-    score += 25 if @dti && @dti <= 15; score += 20 if @dti && @dti > 15 && @dti <= 30; score += 15 if @dti && @dti > 30 && @dti <= 40
-    score += 25 if @expense_ratio && @expense_ratio <= 25; score += 20 if @expense_ratio && @expense_ratio > 25 && @expense_ratio <= 50; score += 15 if @expense_ratio && @expense_ratio > 50 && @expense_ratio <= 75
-    score += 25 if @savings_rate && @savings_rate >= 20; score += 20 if @savings_rate && @savings_rate >= 10 && @savings_rate < 20; score += 15 if @savings_rate && @savings_rate >= 0 && @savings_rate < 10
-    score += 25 if @net_worth >= 0; score += 10 if @net_worth == 0
-    @health_score = score
 
     h = ActionController::Base.helpers
     @recommendations = []
@@ -205,17 +223,32 @@ class DashboardController < ApplicationController
     @results = engine.forecast(scenario)
   end
 
+  def backup
+    @page_title = "Backup"
+
+    db_path = Rails.root.join("storage", "#{Rails.env}.sqlite3")
+    backup_name = "kitsune-backup-#{Date.today}.sqlite3"
+
+    if File.exist?(db_path)
+      send_file db_path, filename: backup_name, type: "application/octet-stream"
+    else
+      redirect_to dashboard_settings_path, alert: "Arquivo de banco de dados não encontrado."
+    end
+  end
+
   def settings
     @page_title = "Configurações"
     @user = current_user
+    @tab = %w[profile preferences dashboard integrations account].include?(params[:tab]) ? params[:tab] : "profile"
   end
 
   def update_settings
     @user = current_user
+    @tab = %w[profile preferences dashboard integrations account].include?(params[:tab]) ? params[:tab] : "profile"
     params[:user][:monthly_salary] = (params[:user][:monthly_salary].to_f * 100).to_i if params[:user][:monthly_salary].present?
     
     if @user.update(user_params)
-      redirect_to dashboard_settings_path, notice: "Configurações atualizadas com sucesso."
+      redirect_to dashboard_settings_path(tab: @tab), notice: "Configurações atualizadas com sucesso."
     else
       render :settings, status: :unprocessable_entity
     end

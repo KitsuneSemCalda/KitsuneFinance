@@ -1,5 +1,5 @@
-require 'rss'
-require 'open-uri'
+require "rss"
+require "open-uri"
 
 class NewsFeedService
   FEEDS = [

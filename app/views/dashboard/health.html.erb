@@ -12,20 +12,21 @@
 <%# ── HERO: Gauge + Score ── %>
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
   <div class="lg:col-span-1 bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6 flex flex-col items-center justify-center">
-    <div class="relative w-36 h-36 mb-4">
-      <svg class="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
+    <div class="relative w-36 h-36 mb-4 overflow-hidden">
+      <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
         <circle cx="60" cy="60" r="54" fill="none" stroke="#27272a" stroke-width="8"/>
-        <circle cx="60" cy="60" r="54" fill="none" stroke="<%= @health_score >= 70 ? '#10b981' : @health_score >= 40 ? '#f59e0b' : '#ef4444' %>" stroke-width="8"
+        <% color_hex = current_user.health_color_class == 'emerald' ? '#10b981' : (current_user.health_color_class == 'amber' ? '#f59e0b' : '#ef4444') %>
+        <circle cx="60" cy="60" r="54" fill="none" stroke="<%= color_hex %>" stroke-width="8"
           stroke-dasharray="<%= 339.292 * @health_score / 100 %> 339.292"
           stroke-linecap="round"/>
       </svg>
       <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <span class="text-4xl font-bold text-zinc-100"><%= @health_score %></span>
-        <span class="text-xs text-zinc-500 uppercase tracking-wider">/ 100</span>
+        <span class="text-3xl font-bold text-zinc-100 leading-none tabular-nums"><%= @health_score %></span>
+        <span class="text-[10px] text-zinc-500 uppercase tracking-wider">/ 100</span>
       </div>
     </div>
-    <span class="text-sm font-semibold <%= @health_score >= 70 ? 'text-emerald-400' : @health_score >= 40 ? 'text-amber-400' : 'text-red-400' %>">
-      <%= @health_score >= 70 ? 'Saudável' : @health_score >= 40 ? 'Atenção' : 'Crítico' %>
+    <span class="text-sm font-semibold text-<%= current_user.health_color_class %>-400">
+      <%= current_user.health_status_label %>
     </span>
   </div>
 

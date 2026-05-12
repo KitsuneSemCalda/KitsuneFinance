@@ -79,3 +79,5 @@ gem "axe-core-capybara", "~> 4.11", group: :test
 gem "ofx", "~> 0.3.2"
 
 gem "nkf", "~> 0.2.0"
+
+gem "rss"

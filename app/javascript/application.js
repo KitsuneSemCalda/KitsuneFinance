@@ -2,6 +2,7 @@
 import "htmx.org"
 import Alpine from "alpinejs"
 import * as Chart from "chart.js"
+import "kitsune"
 
 window.Alpine = Alpine
 window.Chart = Chart.default || Chart

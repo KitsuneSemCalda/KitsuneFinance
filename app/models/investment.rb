@@ -2,6 +2,7 @@ class Investment < ApplicationRecord
   belongs_to :user
   has_many :trades, dependent: :destroy
 
+  before_validation :infer_missing_data, on: :create
   before_validation :fetch_current_price, on: :create
 
   validates :name, presence: true
@@ -29,13 +30,21 @@ class Investment < ApplicationRecord
   end
 
   def recalculate_from_trades!
-    buy_total_qty = trades.buys.sum(:quantity)
-    sell_total_qty = trades.sells.sum(:quantity)
-    new_quantity = buy_total_qty - sell_total_qty
-    buy_total_cost = trades.buys.sum("quantity * price")
-
-    new_avg_price = buy_total_qty > 0 ? (buy_total_cost / buy_total_qty).to_i : 0
-
+    buys = trades.buys.order(:date)
+    total_qty = 0
+    total_cost = 0
+    
+    buys.each do |trade|
+      total_qty += trade.quantity
+      total_cost += (trade.quantity * trade.price)
+    end
+    
+    sells = trades.sells
+    sold_qty = sells.sum(:quantity)
+    
+    new_quantity = total_qty - sold_qty
+    new_avg_price = total_qty > 0 ? (total_cost / total_qty).to_i : 0
+    
     update!(quantity: new_quantity, avg_price: new_avg_price)
   end
 
@@ -45,6 +54,15 @@ class Investment < ApplicationRecord
   end
 
   private
+
+  def infer_missing_data
+    return if ticker.blank?
+
+    self.asset_type ||= PriceService.infer_asset_type(ticker)
+    if name.blank?
+      self.name = ticker.upcase
+    end
+  end
 
   def fetch_current_price
     return if ticker.blank?

@@ -1,45 +1,53 @@
-<div class="flex justify-between items-center mb-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
   <div>
     <h2 class="text-2xl font-bold text-zinc-100">Categorias</h2>
-    <p class="text-zinc-500 text-sm">Organize suas transações por categorias personalizadas.</p>
+    <p class="text-zinc-500 text-sm">Organize suas transações com inteligência.</p>
   </div>
-  <%= link_to new_dashboard_category_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2" do %>
-    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Nova Categoria
-  <% end %>
+  <div class="flex items-center gap-3">
+    <% if current_user.categories.any? %>
+      <%= link_to dashboard_category_categorization_rules_path(current_user.categories.first), class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-2.5 px-5 rounded-xl transition-all border border-zinc-700 flex items-center gap-2 text-xs uppercase tracking-widest" do %>
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
+        Regras
+      <% end %>
+    <% end %>
+    <%= link_to new_dashboard_category_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-5 rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2 group" do %>
+      <svg class="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Nova Categoria
+    <% end %>
+  </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-  <%# Income Categories %>
-  <div>
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-sm font-bold text-zinc-500 uppercase tracking-widest">Receitas</h3>
-      <%= link_to new_dashboard_category_path(transaction_type: 'income'), class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>
-        + Nova Categoria
-      <% end %>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+  <%# ── INCOME SECTION ── %>
+  <div class="space-y-6">
+    <div class="flex items-center justify-between px-2">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+        <h3 class="text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">Receitas</h3>
+      </div>
+      <span class="text-[10px] font-bold text-zinc-600 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md"><%= @categories.income.count %> categorias</span>
     </div>
+    
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <% @categories.income.each do |category| %>
-        <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-xl p-4 flex items-center justify-between group">
+        <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-4 flex items-center justify-between group hover:border-emerald-500/30 hover:bg-zinc-900/80 transition-all">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-<%= category.color %>-500/10 flex items-center justify-center text-lg">
+            <div class="w-10 h-10 rounded-xl bg-<%= category.color %>-500/10 border border-<%= category.color %>-500/20 flex items-center justify-center text-xl transition-transform group-hover:scale-110">
               <%= category.icon %>
             </div>
             <div>
-              <span class="text-sm font-medium text-zinc-100 block"><%= category.name %></span>
+              <span class="text-sm font-bold text-zinc-200 block"><%= category.name %></span>
               <% if category.categorization_rules.any? %>
-                <span class="text-[10px] text-zinc-500"><%= category.categorization_rules.count %> regras</span>
+                <div class="flex items-center gap-1 mt-0.5">
+                  <svg class="w-2.5 h-2.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
+                  <span class="text-[9px] font-bold text-indigo-400/80 uppercase tracking-tight"><%= category.categorization_rules.count %> automatizações</span>
+                </div>
               <% end %>
             </div>
           </div>
           <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <%= link_to edit_dashboard_category_path(category), class: "p-1 text-zinc-500 hover:text-zinc-100" do %>
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <% end %>
-            <% unless category.system_default %>
-              <%= button_to dashboard_category_path(category), method: :delete, class: "p-1 text-zinc-500 hover:text-red-400", data: { turbo_confirm: "Tem certeza?" } do %>
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <% end %>
+            <%= link_to edit_dashboard_category_path(category), class: "p-2 text-zinc-500 hover:text-zinc-100 bg-zinc-800/50 rounded-lg transition-colors" do %>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2"/></svg>
             <% end %>
           </div>
         </div>
@@ -47,36 +55,36 @@
     </div>
   </div>
 
-  <%# Expense Categories %>
-  <div>
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-sm font-bold text-zinc-500 uppercase tracking-widest">Despesas</h3>
-      <%= link_to new_dashboard_category_path(transaction_type: 'expense'), class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>
-        + Nova Categoria
-      <% end %>
+  <%# ── EXPENSE SECTION ── %>
+  <div class="space-y-6">
+    <div class="flex items-center justify-between px-2">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-red-500"></div>
+        <h3 class="text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">Despesas</h3>
+      </div>
+      <span class="text-[10px] font-bold text-zinc-600 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md"><%= @categories.expense.count %> categorias</span>
     </div>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <% @categories.expense.each do |category| %>
-        <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-xl p-4 flex items-center justify-between group">
+        <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-4 flex items-center justify-between group hover:border-red-500/30 hover:bg-zinc-900/80 transition-all">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-<%= category.color %>-500/10 flex items-center justify-center text-lg">
+            <div class="w-10 h-10 rounded-xl bg-<%= category.color %>-500/10 border border-<%= category.color %>-500/20 flex items-center justify-center text-xl transition-transform group-hover:scale-110">
               <%= category.icon %>
             </div>
             <div>
-              <span class="text-sm font-medium text-zinc-100 block"><%= category.name %></span>
+              <span class="text-sm font-bold text-zinc-200 block"><%= category.name %></span>
               <% if category.categorization_rules.any? %>
-                <span class="text-[10px] text-zinc-500"><%= category.categorization_rules.count %> regras</span>
+                <div class="flex items-center gap-1 mt-0.5">
+                  <svg class="w-2.5 h-2.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
+                  <span class="text-[9px] font-bold text-indigo-400/80 uppercase tracking-tight"><%= category.categorization_rules.count %> automatizações</span>
+                </div>
               <% end %>
             </div>
           </div>
           <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <%= link_to edit_dashboard_category_path(category), class: "p-1 text-zinc-500 hover:text-zinc-100" do %>
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <% end %>
-            <% unless category.system_default %>
-              <%= button_to dashboard_category_path(category), method: :delete, class: "p-1 text-zinc-500 hover:text-red-400", data: { turbo_confirm: "Tem certeza?" } do %>
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <% end %>
+            <%= link_to edit_dashboard_category_path(category), class: "p-2 text-zinc-500 hover:text-zinc-100 bg-zinc-800/50 rounded-lg transition-colors" do %>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2"/></svg>
             <% end %>
           </div>
         </div>

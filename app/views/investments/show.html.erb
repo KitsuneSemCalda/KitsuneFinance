@@ -1,77 +1,96 @@
-<div class="flex justify-between items-center mb-8">
-  <div>
-    <h2 class="text-2xl font-bold text-zinc-100"><%= @investment.ticker %></h2>
-    <p class="text-zinc-500 text-sm"><%= @investment.name %> · <%= @investment.asset_type.humanize %></p>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+  <div class="flex items-center gap-4">
+    <%= link_to dashboard_investments_path, class: "w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-100 hover:border-zinc-700 transition-all shadow-sm" do %>
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <% end %>
+    <div>
+      <h2 class="text-2xl font-bold text-zinc-100"><%= @investment.ticker %></h2>
+      <p class="text-zinc-500 text-sm"><%= @investment.name %> · <%= @investment.asset_type.humanize %></p>
+    </div>
   </div>
   <div class="flex gap-3">
-    <%= link_to edit_dashboard_investment_path(@investment), class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-2 px-4 rounded-xl transition-all" do %>
-      Editar
-    <% end %>
-    <%= link_to dashboard_investments_path, class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-2 px-4 rounded-xl transition-all" do %>
-      Voltar
+    <%= link_to edit_dashboard_investment_path(@investment), class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-2.5 px-5 rounded-xl transition-all border border-zinc-700 text-xs uppercase tracking-widest flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2"/></svg>
+      Editar Ativo
     <% end %>
   </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<%# ── HIGHLIGHT METRICS ── %>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
-    <span class="text-xs text-zinc-500 uppercase tracking-wider block mb-1">Quantidade</span>
-    <p class="text-2xl font-bold text-zinc-100"><%= @investment.quantity.to_i %></p>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-2">Posição Atual</span>
+    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.current_value / 100.0, unit: "R$ ") %></p>
+    <p class="text-[10px] text-zinc-500 mt-1"><%= number_with_delimiter(@investment.quantity) %> unidades acumuladas</p>
   </div>
+
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
-    <span class="text-xs text-zinc-500 uppercase tracking-wider block mb-1">P. Médio</span>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@investment.avg_price / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-2">Rentabilidade</span>
+    <div class="flex items-baseline gap-2">
+      <p class="text-2xl font-extrabold <%= @investment.gain_loss >= 0 ? 'text-emerald-400' : 'text-red-400' %> tabular-nums">
+        <%= @investment.gain_loss >= 0 ? '+' : '' %><%= number_to_percentage(@investment.gain_loss_pct, precision: 2) %>
+      </p>
+    </div>
+    <p class="text-[10px] text-zinc-500 mt-1">lucro/prejuízo sobre o custo</p>
   </div>
+
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
-    <span class="text-xs text-zinc-500 uppercase tracking-wider block mb-1">P. Atual</span>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@investment.current_price / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-2">Preço Médio</span>
+    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.avg_price / 100.0, unit: "R$ ") %></p>
+    <p class="text-[10px] text-zinc-500 mt-1">custo unitário de aquisição</p>
   </div>
+
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
-    <span class="text-xs text-zinc-500 uppercase tracking-wider block mb-1">Total</span>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@investment.current_value / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-2">Preço de Mercado</span>
+    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.current_price / 100.0, unit: "R$ ") %></p>
+    <p class="text-[10px] text-zinc-500 mt-1">cotação atual sincronizada</p>
   </div>
 </div>
 
-<div class="flex items-center justify-between mb-4">
-  <h3 class="text-lg font-semibold text-zinc-200">Operações</h3>
-  <%= link_to dashboard_investment_trades_path(@investment), class: "text-sm text-indigo-400 hover:text-indigo-300 transition-colors" do %>
-    Gerenciar Operaçōes →
-  <% end %>
-</div>
+<%# ── RECENT ACTIVITY ── %>
+<div class="space-y-4">
+  <div class="flex items-center justify-between">
+    <h3 class="text-lg font-bold text-zinc-200">Últimas Operações</h3>
+    <%= link_to dashboard_investment_trades_path(@investment), class: "text-xs font-bold text-indigo-400 uppercase tracking-widest hover:text-indigo-300" do %>
+      Gerenciar Histórico →
+    <% end %>
+  </div>
 
-<div class="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl overflow-hidden backdrop-blur-xl">
-  <table class="w-full text-left">
-    <thead>
-      <tr class="bg-zinc-900/60 border-b border-zinc-800/60">
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Data</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Tipo</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Quantidade</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Preço</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Total</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-zinc-800/60">
-      <% @trades.each do |trade| %>
-        <tr class="hover:bg-zinc-800/40 transition-colors">
-          <td class="px-6 py-4 text-sm text-zinc-100"><%= l(trade.date, format: :default) %></td>
-          <td class="px-6 py-4">
-            <span class="text-xs font-semibold <%= trade.trade_type == 'buy' ? 'text-emerald-400' : 'text-red-400' %>">
-              <%= trade.trade_type == "buy" ? "Compra" : "Venda" %>
-            </span>
-          </td>
-          <td class="px-6 py-4 text-right text-sm text-zinc-100"><%= trade.quantity.to_i %></td>
-          <td class="px-6 py-4 text-right text-sm text-zinc-100"><%= number_to_currency(trade.price / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></td>
-          <td class="px-6 py-4 text-right text-sm text-zinc-100"><%= number_to_currency(trade.quantity * trade.price / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></td>
-        </tr>
-      <% end %>
-      <% if @trades.empty? %>
-        <tr>
-          <td colspan="5" class="px-6 py-12 text-center text-zinc-600 text-sm">
-            Nenhuma operação registrada.
-            <%= link_to "Adicionar", dashboard_investment_trades_path(@investment), class: "text-indigo-400 hover:text-indigo-300" %>.
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-zinc-900/80 border-b border-zinc-800/60">
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-left">Data</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-left">Operação</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Quantidade</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Preço Unitário</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Total Financeiro</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-800/60">
+          <% @trades.limit(10).each do |trade| %>
+            <tr class="hover:bg-zinc-800/40 transition-colors">
+              <td class="px-6 py-4 text-sm text-zinc-400 tabular-nums"><%= l(trade.date, format: :default) %></td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider <%= trade.trade_type == 'buy' ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10' %>">
+                  <%= trade.trade_type == "buy" ? "Compra" : "Venda" %>
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right text-sm font-medium text-zinc-200 tabular-nums"><%= number_with_delimiter(trade.quantity) %></td>
+              <td class="px-6 py-4 text-right text-sm text-zinc-400 tabular-nums"><%= number_to_currency(trade.price / 100.0, unit: "R$ ") %></td>
+              <td class="px-6 py-4 text-right text-sm font-bold text-zinc-100 tabular-nums"><%= number_to_currency(trade.quantity * trade.price / 100.0, unit: "R$ ") %></td>
+            </tr>
+          <% end %>
+          <% if @trades.empty? %>
+            <tr>
+              <td colspan="5" class="px-6 py-12 text-center">
+                <p class="text-zinc-600 text-sm italic">Nenhuma movimentação registrada.</p>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

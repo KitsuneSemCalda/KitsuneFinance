@@ -9,6 +9,12 @@ class InvestmentsController < ApplicationController
     @total_value = @investments.sum { |i| i.current_value }
   end
 
+  def cards
+    @page_title = "Ativos em Carteira"
+    @investments = current_user.investments.includes(:trades)
+    @total_value = @investments.sum { |i| i.current_value }
+  end
+
   def show
     @trades = @investment.trades.ordered
   end
@@ -22,19 +28,6 @@ class InvestmentsController < ApplicationController
     convert_price_params
     @investment = current_user.investments.new(investment_params)
     if @investment.save
-      if @investment.quantity > 0 && @investment.trades.none?
-        buy_price = @investment.avg_price > 0 ? @investment.avg_price : @investment.current_price
-        if buy_price > 0
-          @investment.trades.create!(
-            user: current_user,
-            trade_type: :buy,
-            quantity: @investment.quantity,
-            price: buy_price,
-            date: @investment.purchased_at.presence || Date.today,
-            notes: "Compra inicial"
-          )
-        end
-      end
       redirect_to dashboard_investments_path, notice: "Investimento cadastrado com sucesso."
     else
       render :new, status: :unprocessable_entity
@@ -43,24 +36,16 @@ class InvestmentsController < ApplicationController
 
   def update
     convert_price_params
-    @investment.assign_attributes(investment_params)
-    if @investment.save
-      if @investment.quantity > 0 && @investment.trades.none?
-        buy_price = @investment.avg_price > 0 ? @investment.avg_price : @investment.current_price
-        if buy_price > 0
-          @investment.trades.create!(
-            user: current_user,
-            trade_type: :buy,
-            quantity: @investment.quantity,
-            price: buy_price,
-            date: @investment.purchased_at.presence || Date.today,
-            notes: "Compra inicial"
-          )
-        end
+    if @investment.update(investment_params)
+      respond_to do |format|
+        format.html { redirect_to dashboard_investments_path, notice: "Investimento atualizado com sucesso." }
+        format.json { render json: { investment: investment_json(@investment) }, status: :ok }
       end
-      redirect_to dashboard_investments_path, notice: "Investimento atualizado com sucesso."
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { errors: @investment.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -74,7 +59,27 @@ class InvestmentsController < ApplicationController
     redirect_to dashboard_investments_path, notice: "Atualização de preço agendada para #{@investment.name}."
   end
 
+  def refresh_all_prices
+    current_user.investments.find_each do |inv|
+      InvestmentPriceRefreshJob.perform_later(inv.id)
+    end
+    redirect_to dashboard_investments_path, notice: "Atualização de preços agendada para todos os ativos."
+  end
+
   private
+
+  def investment_json(inv)
+    {
+      id: inv.id,
+      quantity: inv.quantity,
+      avg_price: inv.avg_price,
+      current_price: inv.current_price,
+      current_value: inv.current_value,
+      total_cost: inv.total_cost,
+      gain_loss: inv.gain_loss,
+      gain_loss_pct: inv.gain_loss_pct
+    }
+  end
 
   def set_investment
     @investment = current_user.investments.find(params[:id])

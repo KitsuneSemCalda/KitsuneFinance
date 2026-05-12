@@ -21,6 +21,8 @@ class GoalsController < ApplicationController
   end
 
   def create
+    params[:goal][:target_amount] = (params[:goal][:target_amount].to_f * 100).to_i if params[:goal][:target_amount].present?
+    params[:goal][:current_amount] = (params[:goal][:current_amount].to_f * 100).to_i if params[:goal][:current_amount].present?
     @goal = current_user.goals.new(goal_params)
     if @goal.save
       redirect_to dashboard_goals_path, notice: "Meta criada com sucesso."
@@ -34,6 +36,8 @@ class GoalsController < ApplicationController
   end
 
   def update
+    params[:goal][:target_amount] = (params[:goal][:target_amount].to_f * 100).to_i if params[:goal][:target_amount].present?
+    params[:goal][:current_amount] = (params[:goal][:current_amount].to_f * 100).to_i if params[:goal][:current_amount].present?
     if @goal.update(goal_params)
       redirect_to dashboard_goals_path, notice: "Meta atualizada com sucesso."
     else
@@ -47,7 +51,7 @@ class GoalsController < ApplicationController
   end
 
   def contribute
-    amount = params[:amount].to_f
+    amount = (params[:amount].to_f * 100).to_i
     account = current_user.accounts.find_by(id: params[:account_id]) || current_user.accounts.first
 
     if amount > 0 && account

@@ -38,6 +38,11 @@ production:
     queue: default
     schedule: every day at 2:30am
 
+  process_debt_payments:
+    class: ProcessDebtPaymentsJob
+    queue: default
+    schedule: every day at 3am
+
   check_holidays:
     class: CheckHolidaysJob
     queue: default
@@ -82,6 +87,11 @@ development:
     class: GoalStatusCheckJob
     queue: default
     schedule: every day at 2:30am
+
+  process_debt_payments:
+    class: ProcessDebtPaymentsJob
+    queue: default
+    schedule: every day at 3am
 
   check_holidays:
     class: CheckHolidaysJob

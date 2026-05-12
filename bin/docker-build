@@ -10,4 +10,4 @@ echo "🚀 Iniciando build da imagem docker..."
 docker build -t kitsune_finance .
 
 echo "✅ Build concluído com sucesso!"
-echo "Para executar, utilize: docker run -d --name kitsune_finance -p 13522:80 -v ~/.local/share/KitsuneFinance:/rails/storage --restart unless-stopped kitsune_finance:latest"
+echo "Para executar, utilize: docker run -d --name kitsune_finance -p 13522:80 -v \$(pwd)/storage:/rails/storage --restart unless-stopped kitsune_finance:latest"

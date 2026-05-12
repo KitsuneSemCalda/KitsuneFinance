@@ -13,6 +13,27 @@ class PriceService
 
   # ── Public API ──────────────────────────────────────────────────
 
+  def self.infer_asset_type(ticker)
+    return "other" if ticker.blank?
+    ticker = ticker.upcase.strip
+
+    case
+    when ticker.match?(/\A[A-Z]{4}[3456]\z/)
+      "stock_br"
+    when ticker.match?(/\A[A-Z]{4}11\z/)
+      # Can be FII or ETF/BDR, but FII is most common in this context
+      "fii"
+    when %w[BTC ETH SOL ADA DOT DOGE XRP LINK LTC].include?(ticker) || ticker.match?(/(BTC|ETH|USD)\z/)
+      "crypto"
+    when ticker.match?(/\A[A-Z]{2,4}\z/) && !ticker.match?(/\d/)
+      "international" # US stocks usually 2-4 letters, no numbers
+    when ticker.downcase.start_with?("tesouro")
+      "treasury_br"
+    else
+      "other"
+    end
+  end
+
   def self.fetch_price(ticker, asset_type, brapi_token = nil, price_feed_url: nil)
     return nil if ticker.blank?
 

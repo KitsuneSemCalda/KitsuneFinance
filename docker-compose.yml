@@ -7,4 +7,9 @@ services:
     environment:
       - RAILS_ENV=development
     volumes:
-      - ~/.local/share/KitsuneFinance:/rails/storage
+      - ./storage:/rails/storage
+      - ./app:/rails/app
+      - ./config:/rails/config
+      - ./db:/rails/db
+      - ./lib:/rails/lib
+      - ./bin:/rails/bin

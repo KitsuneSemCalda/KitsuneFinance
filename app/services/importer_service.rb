@@ -82,13 +82,24 @@ class ImporterService
       category: category
     )
   end
+def self.auto_categorize(description, user)
+  # 1. Try user-defined custom rules (Highest priority)
+  custom_category = CategorizationRule.match(description, user)
+  return custom_category if custom_category
 
-  def self.auto_categorize(description, user)
-    # 1. Try user-defined custom rules (Highest priority)
-    custom_category = CategorizationRule.match(description, user)
-    return custom_category if custom_category
+  # 2. Check for Investment Income (Dividends/JCP)
+  # Look for descriptions like "DIVIDENDOS PETR4" or "JCP VALE3"
+  desc_up = description.upcase
+  if desc_up.include?("DIVIDENDO") || desc_up.include?("PROVENTO") || desc_up.include?("JCP") || desc_up.include?("RENDIMENTO")
+    # Check if any user ticker is in the description
+    ticker_match = user.investments.pluck(:ticker).find { |t| desc_up.include?(t.upcase) }
+    if ticker_match
+      return user.categories.find_or_create_by!(name: "Investimentos", transaction_type: "income")
+    end
+  end
 
-    # 2. Try to extract CNPJ from description
+  # 3. Try to extract CNPJ from description
+...
     cnpj_match = description.match(/\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}/)
     if cnpj_match
       company_data = BrasilApiService.fetch_company_data(cnpj_match[0])

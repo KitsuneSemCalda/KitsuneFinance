@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
   create_table "accounts", force: :cascade do |t|
     t.string "account_type", default: "checking", null: false
     t.integer "balance", default: 0
@@ -26,6 +26,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "balance_snapshots", force: :cascade do |t|
     t.integer "balance", default: 0
     t.datetime "created_at", null: false
@@ -37,6 +65,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
     t.integer "user_id", null: false
     t.index ["user_id", "snapshot_date"], name: "index_balance_snapshots_on_user_id_and_snapshot_date", unique: true
     t.index ["user_id"], name: "index_balance_snapshots_on_user_id"
+  end
+
+  create_table "bill_reminders", force: :cascade do |t|
+    t.integer "amount", default: 0
+    t.integer "category_id"
+    t.string "color", default: "indigo"
+    t.datetime "created_at", null: false
+    t.date "due_date", null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.boolean "paid", default: false
+    t.string "recurrence_period"
+    t.boolean "recurrent", default: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["category_id"], name: "index_bill_reminders_on_category_id"
+    t.index ["user_id"], name: "index_bill_reminders_on_user_id"
   end
 
   create_table "budgets", force: :cascade do |t|
@@ -73,6 +118,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["category_id"], name: "index_categorization_rules_on_category_id"
+    t.index ["keyword"], name: "index_categorization_rules_on_keyword"
     t.index ["user_id"], name: "index_categorization_rules_on_user_id"
   end
 
@@ -155,6 +201,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
     t.datetime "created_at", null: false
     t.date "date", null: false
     t.string "description", null: false
+    t.integer "destination_account_id"
     t.integer "goal_id"
     t.integer "installment_number"
     t.text "notes"
@@ -167,7 +214,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
     t.integer "user_id", null: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["category_id"], name: "index_transactions_on_category_id"
+    t.index ["destination_account_id"], name: "index_transactions_on_destination_account_id"
     t.index ["goal_id"], name: "index_transactions_on_goal_id"
+    t.index ["parent_transaction_id"], name: "index_transactions_on_parent_transaction_id"
     t.index ["user_id", "date"], name: "index_transactions_on_user_id_and_date"
     t.index ["user_id", "transaction_type"], name: "index_transactions_on_user_id_and_transaction_type"
     t.index ["user_id"], name: "index_transactions_on_user_id"
@@ -191,7 +240,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
   end
 
   add_foreign_key "accounts", "users"
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "balance_snapshots", "users"
+  add_foreign_key "bill_reminders", "users"
   add_foreign_key "budgets", "categories"
   add_foreign_key "budgets", "users"
   add_foreign_key "categories", "users"
@@ -204,6 +256,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_044005) do
   add_foreign_key "trades", "investments"
   add_foreign_key "trades", "users"
   add_foreign_key "transactions", "accounts"
+  add_foreign_key "transactions", "accounts", column: "destination_account_id"
   add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "goals"
   add_foreign_key "transactions", "users"
