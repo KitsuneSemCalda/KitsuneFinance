@@ -8,4 +8,4 @@ services:
       - RAILS_ENV=development
       - DATABASE_PATH=/rails/data/development.sqlite3
     volumes:
-      - ~/kitsune_finance_data:/rails/data
+      - ~/.local/share/KitsuneFinance:/rails/data

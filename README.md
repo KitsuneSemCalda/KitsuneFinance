@@ -24,11 +24,10 @@ A forma oficial de rodar o Kitsune Finance é utilizando Docker.
 
    ```bash
    docker run -d --name kitsune_finance -p 13522:80 \
-     -v ~/.local/share/KitsuneFinance/db:/rails/db \
+     -v ~/.local/share/KitsuneFinance:/rails/data \
      --restart unless-stopped \
      kitsune_finance:latest
    ```
-
 
 ## Visão Geral
 
