@@ -36,7 +36,7 @@ Rails.application.routes.draw do
       end
     end
     resources :bill_reminders, except: :show
-    resources :goals do
+    resources :goals, except: :show do
       member do
         patch :contribute
       end

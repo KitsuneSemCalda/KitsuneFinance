@@ -63,3 +63,55 @@
     transform: translateY(0);
   }
 }
+
+/*
+  Safelist: classes dynamically constructed via ERB string interpolation.
+  The JIT scanner cannot detect these at build time.
+*/
+.bg-indigo-500, .bg-emerald-500, .bg-sky-500, .bg-amber-500, .bg-rose-500, .bg-purple-500,
+.bg-orange-500, .bg-red-500, .bg-zinc-500, .bg-teal-500 {
+  @apply hidden;
+}
+.bg-indigo-500\/5, .bg-emerald-500\/5, .bg-sky-500\/5, .bg-amber-500\/5, .bg-rose-500\/5, .bg-purple-500\/5,
+.bg-orange-500\/5, .bg-red-500\/5, .bg-zinc-500\/5, .bg-teal-500\/5 {
+  @apply hidden;
+}
+.bg-indigo-500\/10, .bg-emerald-500\/10, .bg-sky-500\/10, .bg-amber-500\/10, .bg-rose-500\/10, .bg-purple-500\/10,
+.bg-orange-500\/10, .bg-red-500\/10, .bg-zinc-500\/10, .bg-teal-500\/10 {
+  @apply hidden;
+}
+.border-indigo-500\/20, .border-emerald-500\/20, .border-sky-500\/20, .border-amber-500\/20, .border-rose-500\/20, .border-purple-500\/20,
+.border-orange-500\/20, .border-red-500\/20, .border-zinc-500\/20, .border-teal-500\/20 {
+  @apply hidden;
+}
+.border-indigo-500\/30, .border-emerald-500\/30, .border-sky-500\/30, .border-amber-500\/30, .border-rose-500\/30, .border-purple-500\/30,
+.border-orange-500\/30, .border-red-500\/30, .border-zinc-500\/30, .border-teal-500\/30 {
+  @apply hidden;
+}
+.text-indigo-400, .text-emerald-400, .text-sky-400, .text-amber-400, .text-rose-400, .text-purple-400,
+.text-orange-400, .text-red-400, .text-zinc-400, .text-teal-400 {
+  @apply hidden;
+}
+.hover\:border-indigo-500\/30, .hover\:border-emerald-500\/30, .hover\:border-sky-500\/30, .hover\:border-amber-500\/30,
+.hover\:border-rose-500\/30, .hover\:border-purple-500\/30, .hover\:border-orange-500\/30, .hover\:border-red-500\/30,
+.hover\:border-zinc-500\/30, .hover\:border-teal-500\/30 {
+  @apply hidden;
+}
+.peer-checked\:border-indigo-500, .peer-checked\:border-emerald-500, .peer-checked\:border-sky-500,
+.peer-checked\:border-amber-500, .peer-checked\:border-rose-500, .peer-checked\:border-purple-500,
+.peer-checked\:border-orange-500, .peer-checked\:border-red-500, .peer-checked\:border-zinc-500,
+.peer-checked\:border-teal-500 {
+  @apply hidden;
+}
+.peer-checked\:bg-indigo-500\/10, .peer-checked\:bg-emerald-500\/10, .peer-checked\:bg-sky-500\/10,
+.peer-checked\:bg-amber-500\/10, .peer-checked\:bg-rose-500\/10, .peer-checked\:bg-purple-500\/10,
+.peer-checked\:bg-orange-500\/10, .peer-checked\:bg-red-500\/10, .peer-checked\:bg-zinc-500\/10,
+.peer-checked\:bg-teal-500\/10 {
+  @apply hidden;
+}
+.peer-checked\:text-indigo-400, .peer-checked\:text-emerald-400, .peer-checked\:text-sky-400,
+.peer-checked\:text-amber-400, .peer-checked\:text-rose-400, .peer-checked\:text-purple-400,
+.peer-checked\:text-orange-400, .peer-checked\:text-red-400, .peer-checked\:text-zinc-400,
+.peer-checked\:text-teal-400 {
+  @apply hidden;
+}

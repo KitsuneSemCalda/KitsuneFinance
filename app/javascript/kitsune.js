@@ -435,7 +435,7 @@ const Kitsune = {
   applyLightTheme() {
     $("html").addClass("light-theme")
     $("body").css({
-      "background-color": "#f4f4f5",
+      "background-color": "#fafafa",
       color: "#18181b"
     })
     $("#theme-toggle-btn").html(`

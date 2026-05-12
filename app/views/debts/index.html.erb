@@ -1,13 +1,4 @@
-<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-  <div>
-    <h2 class="text-2xl font-bold text-zinc-100">Minhas Dívidas</h2>
-    <p class="text-zinc-500 text-sm">Gerencie seus compromissos e planeje a quitação.</p>
-  </div>
-  <%= link_to new_dashboard_debt_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-5 rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2 text-xs uppercase tracking-widest" do %>
-    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Nova Dívida
-  <% end %>
-</div>
+<%= render "shared/page_header", title: "Minhas Dívidas", subtitle: "Gerencie seus compromissos e planeje a quitação.", action: "Nova Dívida", action_path: new_dashboard_debt_path %>
 
 <div class="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl overflow-hidden backdrop-blur-xl">
   <div class="overflow-x-auto">

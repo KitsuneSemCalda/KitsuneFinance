@@ -19,6 +19,10 @@ class InvestmentsController < ApplicationController
     @trades = @investment.trades.ordered
   end
 
+  def edit
+    @page_title = "Editar Investimento"
+  end
+
   def new
     @page_title = "Novo Investimento"
     @investment = current_user.investments.new

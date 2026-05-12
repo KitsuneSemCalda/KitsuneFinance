@@ -1,0 +1,113 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  <div class="flex items-center justify-between">
+    <%= link_to dashboard_budgets_path(month: @budget.month, year: @budget.year), class: "flex items-center gap-2 text-zinc-500 hover:text-zinc-300 text-sm font-medium transition-colors" do %>
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke-width="2"/></svg>
+      Voltar ao Orçamento
+    <% end %>
+    <div class="flex gap-2">
+      <%= link_to edit_dashboard_budget_path(@budget), class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-2 px-4 rounded-xl border border-zinc-700 transition-all text-xs uppercase tracking-widest" do %>
+        Editar
+      <% end %>
+      <%= button_to dashboard_budget_path(@budget), method: :delete, class: "text-red-500/60 hover:text-red-400 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors", data: { turbo_confirm: "Excluir este orçamento?" } do %>
+        Excluir
+      <% end %>
+    </div>
+  </div>
+
+  <%= render "shared/section_header", title: @page_title %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+      <%= render layout: "shared/card", locals: { class: "bg-zinc-900/60 shadow-2xl" } do %>
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-14 h-14 rounded-2xl bg-<%= @budget.category.color %>-500/10 border border-<%= @budget.category.color %>-500/20 flex items-center justify-center text-3xl">
+            <%= @budget.category.icon %>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-zinc-100"><%= @budget.category.name %></h3>
+            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest"><%= t("date.month_names")[@budget.month] %> <%= @budget.year %></span>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <div class="flex justify-between items-end mb-2.5">
+            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.15em]">Consumo do Limite</span>
+            <span class="text-2xl font-black tabular-nums <%= @budget.over_budget? ? 'text-red-400' : 'text-emerald-400' %>">
+              <%= number_to_percentage(@budget.progress_pct, precision: 1) %>
+            </span>
+          </div>
+          <div class="h-3 bg-zinc-950 rounded-full overflow-hidden border border-zinc-800/50 p-0.5">
+            <div class="h-full rounded-full transition-all duration-1000 bg-gradient-to-r <%= @budget.over_budget? ? 'from-red-600 to-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.3)]' : 'from-indigo-600 to-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.3)]' %>" style="width: <%= @budget.progress_pct %>%"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 pt-4 border-t border-zinc-800/60">
+          <div>
+            <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Gasto Atual</span>
+            <p class="text-xl font-black text-zinc-100 tabular-nums"><%= number_to_currency(@budget.spent_amount / 100.0, unit: "R$ ") %></p>
+          </div>
+          <div>
+            <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Limite</span>
+            <p class="text-xl font-bold text-zinc-400 tabular-nums"><%= number_to_currency(@budget.limit_amount / 100.0, unit: "R$ ") %></p>
+          </div>
+          <div>
+            <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Restante</span>
+            <p class="text-xl font-black tabular-nums <%= @budget.over_budget? ? 'text-red-400' : 'text-emerald-400' %>">
+              <%= number_to_currency(@budget.remaining_amount / 100.0, unit: "R$ ") %>
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div>
+      <%= render layout: "shared/card", locals: { class: "bg-zinc-900/40" } do %>
+        <h4 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Resumo</h4>
+        <div class="space-y-4 text-sm">
+          <div class="flex justify-between">
+            <span class="text-zinc-500">Dias no mês</span>
+            <span class="text-zinc-300 font-bold"><%= Date.new(@budget.year, @budget.month, -1).day %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-zinc-500">Média diária</span>
+            <span class="text-zinc-300 font-bold"><%= number_to_currency((@budget.spent_amount.to_f / [Date.today.day, 1].max) / 100.0, unit: "R$ ") %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-zinc-500">Projeção mensal</span>
+            <span class="text-zinc-300 font-bold"><%= number_to_currency((@budget.spent_amount.to_f / [Date.today.day, 1].max * Date.new(@budget.year, @budget.month, -1).day) / 100.0, unit: "R$ ") %></span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <div class="flex items-center justify-between mb-4 px-2">
+      <h3 class="text-sm font-semibold text-zinc-200">Transações da Categoria</h3>
+      <%= link_to dashboard_transactions_path(category_id: @budget.category_id, month: @budget.month, year: @budget.year), class: "text-xs text-indigo-400 hover:text-indigo-300 transition-colors" do %>
+        Ver todas →
+      <% end %>
+    </div>
+
+    <% if @transactions.any? %>
+      <div class="space-y-1">
+        <% @transactions.each do |tx| %>
+          <div class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-zinc-800/40 transition-colors group">
+            <span class="text-lg shrink-0"><%= @budget.category.icon %></span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-200 truncate"><%= tx.description %></p>
+              <p class="text-xs text-zinc-500"><%= tx.date.strftime("%d %b") %></p>
+            </div>
+            <span class="text-sm font-semibold shrink-0 text-red-400">
+              <%= number_to_currency(tx.amount.abs / 100.0, unit: "R$ ") %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="py-12 text-center bg-zinc-900/20 border-2 border-dashed border-zinc-800 rounded-3xl">
+        <p class="text-zinc-500 text-sm">Nenhuma transação nesta categoria para o período.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
