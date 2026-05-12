@@ -2,7 +2,15 @@
 
 # If running the rails server, prepare the database
 if [[ "${@}" =~ "bin/rails" && "${@}" =~ "server" ]]; then
+  echo "== Preparing database =="
+  # Ensure the storage directory exists and is writable
+  mkdir -p storage
+  
+  # Run db:prepare to handle migrations and schema loading
   ./bin/rails db:prepare
+  
+  # Double check if migrations are up, just in case db:prepare was skipped or failed silently
+  ./bin/rails db:migrate
 fi
 
 exec "${@}"
