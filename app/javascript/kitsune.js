@@ -3,7 +3,7 @@ import jQuery from "jquery"
 const $ = jQuery
 window.$ = window.jQuery = $
 
-$(document).on("turbo:load", function () {
+$(function () {
   Kitsune.init()
 })
 

@@ -20,8 +20,8 @@ fi
 echo "🚀 Iniciando container..."
 docker run -d --name kitsune_finance -p 13522:80 \
   -v "$(pwd)/storage:/rails/storage" \
-  -e RAILS_ENV=production \
-  -e RAILS_MASTER_KEY="${RAILS_MASTER_KEY}" \
+  ${RAILS_ENV:+-e RAILS_ENV="${RAILS_ENV}"} \
+  ${RAILS_MASTER_KEY:+-e RAILS_MASTER_KEY="${RAILS_MASTER_KEY}"} \
   -e RAILS_RELATIVE_URL_ROOT="${RAILS_RELATIVE_URL_ROOT:-}" \
   -e APP_HOST="${APP_HOST:-localhost}" \
   --restart unless-stopped \
