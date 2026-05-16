@@ -24,6 +24,10 @@ Rails.application.configure do
   # Support subpath deployment (e.g. https://example.com/kitsune/)
   config.action_controller.relative_url_root = ENV["RAILS_RELATIVE_URL_ROOT"].presence
 
+  # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
+  # In Docker, we usually want Rails to serve them if no proxy is in front.
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 

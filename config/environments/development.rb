@@ -3,6 +3,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Support subpath deployment (e.g. https://example.com/kitsune/)
+  config.action_controller.relative_url_root = ENV["RAILS_RELATIVE_URL_ROOT"].presence
+
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true
 

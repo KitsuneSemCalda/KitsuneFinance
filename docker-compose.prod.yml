@@ -7,11 +7,11 @@ services:
     environment:
       - RAILS_ENV=production
       - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - RAILS_RELATIVE_URL_ROOT=${RAILS_RELATIVE_URL_ROOT:-}
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_TO_STDOUT=true
       - APP_HOST=${APP_HOST:-localhost}
     volumes:
-      - kitsune_data:/rails/storage
+      - ./storage:/rails/storage
     restart: unless-stopped
-
-volumes:
-  kitsune_data:

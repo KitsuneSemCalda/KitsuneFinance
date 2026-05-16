@@ -6,6 +6,8 @@ services:
       - "13522:80"
     environment:
       - RAILS_ENV=development
+    stdin_open: true
+    tty: true
     volumes:
       - ./storage:/rails/storage
       - ./app:/rails/app

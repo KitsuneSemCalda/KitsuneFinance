@@ -12,22 +12,30 @@ Kitsune Finance é uma plataforma de gestão financeira pessoal focada em contro
 
 ## Como rodar o projeto
 
-A forma oficial de rodar o Kitsune Finance é utilizando Docker.
+A forma recomendada de rodar o Kitsune Finance é utilizando Docker Compose.
 
-1. **Build da imagem:**
+### 1. Preparação
 
-   ```bash
-   ./bin/docker-build
-   ```
+Crie um arquivo `.env` com as configurações básicas (opcional):
+```bash
+RAILS_MASTER_KEY=sua_chave_mestra # Ou use SECRET_KEY_BASE
+RAILS_RELATIVE_URL_ROOT=/kitsune   # Se for rodar em subpath
+```
 
-2. **Execução:**
+### 2. Execução
 
-   ```bash
-   docker run -d --name kitsune_finance -p 13522:80 \
-     -v $(pwd)/storage:/rails/storage \
-     --restart unless-stopped \
-     kitsune_finance:latest
-   ```
+Para rodar em modo produção (auto-hospedagem):
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+O sistema estará disponível em `http://localhost:13522`.
+
+### 3. Scripts Utilitários
+
+- `./bin/docker-build --prod`: Atalho para buildar e iniciar em produção.
+- `./bin/docker-dev`: Para ambiente de desenvolvimento.
 
 ## Visão Geral
 
