@@ -21,6 +21,24 @@ class CategorizationSuggestionsController < ApplicationController
     end
   end
 
+  def show
+    redirect_to edit_dashboard_categorization_suggestion_path(params[:id])
+  end
+
+  def edit
+    @page_title = "Editar Regra"
+    @suggestion = current_user.categorization_suggestions.find(params[:id])
+  end
+
+  def update
+    @suggestion = current_user.categorization_suggestions.find(params[:id])
+    if @suggestion.update(suggestion_params)
+      redirect_to dashboard_categorization_suggestions_path, notice: "Regra atualizada com sucesso."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @suggestion = current_user.categorization_suggestions.find(params[:id])
     @suggestion.destroy

@@ -21,6 +21,9 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
+  # Support subpath deployment (e.g. https://example.com/kitsune/)
+  config.action_controller.relative_url_root = ENV["RAILS_RELATIVE_URL_ROOT"].presence
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 

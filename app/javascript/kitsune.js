@@ -8,6 +8,12 @@ $(document).on("turbo:load", function () {
 })
 
 const Kitsune = {
+  // Retorna o base URL para deploy em subpath (ex: /kitsune)
+  baseUrl() {
+    const meta = document.querySelector('meta[name="kitsune-base-url"]')
+    return meta ? meta.getAttribute('content') : ''
+  },
+
   init() {
     this.quickTransaction()
     this.transactionFilters()
@@ -138,14 +144,14 @@ const Kitsune = {
 
     $("body").append(modal)
 
-    $.get("/dashboard/accounts.json", function (accounts) {
+    $.get(Kitsune.baseUrl() + "/dashboard/accounts.json", function (accounts) {
       const sel = modal.find('select[name="transaction[account_id]"]')
       accounts.forEach(function (a) {
         sel.append(`<option value="${a.id}">${a.name}</option>`)
       })
     })
 
-    $.get("/dashboard/categories.json", function (categories) {
+    $.get(Kitsune.baseUrl() + "/dashboard/categories.json", function (categories) {
       const sel = modal.find('select[name="transaction[category_id]"]')
       categories.forEach(function (c) {
         sel.append(`<option value="${c.id}">${c.icon} ${c.name}</option>`)
@@ -161,7 +167,7 @@ const Kitsune = {
       const data = form.serialize()
 
       $.ajax({
-        url: "/dashboard/transactions",
+        url: Kitsune.baseUrl() + "/dashboard/transactions",
         method: "POST",
         data: data,
         success() {
@@ -307,13 +313,14 @@ const Kitsune = {
   bottomNav() {
     if ($("#bottom-nav").length) return
 
+    const base = this.baseUrl()
     const currentPath = window.location.pathname
     const links = [
-      { href: "/dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", label: "Visão Geral" },
-      { href: "/dashboard/transactions", icon: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4", label: "Transações" },
-      { href: "/dashboard/accounts", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z", label: "Contas" },
-      { href: "/dashboard/budgets", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z", label: "Orçamento" },
-      { href: "/dashboard/goals", icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z", label: "Metas" }
+      { href: base + "/dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", label: "Visão Geral" },
+      { href: base + "/dashboard/transactions", icon: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4", label: "Transações" },
+      { href: base + "/dashboard/accounts", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z", label: "Contas" },
+      { href: base + "/dashboard/budgets", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z", label: "Orçamento" },
+      { href: base + "/dashboard/goals", icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z", label: "Metas" }
     ]
 
     const nav = $(
@@ -325,7 +332,7 @@ const Kitsune = {
           ${links.map(l => `
             <a href="${l.href}"
                class="flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all
-                      ${currentPath === l.href || currentPath.startsWith(l.href + '/') || (l.href === '/dashboard' && currentPath === '/dashboard')
+                      ${currentPath === l.href || currentPath.startsWith(l.href + '/') || (l.href === base + '/dashboard' && currentPath === base + '/dashboard')
                         ? 'text-indigo-400'
                         : 'text-zinc-500 hover:text-zinc-300'}">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -349,7 +356,7 @@ const Kitsune = {
     $(document).on("click", ".tx-duplicate-btn", function () {
       const tx = $(this).closest("[data-tx-id]")
       const id = tx.data("tx-id")
-      window.location.href = `/dashboard/transactions/new?duplicate_from=${id}`
+      window.location.href = Kitsune.baseUrl() + `/dashboard/transactions/new?duplicate_from=${id}`
     })
   },
 
@@ -382,7 +389,7 @@ const Kitsune = {
           break
         case "h":
           if (e.ctrlKey || e.metaKey) break
-          window.location.href = "/dashboard/health"
+          window.location.href = Kitsune.baseUrl() + "/dashboard/health"
           break
       }
     })
@@ -476,7 +483,7 @@ const Kitsune = {
       const id = $(this).data("bill-id")
       const paid = $(this).prop("checked")
       $.ajax({
-        url: `/dashboard/bill_reminders/${id}`,
+        url: Kitsune.baseUrl() + `/dashboard/bill_reminders/${id}`,
         method: "PATCH",
         data: { bill_reminder: { paid: paid } },
         success() {
@@ -564,7 +571,7 @@ const Kitsune = {
         data.investment[field] = newVal
 
         $.ajax({
-          url: "/dashboard/investments/" + invId,
+          url: Kitsune.baseUrl() + "/dashboard/investments/" + invId,
           method: "PATCH",
           data: data,
           success(resp) {
@@ -659,7 +666,7 @@ const Kitsune = {
         btn.text("Salvando...").prop("disabled", true)
 
         $.ajax({
-          url: "/dashboard/investments/" + invId + "/trades",
+          url: Kitsune.baseUrl() + "/dashboard/investments/" + invId + "/trades",
           method: "POST",
           data: form.serialize(),
           success(resp) {
@@ -721,15 +728,15 @@ const Kitsune = {
           </div>
           <div class="px-4 pb-4 space-y-1">
             <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-600 px-1 mb-2">Atalhos</p>
-            <a href="/dashboard/transactions" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-800/60 transition-colors text-zinc-400 hover:text-zinc-100">
+            <a href="${Kitsune.baseUrl()}/dashboard/transactions" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-800/60 transition-colors text-zinc-400 hover:text-zinc-100">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
               <span class="text-sm">Ver todas as transações</span>
             </a>
-            <a href="/dashboard/investments" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-800/60 transition-colors text-zinc-400 hover:text-zinc-100">
+            <a href="${Kitsune.baseUrl()}/dashboard/investments" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-800/60 transition-colors text-zinc-400 hover:text-zinc-100">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
               <span class="text-sm">Ir para investimentos</span>
             </a>
-            <a href="/dashboard/accounts" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-800/60 transition-colors text-zinc-400 hover:text-zinc-100">
+            <a href="${Kitsune.baseUrl()}/dashboard/accounts" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-800/60 transition-colors text-zinc-400 hover:text-zinc-100">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
               <span class="text-sm">Ver contas</span>
             </a>
@@ -744,7 +751,7 @@ const Kitsune = {
     $("#search-input").on("keydown", function (e) {
       if (e.key === "Enter") {
         const q = $(this).val().trim()
-        if (q) window.location.href = "/dashboard/transactions?search=" + encodeURIComponent(q)
+        if (q) window.location.href = Kitsune.baseUrl() + "/dashboard/transactions?search=" + encodeURIComponent(q)
       }
     })
   },
