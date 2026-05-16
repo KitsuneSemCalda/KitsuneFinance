@@ -1,13 +1,23 @@
 class BudgetsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_budget, only: %i[edit update destroy]
+  before_action :set_budget, only: %i[show edit update destroy]
   layout "dashboard"
 
   def index
     @page_title = "Orçamento"
     @month = params[:month]&.to_i || Date.today.month
     @year = params[:year]&.to_i || Date.today.year
-    @budgets = current_user.budgets.where(month: @month, year: @year)
+    @budgets = current_user.budgets.where(month: @month, year: @year).includes(:category)
+  end
+
+  def show
+    @page_title = "#{@budget.category.name} — #{t("date.month_names")[@budget.month]} #{@budget.year}"
+    @transactions = current_user.transactions
+      .expense
+      .where(category_id: @budget.category_id)
+      .where(date: Date.new(@budget.year, @budget.month, 1)..Date.new(@budget.year, @budget.month, -1))
+      .order(date: :desc)
+      .limit(20)
   end
 
   def new

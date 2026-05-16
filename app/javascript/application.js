@@ -1,15 +1,8 @@
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
-import "htmx.org"
 import Alpine from "alpinejs"
 import * as Chart from "chart.js"
+import "kitsune"
 
 window.Alpine = Alpine
-window.Chart = Chart.default || Chart
+window.Chart = Chart.default || Chart.Chart || Chart
 Alpine.start()
-
-document.addEventListener("turbo:load", () => {
-  if (!window.Alpine.initialized) {
-    window.Alpine.start()
-    window.Alpine.initialized = true
-  }
-})

@@ -1,0 +1,14 @@
+<div class="space-y-3">
+  <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1"><%= label %></label>
+  <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+    <% colors.each do |color_label, color_value| %>
+      <label class="cursor-pointer group">
+        <%= f.radio_button field, color_value, class: "peer sr-only" %>
+        <div class="flex flex-col items-center gap-2 p-3 rounded-2xl border border-zinc-800 bg-zinc-950/50 peer-checked:border-<%= color_value %>-500 peer-checked:bg-<%= color_value %>-500/10 transition-all hover:border-zinc-700">
+          <div class="w-6 h-6 rounded-full bg-<%= color_value %>-500 shadow-[0_0_10px_rgba(var(--tw-color-<%= color_value %>-500),0.2)]"></div>
+          <span class="text-[9px] font-bold text-zinc-500 peer-checked:text-<%= color_value %>-400 uppercase tracking-tighter"><%= color_label %></span>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

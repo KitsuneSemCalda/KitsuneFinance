@@ -1,0 +1,9 @@
+one:
+  keyword: "UBER"
+  category: one
+  user: one
+
+two:
+  keyword: "IFOOD"
+  category: two
+  user: two

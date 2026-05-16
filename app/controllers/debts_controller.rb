@@ -12,6 +12,7 @@ class DebtsController < ApplicationController
   end
 
   def create
+    convert_to_cents(:total_amount, :monthly_payment)
     @debt = current_user.debts.new(debt_params)
     if @debt.save
       redirect_to dashboard_debts_path, notice: "Dívida cadastrada com sucesso."
@@ -23,6 +24,7 @@ class DebtsController < ApplicationController
   def edit; end
 
   def update
+    convert_to_cents(:total_amount, :monthly_payment)
     if @debt.update(debt_params)
       redirect_to dashboard_debts_path, notice: "Dívida atualizada."
     else

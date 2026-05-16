@@ -1,0 +1,17 @@
+one:
+  user: one
+  account: one
+  category: one
+  description: "Supermercado"
+  amount: 25000
+  transaction_type: "expense"
+  date: 2026-05-01
+
+two:
+  user: one
+  account: one
+  category: two
+  description: "Salário"
+  amount: 500000
+  transaction_type: "income"
+  date: 2026-05-05

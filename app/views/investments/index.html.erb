@@ -1,79 +1,281 @@
-<div class="flex justify-between items-center mb-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
   <div>
     <h2 class="text-2xl font-bold text-zinc-100">Investimentos</h2>
-    <p class="text-zinc-500 text-sm">Acompanhe seu portfólio de ativos.</p>
+    <p class="text-zinc-500 text-sm">Acompanhe seu portfólio de ativos e rentabilidade.</p>
   </div>
-  <div class="flex gap-4">
-    <%= link_to new_dashboard_investment_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2" do %>
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="flex gap-3">
+    <%= button_to refresh_all_prices_dashboard_investments_path, method: :post, class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-2.5 px-5 rounded-xl transition-all flex items-center gap-2 group border border-zinc-700/50" do %>
+      <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Atualizar Preços
+    <% end %>
+    <%= link_to new_dashboard_investment_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-5 rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2 group" do %>
+      <svg class="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Novo Ativo
     <% end %>
   </div>
 </div>
 
-<%# Summary Cards %>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
-    <span class="text-xs text-zinc-500 uppercase tracking-wider block mb-1">Valor Total</span>
-    <p class="text-3xl font-bold text-zinc-100"><%= number_to_currency(@total_value, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+<%# ── SUMMARY CARDS ── %>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <% pm = current_user.portfolio_metrics %>
+  
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-5 hover-lift">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-3">Valor de Mercado</span>
+    <div class="flex items-end justify-between">
+      <p class="text-2xl font-extrabold text-zinc-100"><%= number_to_currency(pm[:total_value] / 100.0) %></p>
+      <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
   </div>
-  <%# Add more summary cards if needed %>
+
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-5 hover-lift">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-3">Resultado Total</span>
+    <div class="flex items-end justify-between">
+      <div>
+        <p class="text-2xl font-extrabold <%= pm[:change] >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
+          <%= pm[:change] >= 0 ? '+' : '' %><%= number_to_currency(pm[:change] / 100.0) %>
+        </p>
+        <p class="text-xs font-medium <%= pm[:change] >= 0 ? 'text-emerald-500/60' : 'text-red-500/60' %>">
+          <%= number_to_percentage(pm[:change_pct], precision: 2) %> acumulado
+        </p>
+      </div>
+      <div class="w-8 h-8 rounded-lg <%= pm[:change] >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10' %> flex items-center justify-center <%= pm[:change] >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <%= link_to cards_dashboard_investments_path, class: "block bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-5 hover-lift hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all" do %>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-3">Ativos em Carteira</span>
+    <div class="flex items-end justify-between">
+      <p class="text-2xl font-extrabold text-zinc-100"><%= @investments.count %></p>
+      <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2"/></svg>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-5 hover-lift">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-3">Diversificação</span>
+    <div class="flex items-end justify-between">
+      <p class="text-2xl font-extrabold text-zinc-100"><%= current_user.investments.distinct.count(:asset_type) %></p>
+      <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" stroke-width="2"/><path d="M20.488 9H15V3.512A9.025 9.001 0 0120.488 9z" stroke-width="2"/></svg>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl overflow-hidden backdrop-blur-xl">
-  <table class="w-full text-left">
-    <thead>
-      <tr class="bg-zinc-900/60 border-b border-zinc-800/60">
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Ativo</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Tipo</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Qtd</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">P. Médio</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">P. Atual</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Valor Total</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Ganho/Perda</th>
-        <th class="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-center">Ações</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-zinc-800/60">
-      <% @investments.each do |inv| %>
-        <tr class="hover:bg-zinc-800/40 transition-colors">
-          <td class="px-6 py-4">
-            <p class="text-sm font-bold text-zinc-100"><%= inv.ticker %></p>
-            <p class="text-xs text-zinc-500"><%= inv.name %></p>
-          </td>
-          <td class="px-6 py-4">
-            <span class="text-xs text-zinc-400"><%= inv.asset_type.capitalize %></span>
-          </td>
-          <td class="px-6 py-4 text-right text-sm text-zinc-100">
-            <%= inv.quantity %>
-          </td>
-          <td class="px-6 py-4 text-right text-sm text-zinc-400">
-            <%= number_to_currency(inv.avg_price, unit: "R$ ", separator: ",", delimiter: ".") %>
-          </td>
-          <td class="px-6 py-4 text-right text-sm text-zinc-100">
-            <%= number_to_currency(inv.current_price, unit: "R$ ", separator: ",", delimiter: ".") %>
-          </td>
-          <td class="px-6 py-4 text-right text-sm font-bold text-zinc-100">
-            <%= number_to_currency(inv.current_value, unit: "R$ ", separator: ",", delimiter: ".") %>
-          </td>
-          <td class="px-6 py-4 text-right">
-            <div class="<%= inv.gain_loss >= 0 ? 'text-emerald-400' : 'text-red-400' %> text-sm font-bold">
-              <%= number_to_currency(inv.gain_loss, unit: "R$ ", separator: ",", delimiter: ".") %>
-              <p class="text-[10px] font-medium"><%= number_to_percentage(inv.gain_loss_pct, precision: 2) %></p>
-            </div>
-          </td>
-          <td class="px-6 py-4 text-center">
-            <div class="flex justify-center gap-2">
-              <%= link_to edit_dashboard_investment_path(inv), class: "p-1 text-zinc-500 hover:text-zinc-100 transition-colors" do %>
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <% end %>
-              <%= button_to dashboard_investment_path(inv), method: :delete, class: "p-1 text-zinc-500 hover:text-red-400 transition-colors", data: { turbo_confirm: "Tem certeza?" } do %>
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <% end %>
-            </div>
-          </td>
+<%# ── ASSET GRID (Desktop Table / Mobile Cards) ── %>
+<div class="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl overflow-hidden backdrop-blur-xl">
+  
+  <%# Desktop View %>
+  <div class="hidden lg:block overflow-x-auto">
+    <table class="w-full text-left table-fixed">
+      <colgroup>
+        <col class="w-[22%]">
+        <col class="w-[10%]">
+        <col class="w-[10%]">
+        <col class="w-[12%]">
+        <col class="w-[12%]">
+        <col class="w-[12%]">
+        <col class="w-[12%]">
+        <col class="w-[10%]">
+      </colgroup>
+      <thead>
+        <tr class="bg-zinc-900/80 border-b border-zinc-800/60">
+          <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Ativo</th>
+          <th class="px-4 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Tipo</th>
+          <th class="px-4 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Qtd</th>
+          <th class="px-4 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Preço Médio</th>
+          <th class="px-4 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Preço Atual</th>
+          <th class="px-4 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Total</th>
+          <th class="px-4 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Ganho/Perda</th>
+          <th class="px-4 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">Ações</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="divide-y divide-zinc-800/60">
+        <% @investments.each do |inv| %>
+          <tr class="hover:bg-zinc-800/40 transition-colors group" data-investment-id="<%= inv.id %>">
+            <td class="px-6 py-5">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-zinc-800 border border-zinc-700/50 flex items-center justify-center font-bold text-xs text-zinc-300 group-hover:border-indigo-500/30 group-hover:bg-indigo-500/5 transition-all">
+                  <%= inv.ticker.first(2).upcase %>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-bold text-zinc-100 truncate"><%= inv.ticker.presence || inv.name %></p>
+                  <p class="text-[10px] text-zinc-500 truncate uppercase tracking-tighter"><%= inv.name %></p>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-5 whitespace-nowrap">
+              <% type_labels = { "stock_br" => "Ação BR", "fii" => "FII", "fixed_income" => "Renda Fixa", "treasury_br" => "Tesouro BR", "treasury_intl" => "Tesouro Intl", "international" => "Internacional", "crypto" => "Cripto", "other" => "Outros" } %>
+              <% type_colors = { "stock_br" => "indigo", "fii" => "sky", "fixed_income" => "emerald", "crypto" => "orange", "international" => "amber" } %>
+              <% color = type_colors[inv.asset_type] || "zinc" %>
+              <span class="inline-block text-[9px] font-bold text-<%= color %>-400 bg-<%= color %>-500/10 border border-<%= color %>-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <%= type_labels[inv.asset_type] || inv.asset_type.humanize %>
+              </span>
+            </td>
+            <td class="px-4 py-5 text-right text-sm font-medium text-zinc-300 tabular-nums">
+              <span class="inline-edit cursor-pointer hover:text-indigo-400 transition-colors"
+                    data-investment-id="<%= inv.id %>"
+                    data-field="quantity"
+                    data-value="<%= inv.quantity %>">
+                <%= number_with_delimiter(inv.quantity, separator: ",", delimiter: ".") %>
+              </span>
+            </td>
+            <td class="px-4 py-5 text-right whitespace-nowrap tabular-nums">
+              <% if inv.avg_price > 0 %>
+                <span class="text-sm text-zinc-100"><%= number_to_currency(inv.avg_price / 100.0) %></span>
+              <% else %>
+                <%= link_to dashboard_investment_trades_path(inv), class: "text-[10px] text-zinc-600 hover:text-indigo-400 flex items-center justify-end gap-1" do %>
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Adicionar
+                <% end %>
+              <% end %>
+            </td>
+            <td class="px-4 py-5 text-right whitespace-nowrap tabular-nums">
+              <% if inv.current_price > 0 %>
+                <div class="flex items-center justify-end gap-1.5">
+                  <span class="inline-edit cursor-pointer hover:text-indigo-400 transition-colors text-sm text-zinc-100"
+                        data-investment-id="<%= inv.id %>"
+                        data-field="current_price"
+                        data-currency="true"
+                        data-value="<%= '%.4f' % (inv.current_price / 100.0) %>">
+                    <%= number_to_currency(inv.current_price / 100.0) %>
+                  </span>
+                  <%= button_to refresh_price_dashboard_investment_path(inv), method: :post, class: "p-1 text-zinc-600 hover:text-sky-400 transition-colors rounded-md hover:bg-sky-500/10", title: "Atualizar" do %>
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <% end %>
+                </div>
+              <% else %>
+                <%= button_to refresh_price_dashboard_investment_path(inv), method: :post, class: "text-[10px] text-zinc-600 hover:text-sky-400 flex items-center justify-end gap-1 ml-auto" do %>
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Buscar
+                <% end %>
+              <% end %>
+            </td>
+            <td class="px-4 py-5 text-right text-sm font-extrabold text-zinc-100 whitespace-nowrap tabular-nums">
+              <%= number_to_currency(inv.current_value / 100.0) %>
+            </td>
+            <td class="px-4 py-5 text-right whitespace-nowrap">
+              <% if inv.avg_price > 0 && inv.current_price > 0 %>
+                <div class="<%= inv.gain_loss >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
+                  <p class="text-sm font-bold tabular-nums">
+                    <%= inv.gain_loss >= 0 ? '+' : '' %><%= number_to_currency(inv.gain_loss / 100.0) %>
+                  </p>
+                  <p class="text-[11px] font-medium opacity-70">
+                    <%= inv.gain_loss >= 0 ? '▲' : '▼' %> <%= number_to_percentage(inv.gain_loss_pct.abs, precision: 2) %>
+                  </p>
+                </div>
+              <% else %>
+                <span class="text-xs text-zinc-600">—</span>
+              <% end %>
+            </td>
+            <td class="px-4 py-5 text-center">
+              <div class="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button class="quick-trade-btn p-2 text-zinc-500 hover:text-emerald-400 bg-zinc-800/40 hover:bg-emerald-500/10 rounded-xl transition-all"
+                        data-investment-id="<%= inv.id %>"
+                        data-ticker="<%= inv.ticker %>"
+                        data-trade-type="buy"
+                        title="Comprar">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="quick-trade-btn p-2 text-zinc-500 hover:text-red-400 bg-zinc-800/40 hover:bg-red-500/10 rounded-xl transition-all"
+                        data-investment-id="<%= inv.id %>"
+                        data-ticker="<%= inv.ticker %>"
+                        data-trade-type="sell"
+                        title="Vender">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M20 12H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <%= link_to dashboard_investment_trades_path(inv), class: "p-2 text-zinc-500 hover:text-amber-400 bg-zinc-800/40 hover:bg-amber-500/10 rounded-xl transition-all", title: "Operações" do %>
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="1.5"/></svg>
+                <% end %>
+                <%= link_to edit_dashboard_investment_path(inv), class: "p-2 text-zinc-500 hover:text-zinc-100 bg-zinc-800/40 hover:bg-zinc-700 rounded-xl transition-all", title: "Editar" do %>
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <% end %>
+                <%= button_to dashboard_investment_path(inv), method: :delete, class: "p-2 text-zinc-500 hover:text-red-400 bg-zinc-800/40 hover:bg-red-500/10 rounded-xl transition-all", title: "Excluir", data: { turbo_confirm: "Tem certeza?" } do %>
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%# Mobile View %>
+  <div class="lg:hidden grid grid-cols-1 gap-4 p-4">
+    <% @investments.each do |inv| %>
+      <div class="bg-zinc-950/40 border border-zinc-800/80 rounded-2xl p-5 space-y-4">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center font-bold text-xs text-zinc-300">
+              <%= inv.ticker.first(2).upcase %>
+            </div>
+            <div>
+              <p class="text-base font-bold text-zinc-100"><%= inv.ticker.presence || inv.name %></p>
+              <p class="text-xs text-zinc-500 uppercase tracking-tighter truncate max-w-[120px]"><%= inv.name %></p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-extrabold text-zinc-100"><%= number_to_currency(inv.current_value / 100.0) %></p>
+            <div class="flex items-center justify-end gap-1.5 mt-1">
+              <% if inv.avg_price > 0 && inv.current_price > 0 %>
+                <span class="text-xs font-bold <%= inv.gain_loss >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
+                  <%= inv.gain_loss >= 0 ? '+' : '' %><%= number_to_percentage(inv.gain_loss_pct, precision: 1) %>
+                </span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 py-4 border-y border-zinc-800/40">
+          <div>
+            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Preço Atual</span>
+            <p class="text-sm font-medium text-zinc-200"><%= number_to_currency(inv.current_price / 100.0) %></p>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Qtd Acumulada</span>
+            <p class="text-sm font-medium text-zinc-200"><%= number_with_delimiter(inv.quantity) %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-2 pt-1">
+          <div class="flex gap-2">
+            <%= link_to dashboard_investment_trades_path(inv), class: "px-3 py-2 bg-zinc-800 text-zinc-300 text-[10px] font-bold uppercase rounded-lg border border-zinc-700" do %>Operações<% end %>
+            <%= link_to edit_dashboard_investment_path(inv), class: "px-3 py-2 bg-zinc-800 text-zinc-300 text-[10px] font-bold uppercase rounded-lg border border-zinc-700" do %>Editar<% end %>
+          </div>
+          <%= button_to refresh_price_dashboard_investment_path(inv), method: :post, class: "p-2 bg-indigo-500/10 text-indigo-400 rounded-lg" do %>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2"/></svg>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @investments.empty? %>
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-20 h-20 bg-zinc-800/40 rounded-3xl flex items-center justify-center mb-6">
+        <svg class="w-10 h-10 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3 class="text-xl font-bold text-zinc-300">Sua carteira está vazia</h3>
+      <p class="text-zinc-500 text-sm max-w-xs mx-auto mt-2">Comece a adicionar seus ativos para acompanhar sua evolução patrimonial.</p>
+      <%= link_to "Adicionar primeiro ativo", new_dashboard_investment_path, class: "mt-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-2xl transition-all shadow-xl shadow-indigo-500/20" %>
+    </div>
+  <% end %>
+
+  <% truly_missing = @investments.select { |i| i.avg_price.zero? && i.current_price.zero? && i.trades.none? } %>
+  <% if truly_missing.any? %>
+    <div class="px-6 py-4 border-t border-zinc-800/60 bg-indigo-500/5">
+      <div class="flex items-center gap-3 text-xs text-indigo-300">
+        <div class="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
+        </div>
+        <span>Temos <strong><%= truly_missing.count %> ativo(s)</strong> aguardando dados de preço. Utilize o botão 🔄 para atualizar.</span>
+      </div>
+    </div>
+  <% end %>
 </div>

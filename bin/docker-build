@@ -1,0 +1,30 @@
+#!/bin/bash
+# Script para buildar a imagem Docker do Kitsune Finance
+
+set -e
+
+echo "🔄 Atualizando repositório..."
+git pull
+
+echo "🚀 Iniciando build da imagem docker..."
+docker build -t kitsune_finance .
+
+echo "✅ Build concluído com sucesso!"
+
+# Remove container existente com o mesmo nome, se houver
+if docker ps -a --format '{{.Names}}' | grep -q '^kitsune_finance$'; then
+  echo "⚠️  Removendo container existente 'kitsune_finance'..."
+  docker rm -f kitsune_finance
+fi
+
+echo "🚀 Iniciando container..."
+docker run -d --name kitsune_finance -p 13522:80 \
+  -v "$(pwd)/storage:/rails/storage" \
+  ${RAILS_ENV:+-e RAILS_ENV="${RAILS_ENV}"} \
+  ${RAILS_MASTER_KEY:+-e RAILS_MASTER_KEY="${RAILS_MASTER_KEY}"} \
+  -e RAILS_RELATIVE_URL_ROOT="${RAILS_RELATIVE_URL_ROOT:-}" \
+  -e APP_HOST="${APP_HOST:-localhost}" \
+  --restart unless-stopped \
+  kitsune_finance:latest
+
+echo "✅ Container kitsune_finance rodando em http://localhost:13522"

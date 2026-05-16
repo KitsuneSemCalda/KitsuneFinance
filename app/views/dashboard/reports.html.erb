@@ -4,18 +4,36 @@
 </div>
 
 <%# ── SUMMARY CARDS ── %>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<% salary_present = @expense_ratio.present? %>
+
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-10">
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1 block">Total Recebido</span>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_income, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_income / 100.0) %></p>
   </div>
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-1 block">Total Gasto</span>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_expense, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_expense / 100.0) %></p>
+    <% if @expense_ratio %>
+      <p class="text-xs text-zinc-500 mt-1"><%= number_to_percentage(@expense_ratio, precision: 1) %> do salário</p>
+    <% end %>
   </div>
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-1 block">Saldo Geral</span>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@balance, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@balance / 100.0) %></p>
+    <% if @savings_rate %>
+      <p class="text-xs text-zinc-500 mt-1"><%= number_to_percentage(@savings_rate, precision: 1) %> do salário poupado</p>
+    <% end %>
+  </div>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-amber-500 mb-1 block">DTI</span>
+    <p class="text-2xl font-bold text-zinc-100"><%= @dti ? number_to_percentage(@dti, precision: 1) : "—" %></p>
+    <p class="text-xs text-zinc-500 mt-1"><%= @dti ? (@dti <= 30 ? 'Saudável' : 'Elevado') : 'Configure seu salário' %></p>
+  </div>
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-sky-500 mb-1 block">Salário</span>
+    <p class="text-2xl font-bold text-zinc-100"><%= @salary&.positive? ? number_to_currency(@salary / 100.0) : "—" %></p>
+    <p class="text-xs text-zinc-500 mt-1"><%= @salary&.positive? ? number_to_currency(@salary * 12 / 100.0) + "/ano" : 'Configure nas Configurações' %></p>
   </div>
 </div>
 
@@ -36,8 +54,8 @@
           <div class="h-2 bg-zinc-800 rounded-full overflow-hidden flex">
             <% total = data[:income] + data[:expense] %>
             <% if total > 0 %>
-              <div class="h-full bg-emerald-500" style="width: <%= (data[:income] / total * 100) %>%"></div>
-              <div class="h-full bg-red-500" style="width: <%= (data[:expense] / total * 100) %>%"></div>
+              <div class="h-full bg-emerald-500" style="width: <%= (data[:income].to_f / total * 100) %>%"></div>
+              <div class="h-full bg-red-500" style="width: <%= (data[:expense].to_f / total * 100) %>%"></div>
             <% end %>
           </div>
         </div>
@@ -54,10 +72,10 @@
           <div class="flex-1">
             <div class="flex justify-between text-xs mb-1.5">
               <span class="text-zinc-300 font-medium"><%= name %></span>
-              <span class="text-zinc-400"><%= number_to_currency(amount, unit: "R$ ") %></span>
+              <span class="text-zinc-400"><%= number_to_currency(amount / 100.0) %></span>
             </div>
             <div class="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-              <div class="h-full bg-indigo-500/60" style="width: <%= @total_expense > 0 ? (amount / @total_expense * 100) : 0 %>%"></div>
+              <div class="h-full bg-indigo-500/60" style="width: <%= @total_expense > 0 ? (amount.to_f / @total_expense * 100) : 0 %>%"></div>
             </div>
           </div>
         </div>

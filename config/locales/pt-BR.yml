@@ -1,27 +1,88 @@
 'pt-BR':
+  number:
+    currency:
+      format:
+        unit: "R$ "
+        separator: ","
+        delimiter: "."
+        format: "%u%n"
+
+  account_types:
+    checking: "Corrente"
+    savings: "Poupança"
+    credit: "Cartão de Crédito"
+    investment: "Investimento"
+    cash: "Dinheiro"
+    wallet: "Carteira Digital"
+
+  date:
+    formats:
+      default: "%d/%m/%Y"
+    month_names: [~, Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro]
+    abbreviated_month_names: [~, Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez]
+
+  errors:
+    messages:
+      not_saved:
+        one: "1 erro impediu este %{resource} de ser salvo:"
+        other: "%{count} erros impediram este %{resource} de ser salvo:"
+
   devise:
     confirmations:
       confirmed: "Seu endereço de e-mail foi confirmado com sucesso."
       send_instructions: "Você receberá um e-mail com instruções para confirmar seu e-mail em alguns minutos."
+      send_paranoid_instructions: "Se seu e-mail existir em nosso banco de dados, você receberá um e-mail com instruções para confirmar seu e-mail em alguns minutos."
     failure:
       already_authenticated: "Você já está logado."
       inactive: "Sua conta ainda não foi ativada."
       invalid: "E-mail ou senha inválidos."
       locked: "Sua conta está bloqueada."
+      last_attempt: "Você tem mais uma tentativa antes de sua conta ser bloqueada."
       not_found_in_database: "E-mail ou senha inválidos."
+      timeout: "Sua sessão expirou. Faça login novamente para continuar."
       unauthenticated: "Você precisa fazer login ou se cadastrar antes de continuar."
       unconfirmed: "Você precisa confirmar seu e-mail antes de continuar."
+    mailer:
+      confirmation_instructions:
+        subject: "Instruções de confirmação"
+      reset_password_instructions:
+        subject: "Instruções de redefinição de senha"
+      unlock_instructions:
+        subject: "Instruções de desbloqueio"
+      email_changed:
+        subject: "E-mail alterado"
+      password_change:
+        subject: "Senha alterada"
+    omniauth_callbacks:
+      failure: "Não foi possível autenticar você de %{kind} porque \"%{reason}\"."
+      success: "Autenticado com sucesso da conta %{kind}."
     passwords:
-      send_instructions: "Você receberá um e-mail com instruções para redefinir sua senha em alguns minutos."
-      updated: "Sua senha foi alterada com sucesso."
+      no_token: "Você não pode acessar esta página sem vir de um e-mail de redefinição de senha. Se você veio de um e-mail de redefinição de senha, certifique-se de usar a URL completa fornecida."
+      send_instructions: "Você receberá um e-mail com instruções sobre como redefinir sua senha em alguns minutos."
+      send_paranoid_instructions: "Se seu e-mail existir em nosso banco de dados, você receberá um link de recuperação de senha em seu e-mail em alguns minutos."
+      updated: "Sua senha foi alterada com sucesso. Você agora está logado."
+      updated_not_active: "Sua senha foi alterada com sucesso."
     registrations:
+      destroyed: "Até logo! Sua conta foi cancelada com sucesso. Esperamos vê-lo novamente em breve."
       signed_up: "Bem-vindo! Você se cadastrou com sucesso."
+      signed_up_but_inactive: "Você se cadastrou com sucesso. No entanto, não foi possível fazer login porque sua conta ainda não está ativada."
+      signed_up_but_locked: "Você se cadastrou com sucesso. No entanto, não foi possível fazer login porque sua conta está bloqueada."
+      signed_up_but_unconfirmed: "Uma mensagem com um link de confirmação foi enviada para seu e-mail. Siga o link para ativar sua conta."
+      update_needs_confirmation: "Você atualizou sua conta com sucesso, mas precisamos verificar seu novo e-mail. Verifique seu e-mail e siga o link de confirmação para confirmar seu novo endereço."
       updated: "Sua conta foi atualizada com sucesso."
+      updated_but_not_signed_in: "Sua conta foi atualizada com sucesso, mas como sua senha foi alterada, você precisa fazer login novamente."
     sessions:
       signed_in: "Login efetuado com sucesso."
       signed_out: "Logout efetuado com sucesso."
+      already_signed_out: "Logout efetuado com sucesso."
+    unlocks:
+      send_instructions: "Você receberá um e-mail com instruções sobre como desbloquear sua conta em alguns minutos."
+      send_paranoid_instructions: "Se sua conta existir, você receberá um e-mail com instruções sobre como desbloqueá-la em alguns minutos."
+      unlocked: "Sua conta foi desbloqueada com sucesso. Faça login para continuar."
 
   activerecord:
+    models:
+      user: "usuário"
     enums:
       investment:
         asset_type:

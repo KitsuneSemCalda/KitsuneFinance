@@ -1,39 +1,43 @@
-<div class="max-w-2xl mx-auto bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
-  <h2 class="text-2xl font-bold text-zinc-100 mb-8"><%= @page_title %></h2>
+<div class="max-w-2xl mx-auto">
+  <%= render "shared/section_header", title: @page_title, subtitle: "Configure os detalhes da sua conta financeira." %>
 
   <%= form_with model: [:dashboard, @account], class: "space-y-6" do |f| %>
-    <div class="space-y-2">
-      <%= f.label :name, "Nome da Conta", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-      <%= f.text_field :name, placeholder: "Ex: Nubank, Carteira, Investimentos...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <%= f.label :account_type, "Tipo de Conta", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.select :account_type, [["Corrente", "checking"], ["Poupança", "savings"], ["Cartão de Crédito", "credit"], ["Investimento", "investment"], ["Dinheiro", "cash"], ["Carteira Digital", "wallet"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    <%= render layout: "shared/card", locals: { class: "bg-zinc-900/60 shadow-2xl space-y-6" } do %>
+      <%= render layout: "shared/field", locals: { f: f, field: :name, label: "Nome da Conta" } do %>
+        <%= f.text_field :name, placeholder: "Ex: Nubank Principal, XP Investimentos...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-zinc-700", required: true, autofocus: true %>
+      <% end %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <%= render layout: "shared/field", locals: { f: f, field: :account_type, label: "Tipo de Conta" } do %>
+          <%= f.select :account_type, [["Corrente", "checking"], ["Poupança", "savings"], ["Cartão de Crédito", "credit"], ["Investimento", "investment"], ["Dinheiro", "cash"], ["Carteira Digital", "wallet"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <% end %>
+
+        <%= render layout: "shared/field", locals: { f: f, field: :balance, label: "Saldo Atual (R$)" } do %>
+          <%= f.number_field :balance, step: 0.01, value: (@account.balance.to_f / 100), class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all tabular-nums", required: true %>
+        <% end %>
       </div>
+    <% end %>
 
-      <div class="space-y-2">
-        <%= f.label :balance, "Saldo Inicial", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :balance, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+    <%= render layout: "shared/card", locals: { class: "bg-zinc-900/40 space-y-8" } do %>
+      <%= render "shared/color_picker", f: f, field: :color, label: "Cor de Identidade", colors: [["Índigo", "indigo"], ["Esmeralda", "emerald"], ["Céu", "sky"], ["Âmbar", "amber"], ["Rosa", "rose"], ["Roxo", "purple"]] %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+        <%= render layout: "shared/field", locals: { f: f, field: :icon, label: "Ícone (Emoji)" } do %>
+          <%= f.text_field :icon, placeholder: "🏦, 💳, 💰...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-2xl text-center focus:border-indigo-500 outline-none transition-all" %>
+        <% end %>
+
+        <%= render layout: "shared/field", locals: { f: f, field: :currency, label: "Moeda" } do %>
+          <%= f.select :currency, [["Real (BRL)", "BRL"], ["Dólar (USD)", "USD"], ["Euro (EUR)", "EUR"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+        <% end %>
       </div>
-    </div>
+    <% end %>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <%= f.label :color, "Cor", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.select :color, [["Índigo", "indigo"], ["Esmeralda", "emerald"], ["Céu", "sky"], ["Âmbar", "amber"], ["Rosa", "rose"], ["Roxo", "purple"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
+    <%= render "shared/submit_bar", f: f, cancel_path: dashboard_accounts_path, cancel_label: "Descartar", submit_label: "Salvar Conta" %>
 
-      <div class="space-y-2">
-        <%= f.label :icon, "Ícone", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.text_field :icon, placeholder: "💰, 🏦, 🛡️...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-    </div>
+    <% if @account.persisted? %>
+      <%= render "shared/danger_zone", resource: @account, path: dashboard_account_path(@account), confirm_message: "Tem certeza que deseja excluir esta conta? Todas as transações vinculadas serão removidas permanentemente.", button_label: "Excluir Conta Permanentemente" %>
+    <% end %>
 
-    <div class="flex gap-4 pt-4">
-      <%= link_to "Cancelar", dashboard_accounts_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
-      <%= f.submit "Salvar Conta", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
-    </div>
   <% end %>
 </div>

@@ -1,0 +1,35 @@
+one:
+  user: one
+  name: PETR4
+  ticker: PETR4
+  asset_type: stock_br
+  quantity: 10
+  avg_price: 2500
+  current_price: 2800
+
+two:
+  user: one
+  name: SNLG11
+  ticker: SNLG11
+  asset_type: fii
+  quantity: 50
+  avg_price: 12400
+  current_price: 0
+
+three:
+  user: two
+  name: Bitcoin
+  ticker: bitcoin
+  asset_type: crypto
+  quantity: 0.01
+  avg_price: 3500000
+  current_price: 4000000
+
+four:
+  user: two
+  name: Apple
+  ticker: AAPL
+  asset_type: international
+  quantity: 5
+  avg_price: 15000
+  current_price: 17000

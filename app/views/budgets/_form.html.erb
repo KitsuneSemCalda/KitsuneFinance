@@ -1,32 +1,31 @@
-<div class="max-w-2xl mx-auto bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
-  <h2 class="text-2xl font-bold text-zinc-100 mb-8"><%= @page_title %></h2>
+<div class="max-w-2xl mx-auto">
+  <%= render "shared/section_header", title: @page_title, subtitle: "Defina limites de gastos por categoria e acompanhe seu orçamento." %>
 
   <%= form_with model: [:dashboard, @budget], class: "space-y-6" do |f| %>
-    <div class="space-y-2">
-      <%= f.label :category_id, "Categoria", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-      <%= f.collection_select :category_id, current_user.categories.expense, :id, :name, { prompt: "Selecione a categoria" }, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-    </div>
+    <%= render layout: "shared/card", locals: { class: "bg-zinc-900/60 shadow-2xl space-y-8" } do %>
+      <%= render layout: "shared/field", locals: { f: f, field: :category_id, label: "Categoria" } do %>
+        <%= f.collection_select :category_id, current_user.categories.expense, :id, :name, { prompt: "Selecione a categoria" }, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+      <% end %>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <%= f.label :month, "Mês", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.select :month, (1..12).map { |m| [t("date.month_names")[m], m] }, {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <%= render layout: "shared/field", locals: { f: f, field: :month, label: "Mês" } do %>
+          <%= f.select :month, (1..12).map { |m| [t("date.month_names")[m], m] }, {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+        <% end %>
+
+        <%= render layout: "shared/field", locals: { f: f, field: :year, label: "Ano" } do %>
+          <%= f.number_field :year, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+        <% end %>
       </div>
 
-      <div class="space-y-2">
-        <%= f.label :year, "Ano", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :year, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-    </div>
+      <%= render layout: "shared/field", locals: { f: f, field: :limit_amount, label: "Limite de Gastos (R$)" } do %>
+        <%= f.number_field :limit_amount, step: 0.01, value: @budget.limit_amount.present? ? @budget.limit_amount / 100.0 : nil, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 outline-none transition-all tabular-nums" %>
+        <% if current_user.monthly_salary&.positive? %>
+          <% suggested = (current_user.monthly_salary * 0.1).to_i %>
+          <p class="text-xs text-zinc-500 mt-1 ml-1">Sugestão: 10% do salário = <%= number_to_currency(suggested / 100.0) %></p>
+        <% end %>
+      <% end %>
+    <% end %>
 
-    <div class="space-y-2">
-      <%= f.label :limit_amount, "Limite de Gastos", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-      <%= f.number_field :limit_amount, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-    </div>
-
-    <div class="flex gap-4 pt-4">
-      <%= link_to "Cancelar", dashboard_budgets_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
-      <%= f.submit "Definir Limite", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
-    </div>
+    <%= render "shared/submit_bar", f: f, cancel_path: dashboard_budgets_path, submit_label: "Definir Limite" %>
   <% end %>
 </div>

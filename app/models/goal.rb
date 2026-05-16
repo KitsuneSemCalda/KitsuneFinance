@@ -6,6 +6,7 @@ class Goal < ApplicationRecord
   validates :target_amount, presence: true, numericality: { greater_than: 0 }
   validates :current_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :status, presence: true, inclusion: { in: %w[active completed paused] }
+  scope :active, -> { where(status: "active") }
 
   before_save :check_status
 

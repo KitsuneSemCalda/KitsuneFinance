@@ -4,106 +4,103 @@ class DashboardController < ApplicationController
 
   def index
     @page_title = "Visão Geral"
+    d = DashboardDataService.new(current_user)
 
-    # Real data from associations
-    @accounts = current_user.accounts
-    @net_worth = @accounts.sum(:balance) + current_user.investments.sum { |i| i.current_value }
-    
-    # Monthly savings and debt simulation
-    @monthly_income = current_user.transactions.income.current_month.sum(:amount)
-    @monthly_expense = current_user.transactions.expense.current_month.sum(:amount)
-    @monthly_debts = current_user.debts.sum(:monthly_payment)
-    @monthly_savings = @monthly_income - (@monthly_expense + @monthly_debts)
+    @insights = d.insights
 
-    @portfolio_total = current_user.investments.sum { |i| i.current_value }
-    # Calculation for portfolio change would require history, for now we sum current vs cost
-    total_cost = current_user.investments.sum { |i| i.total_cost }
-    @portfolio_change = @portfolio_total - total_cost
-    @portfolio_change_pct = (total_cost.present? && total_cost.to_f > 0) ? ((@portfolio_total.to_f / total_cost.to_f) - 1) * 100 : 0
+    m = d.financial_health
+    @net_worth = m[:net_worth]
+    @monthly_income = m[:monthly_income]
+    @monthly_expense = m[:monthly_expense]
+    @monthly_debts = m[:monthly_debts]
+    @monthly_savings = m[:monthly_savings]
+    @salary_present = m[:salary_present]
+    @expense_ratio = m[:expense_ratio]
+    @dti = m[:dti]
+    @savings_rate = m[:savings_rate]
+    @net_worth_to_annual = m[:net_worth_to_annual]
+    @health_score = m[:health_score]
 
-    @recent_transactions = current_user.transactions.recent.map do |tx|
-      {
-        icon: tx.category&.icon || "💰",
-        description: tx.description,
-        category: tx.category&.name || "Sem categoria",
-        date: tx.date.strftime("%d %b"),
-        amount: tx.amount,
-        type: tx.transaction_type.to_sym
-      }
-    end
+    @recent_transactions_more = d.recent_transactions_more
+    @yearly_data = d.yearly_summary
 
-    @goals = current_user.goals.limit(3).map do |goal|
-      {
-        name: goal.name,
-        icon: goal.icon,
-        current: goal.current_amount,
-        target: goal.target_amount,
-        color: goal.color
-      }
-    end
+    pm = d.portfolio_metrics
+    @portfolio_total = pm[:total]
+    @portfolio_change = pm[:change]
+    @portfolio_change_pct = pm[:change_pct]
+    @goals = d.goals
 
-    # Allocation data
-    @allocation = current_user.investments.group(:asset_type).sum("quantity * current_price")
-    @allocation_total = @allocation.values.sum
-    @allocation_json = @allocation.map { |k, v| { label: I18n.t("activerecord.enums.investment.asset_type.#{k}", default: k.to_s.humanize), value: v } }.to_json
+    alloc = d.allocation
+    @allocation = alloc[:by_type]
+    @allocation_total = alloc[:total]
+    @allocation_json = alloc[:json]
 
-    # Cash Flow data (last 30 days)
-    @cash_flow_labels = (29.days.ago.to_date..Date.today).map { |d| d.strftime("%d/%m") }
-    
-    income_data = current_user.transactions.income.where(date: 29.days.ago..Date.today).group(:date).sum(:amount)
-    expense_data = current_user.transactions.expense.where(date: 29.days.ago..Date.today).group(:date).sum(:amount)
+    @budgets_with_progress = d.budgets_with_progress
 
-    @income_series = (29.days.ago.to_date..Date.today).map { |d| income_data[d] || 0 }
-    @expense_series = (29.days.ago.to_date..Date.today).map { |d| expense_data[d] || 0 }
+    @available_balance = d.available_balance
+    @investment_count = d.investment_count
+    @bills_pending = d.bills_pending
+    @bills_overdue_count = d.bills_overdue_count
+    @recent_trades = d.recent_trades
+
+    cf60 = d.cash_flow_60
+    @cash_flow_labels_60 = cf60[:labels]
+    @income_series_60 = cf60[:income]
+    @expense_series_60 = cf60[:expense]
+
+    dt = d.debt_timeline
+    @total_debt_remaining = dt[:total_remaining]
+    @debt_progress_pct = dt[:progress_pct]
+    @debt_estimated_months = dt[:estimated_months]
   end
 
-  def transactions
-    @page_title = "Transações"
-    render :coming_soon
-  end
+  def health
+    @page_title = "Saúde Financeira"
+    d = DashboardDataService.new(current_user)
 
-  def budget
-    @page_title = "Orçamento"
-    render :coming_soon
-  end
+    m = d.financial_health
+    @salary = m[:salary]
+    @salary_present = m[:salary_present]
+    @monthly_income = m[:monthly_income]
+    @monthly_expense = m[:monthly_expense]
+    @monthly_debts = m[:monthly_debts]
+    @monthly_savings = m[:monthly_savings]
+    @net_worth = m[:net_worth]
+    @dti = m[:dti]
+    @expense_ratio = m[:expense_ratio]
+    @savings_rate = m[:savings_rate]
+    @net_worth_to_annual = m[:net_worth_to_annual]
+    @health_score = m[:health_score]
 
-  def investments
-    @page_title = "Investimentos"
-    render :coming_soon
-  end
+    @investments = d.health_investments
+    @allocation = d.health_allocation
+    @total_gain_loss = d.total_gain_loss
 
-  def goals
-    @page_title = "Metas"
-    render :coming_soon
+    @goals = d.health_goals
+    @goals_completed = @goals.where(status: "completed").count
+    @goals_active = @goals.where(status: "active").count
+    @goals_total = @goals.count
+    @debt_progress = d.debt_progress
+
+    @recommendations = d.recommendations
   end
 
   def reports
     @page_title = "Relatórios"
-    
-    # Summary data
-    @total_income = current_user.transactions.income.sum(:amount)
-    @total_expense = current_user.transactions.expense.sum(:amount)
-    @balance = @total_income - @total_expense
+    d = DashboardDataService.new(current_user)
 
-    # Monthly data for the last 6 months
-    @monthly_data = (0..5).reverse_each.map do |i|
-      date = i.months.ago.beginning_of_month
-      {
-        month: l(date, format: "%b/%y"),
-        income: current_user.transactions.income.where(date: date..date.end_of_month).sum(:amount),
-        expense: current_user.transactions.expense.where(date: date..date.end_of_month).sum(:amount)
-      }
-    end
+    rs = d.reports_summary
+    @total_income = rs[:total_income]
+    @total_expense = rs[:total_expense]
+    @balance = rs[:balance]
 
-    # Category distribution (Expenses)
-    @category_distribution = current_user.transactions.expense
-                                        .joins(:category)
-                                        .group("categories.name")
-                                        .sum(:amount)
-                                        .sort_by { |_name, amount| -amount }
-                                        .first(5)
-
-    # Export links metadata
+    @monthly_data = d.monthly_report_data
+    @category_distribution = d.category_distribution
+    ri = d.reports_indicators
+    @expense_ratio = ri[:expense_ratio]
+    @savings_rate = ri[:salary_present] ? ((@total_income - @total_expense).to_f / ri[:salary]) * 100 : nil
+    @dti = ri[:dti]
+    @salary = ri[:salary]
     @export_formats = [
       { name: "Transações (CSV)", path: dashboard_transactions_path(format: :csv), icon: "csv" },
       { name: "Transações (Excel)", path: dashboard_transactions_path(format: :xlsx), icon: "xlsx" },
@@ -124,17 +121,52 @@ class DashboardController < ApplicationController
     @results = engine.forecast(scenario)
   end
 
+  def news
+    @page_title = "Notícias Financeiras"
+    @articles = NewsFeedService.fetch_latest(20)
+  end
+
+  def indicators
+    @page_title = "Indicadores Econômicos"
+    @selic = IndicatorsService.fetch_latest(:selic)
+    @cdi = IndicatorsService.fetch_latest(:cdi)
+    @ipca = IndicatorsService.fetch_latest(:ipca)
+  end
+
+  def backup
+    @page_title = "Backup"
+
+    data = {
+      exported_at: Time.current.iso8601,
+      user: { email: current_user.email, monthly_salary: current_user.monthly_salary },
+      accounts: current_user.accounts.as_json(only: %i[name account_type balance currency color icon bank_code bank_name]),
+      categories: current_user.categories.as_json(only: %i[name transaction_type color icon]),
+      transactions: current_user.transactions.as_json(only: %i[description amount transaction_type date account_id category_id notes]),
+      investments: current_user.investments.as_json(only: %i[name ticker asset_type quantity avg_price current_price currency notes]),
+      goals: current_user.goals.as_json(only: %i[name target_amount current_amount status deadline color]),
+      debts: current_user.debts.as_json(only: %i[name total_amount monthly_payment installments_count remaining_installments]),
+      bill_reminders: current_user.bill_reminders.as_json(only: %i[name amount due_date paid recurrent recurrence_period notes]),
+      budgets: current_user.budgets.as_json(only: %i[month year limit_amount category_id]),
+      trades: current_user.trades.as_json(only: %i[trade_type quantity price date investment_id])
+    }
+
+    backup_json = JSON.pretty_generate(data)
+    send_data backup_json, filename: "kitsune-backup-#{Date.today}.json", type: "application/json"
+  end
+
   def settings
     @page_title = "Configurações"
     @user = current_user
+    @tab = %w[profile preferences dashboard integrations account].include?(params[:tab]) ? params[:tab] : "profile"
   end
 
   def update_settings
     @user = current_user
-    params[:user][:monthly_salary] = (params[:user][:monthly_salary].to_f * 100).to_i if params[:user][:monthly_salary].present?
+    @tab = %w[profile preferences dashboard integrations account].include?(params[:tab]) ? params[:tab] : "profile"
+    params[:user][:monthly_salary] = cents_from_string(params[:user][:monthly_salary]) if params[:user][:monthly_salary].present?
     
     if @user.update(user_params)
-      redirect_to dashboard_settings_path, notice: "Configurações atualizadas com sucesso."
+      redirect_to dashboard_settings_path(tab: @tab), notice: "Configurações atualizadas com sucesso."
     else
       render :settings, status: :unprocessable_entity
     end
@@ -143,6 +175,6 @@ class DashboardController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:primary_currency, :locale, :ntfy_url, :monthly_salary)
+    params.require(:user).permit(:primary_currency, :locale, :ntfy_url, :monthly_salary, :brapi_token)
   end
 end

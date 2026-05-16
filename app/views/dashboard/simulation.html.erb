@@ -1,39 +1,92 @@
-<div class="mb-6">
+<div class="mb-8">
   <h2 class="text-2xl font-bold text-zinc-100">Simulação Financeira</h2>
+  <p class="text-zinc-500 text-sm">Projete cenários e veja o impacto no seu bolso.</p>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <div class="lg:col-span-1 bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
-    <%= form_with url: dashboard_simulation_path, method: :get, class: "space-y-4" do |f| %>
-      <div>
-        <%= f.label :salary_adj, "Ajuste de Salário (%)", class: "block text-sm text-zinc-400 mb-1" %>
-        <%= f.number_field :salary_adj, value: params[:salary_adj] || 0, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
-      </div>
-      <div>
-        <%= f.label :expense_adj, "Corte de Gastos (%)", class: "block text-sm text-zinc-400 mb-1" %>
-        <%= f.number_field :expense_adj, value: params[:expense_adj] || 0, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-zinc-100" %>
-      </div>
-      <%= f.submit "Simular", class: "w-full bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition cursor-pointer" %>
-    <% end %>
+  <div class="lg:col-span-1">
+    <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl space-y-6">
+      <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Cenário</h3>
+      <%= form_with url: dashboard_simulation_path, method: :get, class: "space-y-6" do |f| %>
+        <div class="space-y-2">
+          <%= f.label :salary_adj, "Aumento de Salário (%)", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.number_field :salary_adj, value: params[:salary_adj] || 0, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+        <div class="space-y-2">
+          <%= f.label :expense_adj, "Corte de Gastos (%)", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.number_field :expense_adj, value: params[:expense_adj] || 0, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+        <%= f.submit "Simular", class: "w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-indigo-500/25 cursor-pointer" %>
+      <% end %>
+    </div>
   </div>
 
-  <div class="lg:col-span-2 bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6 space-y-6">
-    <div class="grid grid-cols-2 gap-4">
-      <div class="p-4 bg-zinc-800/40 rounded-xl">
-        <p class="text-xs text-zinc-500 uppercase">Salário Projetado</p>
-        <p class="text-xl font-bold text-emerald-400"><%= number_to_currency(@results[:projected_salary], unit: "R$ ", separator: ",", delimiter: ".") %></p>
+  <div class="lg:col-span-2 space-y-6">
+    <%# Monthly Cash Flow %>
+    <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+      <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6">Fluxo de Caixa Mensal</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-zinc-950/50 border border-zinc-800/60 rounded-2xl p-5">
+          <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Salário Projetado</p>
+          <p class="text-2xl font-black text-emerald-400 tabular-nums"><%= number_to_currency(@results[:projected_salary] / 100.0) %></p>
+        </div>
+        <div class="bg-zinc-950/50 border border-zinc-800/60 rounded-2xl p-5">
+          <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Despesas Projetadas</p>
+          <p class="text-2xl font-black text-red-400 tabular-nums"><%= number_to_currency(@results[:projected_expenses] / 100.0) %></p>
+        </div>
       </div>
-      <div class="p-4 bg-zinc-800/40 rounded-xl">
-        <p class="text-xs text-zinc-500 uppercase">Despesas Projetadas</p>
-        <p class="text-xl font-bold text-red-400"><%= number_to_currency(@results[:projected_expenses], unit: "R$ ", separator: ",", delimiter: ".") %></p>
+
+      <div class="mt-4 bg-zinc-950/50 border border-zinc-700/50 rounded-2xl p-6">
+        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Saldo Final Estimado</p>
+        <p class="text-3xl font-black tabular-nums <%= @results[:balance] >= 0 ? 'text-sky-400' : 'text-red-500' %>">
+          <%= number_to_currency(@results[:balance] / 100.0) %>
+        </p>
       </div>
     </div>
-    
-    <div class="p-4 bg-zinc-800/40 rounded-xl border border-zinc-700/50">
-      <p class="text-xs text-zinc-500 uppercase">Saldo Final Estimado</p>
-      <p class="text-3xl font-bold <%= @results[:balance] >= 0 ? 'text-sky-400' : 'text-red-500' %>">
-        <%= number_to_currency(@results[:balance], unit: "R$ ", separator: ",", delimiter: ".") %>
-      </p>
+
+    <%# Debt & Savings Projections %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+        <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Quitação de Dívidas</h3>
+        <% if @results[:debt_payoff_months] %>
+          <p class="text-3xl font-black text-amber-400 tabular-nums">~<%= @results[:debt_payoff_months] %> meses</p>
+          <p class="text-xs text-zinc-500 mt-2 font-medium">
+            Restam <%= number_to_currency(@results[:total_debt_remaining] / 100.0) %> a pagar
+          </p>
+        <% else %>
+          <p class="text-zinc-500 text-sm">Nenhuma dívida ativa</p>
+        <% end %>
+      </div>
+      <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+        <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Patrimônio em 12 Meses</h3>
+        <p class="text-3xl font-black text-indigo-400 tabular-nums">
+          <%= number_to_currency(@results[:projected_net_worth_12m] / 100.0) %>
+        </p>
+        <p class="text-xs text-zinc-500 mt-2 font-medium">Economizando <%= number_to_currency(@results[:monthly_savings] / 100.0) %>/mês</p>
+      </div>
     </div>
+
+    <%# Goal Projections %>
+    <% if @results[:goal_projections].any? %>
+      <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
+        <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6">Projeção de Metas</h3>
+        <div class="space-y-3">
+          <% @results[:goal_projections].each do |g| %>
+            <div class="flex items-center justify-between bg-zinc-950/50 border border-zinc-800/60 rounded-2xl p-5">
+              <div class="flex items-center gap-3">
+                <span class="text-xl"><%= g[:icon] %></span>
+                <span class="text-sm font-bold text-zinc-300"><%= g[:name] %></span>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-bold text-zinc-100"><%= g[:estimated_months] ? "~#{g[:estimated_months]} meses" : "—" %></p>
+                <% if g[:monthly_savings_needed] %>
+                  <p class="text-[10px] text-zinc-500 font-medium mt-0.5">Precisa de <%= number_to_currency(g[:monthly_savings_needed] / 100.0).strip %>/mês</p>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>

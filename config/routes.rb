@@ -1,16 +1,18 @@
 Rails.application.routes.draw do
-  root to: "home#index"
+  root to: "dashboard#index"
   devise_for :users
 
   # Authenticated dashboard area
   get "dashboard", to: "dashboard#index", as: :dashboard
 
-  scope as: :dashboard do
-    resources :accounts
-    resources :categories do
-      resources :categorization_rules, only: [:create, :destroy], module: :categories
+  scope '/dashboard', as: :dashboard do
+    resources :accounts, except: :show
+    resources :categories, except: :show do
+      resources :categorization_rules, only: [:index, :create, :destroy], module: :categories
     end
-    resources :transactions do
+    resources :categorization_suggestions
+    resources :budget_alerts, only: [:index]
+    resources :transactions, except: :show do
       collection do
         get :import
         post :do_import
@@ -21,19 +23,37 @@ Rails.application.routes.draw do
         post :mark_all_as_read
       end
     end
-    resources :investments
-    resources :goals do
+    resources :investments do
+      resources :trades, only: [:index, :create, :edit, :update, :destroy], module: :investments do
+        collection do
+          delete :clear
+        end
+      end
+      collection do
+        get :cards
+        post :refresh_all_prices
+      end
+      member do
+        post :refresh_price
+      end
+    end
+    resources :bill_reminders, except: :show
+    resources :goals, except: :show do
       member do
         patch :contribute
       end
     end
-    resources :debts
+    resources :debts, except: :show
     resources :budgets
     
     get "reports", to: "dashboard#reports"
     get "simulation", to: "dashboard#simulation"
+    get "health", to: "dashboard#health"
+    get "news", to: "dashboard#news"
+    get "indicators", to: "dashboard#indicators"
     get "settings", to: "dashboard#settings"
     patch "settings", to: "dashboard#update_settings"
+    get "backup", to: "dashboard#backup"
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

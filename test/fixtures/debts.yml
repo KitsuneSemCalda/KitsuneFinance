@@ -1,17 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  name: MyString
-  total_amount: 1
-  monthly_payment: 1
-  installments_count: 1
-  remaining_installments: 1
+  name: "Financiamento Imóvel"
+  total_amount: 30000000
+  monthly_payment: 150000
+  installments_count: 240
+  remaining_installments: 220
   user: one
 
 two:
-  name: MyString
-  total_amount: 1
-  monthly_payment: 1
-  installments_count: 1
-  remaining_installments: 1
+  name: "Carro"
+  total_amount: 8000000
+  monthly_payment: 100000
+  installments_count: 60
+  remaining_installments: 30
   user: two

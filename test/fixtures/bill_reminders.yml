@@ -1,0 +1,19 @@
+one:
+  user: one
+  category: one
+  name: "Aluguel"
+  amount: 200000
+  due_date: 2026-05-10
+  paid: false
+  recurrent: true
+  recurrence_period: "monthly"
+  color: "indigo"
+
+two:
+  user: one
+  category: one
+  name: "Internet"
+  amount: 10000
+  due_date: 2026-05-15
+  paid: true
+  color: "emerald"

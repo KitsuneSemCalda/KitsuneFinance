@@ -68,6 +68,9 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   config.action_view.annotate_rendered_view_with_filenames = true
 
+  # Support subpath deployment for local testing via RAILS_RELATIVE_URL_ROOT env var.
+  config.action_controller.relative_url_root = ENV["RAILS_RELATIVE_URL_ROOT"].presence
+
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 

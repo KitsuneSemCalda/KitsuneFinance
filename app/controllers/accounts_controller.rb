@@ -6,6 +6,11 @@ class AccountsController < ApplicationController
   def index
     @page_title = "Contas"
     @accounts = current_user.accounts
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @accounts.select(:id, :name, :account_type, :balance, :currency) }
+    end
   end
 
   def new
@@ -14,6 +19,7 @@ class AccountsController < ApplicationController
   end
 
   def create
+    convert_to_cents(:balance)
     @account = current_user.accounts.new(account_params)
     if @account.save
       redirect_to dashboard_accounts_path, notice: "Conta criada com sucesso."
@@ -27,6 +33,7 @@ class AccountsController < ApplicationController
   end
 
   def update
+    convert_to_cents(:balance)
     if @account.update(account_params)
       redirect_to dashboard_accounts_path, notice: "Conta atualizada com sucesso."
     else

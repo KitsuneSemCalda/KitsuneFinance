@@ -36,3 +36,11 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Ignore development SQLite database
+/db/*.sqlite3
+
+# Ignore development utility scripts
+/check_mount.rb
+/check_schema.rb
+/fix_db.rb

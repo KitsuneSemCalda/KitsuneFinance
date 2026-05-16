@@ -10,7 +10,7 @@ class Budget < ApplicationRecord
     user.transactions
         .expense
         .where(category_id: category_id)
-        .where("extract(month from date) = ? AND extract(year from date) = ?", month, year)
+        .where(date: Date.new(year, month, 1)..Date.new(year, month, -1))
         .sum(:amount)
   end
 
@@ -20,7 +20,7 @@ class Budget < ApplicationRecord
 
   def progress_pct
     return 0 if limit_amount.zero?
-    [((spent_amount / limit_amount) * 100).to_f, 100.0].min
+    [((spent_amount.to_f / limit_amount) * 100).to_f, 100.0].min
   end
 
   def over_budget?

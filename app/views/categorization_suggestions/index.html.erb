@@ -1,0 +1,29 @@
+<div class="max-w-4xl mx-auto">
+  <div class="flex justify-between items-center mb-8">
+    <%= render "shared/section_header", title: "Regras de Categorização", subtitle: "Gerencie as palavras-chave que classificam suas transações automaticamente." %>
+    <%= link_to "Nova Regra", new_dashboard_categorization_suggestion_path, class: "bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-5 rounded-xl transition-all" %>
+  </div>
+
+  <div class="bg-zinc-900/60 border border-zinc-800 rounded-2xl overflow-hidden">
+    <table class="w-full text-left">
+      <thead class="bg-zinc-800/50">
+        <tr>
+          <th class="px-6 py-4 text-xs font-bold uppercase text-zinc-500">Palavra-Chave</th>
+          <th class="px-6 py-4 text-xs font-bold uppercase text-zinc-500">Categoria</th>
+          <th class="px-6 py-4 text-xs font-bold uppercase text-zinc-500 text-right">Ações</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-zinc-800/60">
+        <% @suggestions.each do |suggestion| %>
+          <tr>
+            <td class="px-6 py-4 text-zinc-200 font-bold"><%= suggestion.keyword %></td>
+            <td class="px-6 py-4 text-zinc-400"><%= suggestion.category.name %></td>
+            <td class="px-6 py-4 text-right">
+              <%= button_to "Excluir", dashboard_categorization_suggestion_path(suggestion), method: :delete, class: "text-red-400 hover:text-red-300 text-xs font-bold uppercase", data: { turbo_confirm: "Tem certeza?" } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

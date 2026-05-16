@@ -1,0 +1,56 @@
+<div class="max-w-xl mx-auto">
+  <div class="flex items-center gap-4 mb-8">
+    <%= link_to dashboard_investment_trades_path(@investment), class: "w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-100 hover:border-zinc-700 transition-all shadow-sm" do %>
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <% end %>
+    <h2 class="text-2xl font-bold text-zinc-100">Editar Operação</h2>
+  </div>
+
+  <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+      <svg class="w-24 h-24 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2"/></svg>
+    </div>
+
+    <%= form_with model: [@investment, @trade], url: dashboard_investment_trade_path(@investment, @trade), method: :patch, class: "space-y-6 relative z-10" do |f| %>
+      
+      <div class="space-y-4">
+        <div class="flex bg-zinc-950 p-1 rounded-2xl border border-zinc-800">
+          <% [["Compra", "buy"], ["Venda", "sell"]].each do |label, val| %>
+            <label class="flex-1 cursor-pointer">
+              <%= f.radio_button :trade_type, val, class: "peer sr-only" %>
+              <div class="py-3 text-center text-xs font-bold uppercase tracking-widest text-zinc-500 rounded-xl peer-checked:bg-zinc-800 peer-checked:text-zinc-100 transition-all">
+                <%= label %>
+              </div>
+            </label>
+          <% end %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <%= f.label :date, "Data da Operação", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+            <%= f.date_field :date, required: true, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+          </div>
+          <div class="space-y-2">
+            <%= f.label :quantity, "Quantidade", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+            <%= f.number_field :quantity, step: :any, min: 0.000001, required: true, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <%= f.label :price, "Preço Unitário (R$)", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.number_field :price, step: :any, min: 0, required: true, value: @trade.price / 100.0, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-zinc-100 text-lg font-black focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+
+        <div class="space-y-2">
+          <%= f.label :notes, "Observações", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.text_area :notes, rows: 3, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-200 text-sm focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 pt-4">
+        <%= link_to "Descartar", dashboard_investment_trades_path(@investment), class: "flex-1 text-center bg-zinc-900 hover:bg-zinc-800 text-zinc-500 font-bold py-4 rounded-2xl border border-zinc-800 transition-all" %>
+        <%= f.submit "Salvar Alterações", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-indigo-500/25 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -16,18 +16,20 @@ class ImporterService
   private
 
   def self.import_csv(file, user, account)
-    # Simple CSV import assuming: date, description, amount, type
-    # This is a baseline, in a real app we'd have a mapper
     transactions = []
     CSV.foreach(file.path, headers: true) do |row|
-      transactions << create_transaction(
-        user: user,
-        account: account,
-        date: Date.parse(row["date"]),
-        description: row["description"],
-        amount: row["amount"].to_f,
-        type: row["type"] || "expense"
-      )
+      begin
+        transactions << create_transaction(
+          user: user,
+          account: account,
+          date: Date.parse(row["date"]),
+          description: row["description"],
+          amount: (row["amount"].to_f * 100).to_i,
+          type: row["type"] || "expense"
+        )
+      rescue Date::Error, ArgumentError => e
+        Rails.logger.warn "ImporterService skipped CSV row: #{e.message}"
+      end
     end
     transactions.compact
   end
@@ -36,8 +38,8 @@ class ImporterService
     transactions = []
     OFX(file.path) do |ofx|
       # Bank Inference
-      if account.bank_code.blank? && ofx.header["BANKID"].present?
-        bank_id = ofx.header["BANKID"]
+      if account.bank_code.blank? && ofx.account.bank_id.present?
+        bank_id = ofx.account.bank_id
         banks = BrasilApiService.fetch_banks
         bank = banks.find { |b| b["code"] == bank_id.to_i }
         
@@ -53,7 +55,7 @@ class ImporterService
           account: account,
           date: tx.posted_at,
           description: tx.memo || tx.name,
-          amount: tx.amount.to_f.abs,
+          amount: (tx.amount.to_f.abs * 100).to_i,
           type: tx.amount > 0 ? "income" : "expense"
         )
       end
@@ -62,7 +64,6 @@ class ImporterService
   end
 
   def self.create_transaction(user:, account:, date:, description:, amount:, type:)
-    # Simple duplicate detection
     return nil if user.transactions.where(
       account: account,
       date: date,
@@ -70,10 +71,9 @@ class ImporterService
       description: description
     ).exists?
 
-    # Basic auto-categorization
     category = auto_categorize(description, user)
 
-    user.transactions.create!(
+    user.transactions.create(
       account: account,
       date: date,
       description: description,
@@ -81,6 +81,9 @@ class ImporterService
       transaction_type: type,
       category: category
     )
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+    Rails.logger.warn "ImporterService skipped row: #{e.message}"
+    nil
   end
 
   def self.auto_categorize(description, user)
@@ -88,7 +91,16 @@ class ImporterService
     custom_category = CategorizationRule.match(description, user)
     return custom_category if custom_category
 
-    # 2. Try to extract CNPJ from description
+    # 2. Check for Investment Income (Dividends/JCP)
+    desc_up = description.upcase
+    if desc_up.include?("DIVIDENDO") || desc_up.include?("PROVENTO") || desc_up.include?("JCP") || desc_up.include?("RENDIMENTO")
+      ticker_match = user.investments.pluck(:ticker).find { |t| desc_up.include?(t.upcase) }
+      if ticker_match
+        return user.categories.find_or_create_by!(name: "Investimentos", transaction_type: "income")
+      end
+    end
+
+    # 3. Try to extract CNPJ from description
     cnpj_match = description.match(/\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}/)
     if cnpj_match
       company_data = BrasilApiService.fetch_company_data(cnpj_match[0])
@@ -98,37 +110,10 @@ class ImporterService
       end
     end
 
-    # 2. Fallback to keyword matching
-    keywords = {
-      "IFOOD" => "Alimentação",
-      "RAPPID" => "Alimentação",
-      "UBER" => "Transporte",
-      "99APP" => "Transporte",
-      "NETFLIX" => "Lazer",
-      "SPOTIFY" => "Lazer",
-      "AMAZON" => "Compras",
-      "MERCADO LIVRE" => "Compras",
-      "MAGALU" => "Compras",
-      "MERCADO" => "Alimentação",
-      "CARREFOUR" => "Alimentação",
-      "PÃO DE AÇUCAR" => "Alimentação",
-      "POSTO" => "Transporte",
-      "SHELL" => "Transporte",
-      "IPIRANGA" => "Transporte",
-      "FARMACIA" => "Saúde",
-      "DROGASIL" => "Saúde",
-      "RAIA" => "Saúde",
-      "CONDOMINIO" => "Moradia",
-      "ALUGUEL" => "Moradia",
-      "ENEL" => "Contas Fixas",
-      "SABESP" => "Contas Fixas",
-      "VIVO" => "Contas Fixas",
-      "CLARO" => "Contas Fixas"
-    }
+    # 4. Fallback to keyword matching
+    match = user.categorization_suggestions.includes(:category).find { |s| description.upcase.include?(s.keyword.upcase) }
+    return match.category if match
 
-    match = keywords.find { |k, v| description.upcase.include?(k) }
-    return nil unless match
-
-    user.categories.find_or_create_by(name: match[1])
+    nil
   end
 end

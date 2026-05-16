@@ -5,7 +5,12 @@ class CategoriesController < ApplicationController
 
   def index
     @page_title = "Categorias"
-    @categories = current_user.categories.order(:transaction_type, :name)
+    @categories = current_user.categories.includes(:categorization_rules).order(:transaction_type, :name)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @categories.select(:id, :name, :transaction_type, :icon, :color) }
+    end
   end
 
   def new

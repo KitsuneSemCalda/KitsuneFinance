@@ -1,0 +1,6 @@
+one:
+  user: one
+  category: one
+  month: 5
+  year: 2026
+  limit_amount: 100000

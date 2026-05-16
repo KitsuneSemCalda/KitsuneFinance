@@ -15,7 +15,10 @@ class IndicatorsService
     series_id = SERIES[indicator.to_sym]
     return nil unless series_id
 
-    response = Faraday.get("#{BCB_BASE_URL}/bcdata.sgs.#{series_id}/dados/ultimos/1?formato=json")
+    response = Faraday.get("#{BCB_BASE_URL}/bcdata.sgs.#{series_id}/dados/ultimos/1?formato=json") do |req|
+      req.options.timeout = 10
+      req.options.open_timeout = 5
+    end
     return nil unless response.success?
 
     data = JSON.parse(response.body)

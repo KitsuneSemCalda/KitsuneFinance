@@ -1,0 +1,9 @@
+<% button_label = local_assigns[:button_label] || "Excluir Registro" %>
+
+<% if resource.persisted? %>
+  <div class="pt-8 border-t border-zinc-800/60 mt-8 flex justify-center">
+    <%= button_to path, method: :delete, class: "text-red-500/60 hover:text-red-400 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors", data: { turbo_confirm: confirm_message } do %>
+      <%= button_label %>
+    <% end %>
+  </div>
+<% end %>

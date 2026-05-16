@@ -1,0 +1,17 @@
+<div class="max-w-xl mx-auto">
+  <%= render "shared/section_header", title: "Nova Regra de Categorização", subtitle: "Defina uma palavra-chave e a categoria para automatizar o processo." %>
+
+  <%= form_with model: [:dashboard, @suggestion], class: "space-y-6" do |f| %>
+    <%= render layout: "shared/card", locals: { class: "bg-zinc-900/60 p-6 space-y-6" } do %>
+      <%= render layout: "shared/field", locals: { f: f, field: :keyword, label: "Palavra-Chave" } do %>
+        <%= f.text_field :keyword, placeholder: "Ex: UBER, IFOOD, NETFLIX...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold" %>
+      <% end %>
+      
+      <%= render layout: "shared/field", locals: { f: f, field: :category_id, label: "Categoria" } do %>
+        <%= f.collection_select :category_id, current_user.categories, :id, :name, { prompt: "Selecione a categoria" }, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/submit_bar", f: f, cancel_path: dashboard_categorization_suggestions_path, submit_label: "Salvar Regra" %>
+  <% end %>
+</div>

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Script to build, tag, and push the kitsune_finance image to Docker Hub
+# Usage: ./bin/docker-push <tag>
+
+set -e
+
+TAG=${1:-latest}
+IMAGE_NAME="kitsune_finance"
+DOCKER_HUB_REPO="kitsunesemcalda/$IMAGE_NAME"
+
+echo "=== Starting Docker Hub deployment process ==="
+
+echo "1. Building the image: $IMAGE_NAME..."
+docker build -t $IMAGE_NAME .
+
+echo "2. Tagging the image as: $DOCKER_HUB_REPO:$TAG..."
+docker tag $IMAGE_NAME:latest $DOCKER_HUB_REPO:$TAG
+
+echo "3. Pushing to Docker Hub..."
+docker push $DOCKER_HUB_REPO:$TAG
+
+echo "=== Success! Image pushed as: $DOCKER_HUB_REPO:$TAG ==="

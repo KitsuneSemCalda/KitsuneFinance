@@ -1,0 +1,59 @@
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+  <div>
+    <h2 class="text-2xl font-bold text-zinc-100">Regras de Categorização</h2>
+    <p class="text-zinc-500 text-sm">Palavras-chave que automatizam a categorização das suas transações.</p>
+  </div>
+  <%= link_to dashboard_categories_path, class: "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-2.5 px-5 rounded-xl transition-all border border-zinc-700 flex items-center gap-2 text-xs uppercase tracking-widest" do %>
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" stroke-width="2"/></svg>
+    Gerenciar Categorias
+  <% end %>
+</div>
+
+<div class="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl overflow-hidden backdrop-blur-xl">
+  <% if @rules.any? %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-zinc-900/80 border-b border-zinc-800/60">
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Palavra-chave</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Categoria</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-800/60">
+          <% @rules.each do |rule| %>
+            <tr class="hover:bg-zinc-800/40 transition-all group">
+              <td class="px-6 py-5">
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-800 rounded-xl text-sm font-bold text-zinc-200 border border-zinc-700/50">
+                  <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
+                  <%= rule.keyword %>
+                </span>
+              </td>
+              <td class="px-6 py-5">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-<%= rule.category.color %>-500/10 text-<%= rule.category.color %>-400 border border-<%= rule.category.color %>-500/20">
+                  <%= rule.category.icon %> <%= rule.category.name %>
+                </span>
+              </td>
+              <td class="px-6 py-5 text-right">
+                <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <%= button_to dashboard_category_categorization_rule_path(rule.category, rule), method: :delete, class: "p-2 text-zinc-500 hover:text-red-400 bg-zinc-800/40 hover:bg-zinc-800 rounded-xl transition-all", data: { turbo_confirm: "Remover esta regra?" } do %>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2"/></svg>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-16 h-16 bg-zinc-800/40 rounded-3xl flex items-center justify-center mb-6">
+        <svg class="w-8 h-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
+      </div>
+      <h3 class="text-lg font-bold text-zinc-300">Nenhuma regra criada</h3>
+      <p class="text-zinc-500 text-sm mt-1">As regras são criadas automaticamente ao re-categorizar transações.</p>
+      <%= link_to "Ver Categorias", dashboard_categories_path, class: "mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-5 rounded-xl transition-all text-xs uppercase tracking-widest" %>
+    </div>
+  <% end %>
+</div>

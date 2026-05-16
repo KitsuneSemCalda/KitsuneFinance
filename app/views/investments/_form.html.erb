@@ -1,48 +1,74 @@
-<div class="max-w-2xl mx-auto bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
-  <h2 class="text-2xl font-bold text-zinc-100 mb-8"><%= @page_title %></h2>
+<div class="max-w-2xl mx-auto">
+  <%= render "shared/section_header", title: @page_title, subtitle: "Preencha os dados do ativo. O sistema tentará automatizar o restante." %>
 
   <%= form_with model: [:dashboard, @investment], class: "space-y-6" do |f| %>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <%= f.label :ticker, "Ticker / ID", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.text_field :ticker, placeholder: "Ex: PETR4, BTC, AAPL", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+
+    <%= render layout: "shared/card", locals: { class: "bg-zinc-900/60 shadow-2xl relative overflow-hidden" } do %>
+      <div class="absolute top-0 right-0 p-4 opacity-10">
+        <svg class="w-20 h-20 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-width="2"/></svg>
       </div>
 
-      <div class="space-y-2">
-        <%= f.label :asset_type, "Tipo de Ativo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.select :asset_type, [["Ação BR", "stock_br"], ["FII", "fii"], ["Renda Fixa", "fixed_income"], ["Internacional", "international"], ["Cripto", "crypto"], ["Outros", "other"]], {}, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+        <%= render layout: "shared/field", locals: { f: f, field: :ticker, label: "Ticker / Código" } do %>
+          <%= f.text_field :ticker, placeholder: "Ex: PETR4, BTC, AAPL", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-zinc-700", required: true, autofocus: true %>
+          <p class="text-[10px] text-indigo-400/60 font-medium italic">✨ Autodetecção ativada</p>
+        <% end %>
+
+        <%= render layout: "shared/field", locals: { f: f, field: :quantity, label: "Quantidade" } do %>
+          <%= f.number_field :quantity, step: :any, value: @investment.quantity.to_f, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-zinc-700", required: true %>
+        <% end %>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 relative z-10">
+        <%= render layout: "shared/field", locals: { f: f, field: :avg_price, label: "Preço Médio (R$)" } do %>
+          <%= f.number_field :avg_price, step: 0.0001, value: @investment.avg_price.to_f / 100, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-zinc-700" %>
+        <% end %>
+
+        <%= render layout: "shared/field", locals: { f: f, field: :current_price, label: "Preço Atual (R$)" } do %>
+          <%= f.number_field :current_price, step: 0.0001, value: @investment.current_price.to_f / 100, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-zinc-700" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div x-data="{ showAdvanced: false }" class="space-y-4">
+      <button type="button" @click="showAdvanced = !showAdvanced" class="w-full flex items-center justify-between px-6 py-4 bg-zinc-900/40 border border-zinc-800/60 rounded-2xl hover:bg-zinc-800/60 transition-all group">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center group-hover:bg-zinc-700 transition-colors">
+            <svg class="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
+          </div>
+          <span class="text-sm font-semibold text-zinc-300">Configurações Avançadas</span>
+        </div>
+        <svg class="w-4 h-4 text-zinc-500 transition-transform duration-300" :class="showAdvanced ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+      </button>
+
+      <div x-show="showAdvanced" x-collapse>
+        <%= render layout: "shared/card", locals: { class: "bg-zinc-900/40 space-y-8" } do %>
+          <div class="space-y-3">
+            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Tipo de Ativo</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <% [["Ação BR", "stock_br"], ["FII", "fii"], ["Cripto", "crypto"], ["Internacional", "international"], ["Renda Fixa", "fixed_income"], ["Tesouro BR", "treasury_br"], ["Outros", "other"]].each do |label, value| %>
+                <label class="cursor-pointer">
+                  <%= f.radio_button :asset_type, value, class: "peer sr-only" %>
+                  <div class="px-3 py-3 rounded-xl border border-zinc-800 bg-zinc-950/50 text-center text-[11px] font-bold text-zinc-500 peer-checked:border-indigo-500 peer-checked:bg-indigo-500/10 peer-checked:text-indigo-400 hover:border-zinc-700 transition-all">
+                    <%= label %>
+                  </div>
+                </label>
+              <% end %>
+            </div>
+            <p class="text-[10px] text-zinc-600 italic">Se não selecionado, o sistema tentará inferir pelo ticker.</p>
+          </div>
+
+          <%= render layout: "shared/field", locals: { f: f, field: :name, label: "Nome Personalizado" } do %>
+            <%= f.text_field :name, placeholder: "Ex: Petrobras PN", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-200 focus:border-indigo-500 outline-none transition-all" %>
+          <% end %>
+
+          <%= render layout: "shared/field", locals: { f: f, field: :price_feed_url, label: "URL do Feed de Preço (RSS/JSON/CSV)" } do %>
+            <%= f.url_field :price_feed_url, placeholder: "https://minha-api.com/preco", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-200 focus:border-indigo-500 outline-none transition-all" %>
+          <% end %>
+        <% end %>
       </div>
     </div>
 
-    <div class="space-y-2">
-      <%= f.label :name, "Nome do Ativo", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-      <%= f.text_field :name, placeholder: "Ex: Petrobras PN", class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="space-y-2">
-        <%= f.label :quantity, "Quantidade", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :quantity, step: 0.000001, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-
-      <div class="space-y-2">
-        <%= f.label :avg_price, "Preço Médio", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :avg_price, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-
-      <div class="space-y-2">
-        <%= f.label :current_price, "Preço Atual", class: "text-xs font-bold text-zinc-500 uppercase tracking-wider" %>
-        <%= f.number_field :current_price, step: 0.01, class: "w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-100 focus:border-indigo-500 outline-none transition-all" %>
-      </div>
-    </div>
-
-    <div class="space-y-2 text-zinc-500 text-[10px] bg-indigo-500/5 border border-indigo-500/10 rounded-lg p-3">
-      💡 <strong>Dica:</strong> O sistema tentará atualizar o <em>Preço Atual</em> automaticamente usando as APIs integradas baseadas no Ticker.
-    </div>
-
-    <div class="flex gap-4 pt-4">
-      <%= link_to "Cancelar", dashboard_investments_path, class: "flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 rounded-xl transition-all" %>
-      <%= f.submit "Salvar Ativo", class: "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer" %>
-    </div>
+    <%= render "shared/submit_bar", f: f, cancel_path: dashboard_investments_path, submit_label: "Salvar Investimento" %>
   <% end %>
 </div>
