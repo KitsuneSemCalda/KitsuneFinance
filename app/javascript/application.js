@@ -4,7 +4,7 @@ import * as Chart from "chart.js"
 import "kitsune"
 
 window.Alpine = Alpine
-window.Chart = Chart.default || Chart
+window.Chart = Chart.default || Chart.Chart || Chart
 Alpine.start()
 
 document.addEventListener("turbo:load", () => {

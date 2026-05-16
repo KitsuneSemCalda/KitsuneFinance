@@ -13,3 +13,4 @@ services:
       - ./db:/rails/db
       - ./lib:/rails/lib
       - ./bin:/rails/bin
+    command: ["sh", "-c", "bin/rails tailwindcss:build && exec ./bin/thrust ./bin/rails server"]
