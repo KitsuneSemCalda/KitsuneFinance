@@ -10,4 +10,17 @@ echo "🚀 Iniciando build da imagem docker..."
 docker build -t kitsune_finance .
 
 echo "✅ Build concluído com sucesso!"
-echo "Para executar, utilize: docker run -d --name kitsune_finance -p 13522:80 -v \$(pwd)/storage:/rails/storage --restart unless-stopped kitsune_finance:latest"
+
+# Remove container existente com o mesmo nome, se houver
+if docker ps -a --format '{{.Names}}' | grep -q '^kitsune_finance$'; then
+  echo "⚠️  Removendo container existente 'kitsune_finance'..."
+  docker rm -f kitsune_finance
+fi
+
+echo "🚀 Iniciando container..."
+docker run -d --name kitsune_finance -p 13522:80 \
+  -v "$(pwd)/storage:/rails/storage" \
+  --restart unless-stopped \
+  kitsune_finance:latest
+
+echo "✅ Container kitsune_finance rodando em http://localhost:13522"
