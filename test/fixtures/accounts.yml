@@ -2,7 +2,7 @@ one:
   user: one
   name: "Conta Corrente"
   account_type: "checking"
-  balance: 10000.0
+  balance: 1000000
   currency: "BRL"
   color: "indigo"
 
@@ -10,6 +10,6 @@ two:
   user: two
   name: "Poupança"
   account_type: "savings"
-  balance: 5000.0
+  balance: 500000
   currency: "BRL"
   color: "emerald"

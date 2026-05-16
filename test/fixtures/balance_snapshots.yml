@@ -1,0 +1,13 @@
+one:
+  user: one
+  snapshot_date: 2026-05-13
+  total_balance: 1000000
+  total_investments: 28000
+  net_worth: 1028000
+
+two:
+  user: two
+  snapshot_date: 2026-05-14
+  total_balance: 5000000
+  total_investments: 7500000
+  net_worth: 12500000

@@ -26,7 +26,7 @@
       <div class="mb-4 relative z-10">
         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1 ml-1">Saldo Disponível</span>
         <p class="text-3xl font-black text-zinc-100 tabular-nums tracking-tight">
-          <%= number_to_currency(account.balance / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+          <%= number_to_currency(account.balance / 100.0) %>
         </p>
       </div>
 

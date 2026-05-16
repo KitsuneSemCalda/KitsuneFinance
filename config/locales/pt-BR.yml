@@ -1,4 +1,12 @@
 'pt-BR':
+  number:
+    currency:
+      format:
+        unit: "R$ "
+        separator: ","
+        delimiter: "."
+        format: "%u%n"
+
   account_types:
     checking: "Corrente"
     savings: "Poupança"

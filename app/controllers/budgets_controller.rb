@@ -7,7 +7,7 @@ class BudgetsController < ApplicationController
     @page_title = "Orçamento"
     @month = params[:month]&.to_i || Date.today.month
     @year = params[:year]&.to_i || Date.today.year
-    @budgets = current_user.budgets.where(month: @month, year: @year)
+    @budgets = current_user.budgets.where(month: @month, year: @year).includes(:category)
   end
 
   def show
@@ -26,7 +26,6 @@ class BudgetsController < ApplicationController
   end
 
   def create
-    params[:budget][:limit_amount] = (params[:budget][:limit_amount].to_f * 100).to_i if params[:budget][:limit_amount].present?
     @budget = current_user.budgets.new(budget_params)
     if @budget.save
       redirect_to dashboard_budgets_path(month: @budget.month, year: @budget.year), notice: "Orçamento definido com sucesso."
@@ -40,7 +39,6 @@ class BudgetsController < ApplicationController
   end
 
   def update
-    params[:budget][:limit_amount] = (params[:budget][:limit_amount].to_f * 100).to_i if params[:budget][:limit_amount].present?
     if @budget.update(budget_params)
       redirect_to dashboard_budgets_path(month: @budget.month, year: @budget.year), notice: "Orçamento atualizado com sucesso."
     else

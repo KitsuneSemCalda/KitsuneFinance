@@ -2,7 +2,7 @@ class BudgetAlertCheckJob < ApplicationJob
   queue_as :default
 
   def perform
-    Budget.find_each do |budget|
+    Budget.includes(:category).find_each do |budget|
       spent = budget.spent_amount
       limit = budget.limit_amount
       next if limit.zero?

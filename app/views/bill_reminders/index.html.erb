@@ -4,11 +4,11 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
   <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
     <p class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total a Pagar</p>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_pending / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@total_pending / 100.0) %></p>
   </div>
   <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
     <p class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Pago</p>
-    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@total_paid / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@total_paid / 100.0) %></p>
   </div>
   <div class="rounded-2xl bg-zinc-900/60 border border-zinc-800/60 p-5">
     <p class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Vencidas</p>

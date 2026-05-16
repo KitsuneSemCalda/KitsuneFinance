@@ -16,7 +16,7 @@
   </div>
   <div class="text-right shrink-0">
     <p class="text-sm font-black tabular-nums <%= bill.paid ? 'text-zinc-600' : 'text-red-400' %>">
-      <%= number_to_currency(bill.amount / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+      <%= number_to_currency(bill.amount / 100.0) %>
     </p>
   </div>
   <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">

@@ -5,7 +5,7 @@ class TransactionsController < ApplicationController
 
   def index
     @page_title = "Transações"
-    @transactions = current_user.transactions.order(date: :desc, created_at: :desc)
+    @transactions = current_user.transactions.includes(:category, :account).order(date: :desc, created_at: :desc)
 
     # Search & Filters
     if params[:search].present?
@@ -29,7 +29,7 @@ class TransactionsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @transactions.limit(50).map { |tx| tx.attributes.merge(category_name: tx.category&.name, account_name: tx.account&.name) } }
+      format.json { render json: @transactions.limit(50).map { |tx| tx.attributes.slice("id", "description", "amount", "transaction_type", "date", "created_at").merge(category_name: tx.category&.name, account_name: tx.account&.name) } }
       format.any(:csv) { send_data generate_csv(@transactions), filename: "transacoes-#{Date.today}.csv" }
       format.any(:xlsx) { response.headers["Content-Disposition"] = "attachment; filename=\"transacoes-#{Date.today}.xlsx\"" }
     end
@@ -54,7 +54,11 @@ class TransactionsController < ApplicationController
 
   def create
     @transaction = current_user.transactions.new(transaction_params)
+    @transaction.total_installments = nil if params[:installment].blank?
+
     if @transaction.save
+      create_installments if params[:installment].present? && @transaction.total_installments.to_i > 1
+
       respond_to do |format|
         format.html { redirect_to dashboard_transactions_path, notice: "Transação registrada com sucesso." }
         format.json { render json: { success: true, transaction: @transaction }, status: :created }
@@ -97,7 +101,13 @@ class TransactionsController < ApplicationController
   def do_import
     file = params[:file]
     account = current_user.accounts.find(params[:account_id])
-    format = params[:format] || (file.original_filename.downcase.end_with?(".ofx") ? :ofx : :csv)
+
+    if file.nil?
+      redirect_to import_dashboard_transactions_path, alert: "Selecione um arquivo para importar."
+      return
+    end
+
+    format = params[:format]&.to_sym || (file.original_filename.downcase.end_with?(".ofx") ? :ofx : :csv)
 
     begin
       imported_transactions = ImporterService.import(file, current_user, account, format: format)
@@ -144,6 +154,28 @@ class TransactionsController < ApplicationController
     )
   end
 
+  def create_installments
+    installment_count = @transaction.total_installments
+    installment_amount = (@transaction.amount.to_f / installment_count).to_i
+    base_date = @transaction.date
+
+    (2..installment_count).each do |i|
+      current_user.transactions.create!(
+        account_id: @transaction.account_id,
+        description: "#{@transaction.description} (#{i}/#{installment_count})",
+        amount: installment_amount,
+        transaction_type: @transaction.transaction_type,
+        category_id: @transaction.category_id,
+        date: base_date + (i - 1).month,
+        notes: @transaction.notes,
+        goal_id: @transaction.goal_id,
+        installment_number: i,
+        total_installments: installment_count,
+        parent_transaction_id: @transaction.id
+      )
+    end
+  end
+
   def set_transaction
     @transaction = current_user.transactions.find(params[:id])
   end
@@ -158,6 +190,6 @@ class TransactionsController < ApplicationController
   end
 
   def transaction_params
-    params.require(:transaction).permit(:account_id, :destination_account_id, :category_id, :description, :amount, :transaction_type, :date, :notes, :receipt)
+    params.require(:transaction).permit(:account_id, :destination_account_id, :category_id, :description, :amount, :transaction_type, :date, :notes, :receipt, :total_installments)
   end
 end

@@ -1,0 +1,11 @@
+one:
+  user: one
+  title: "Bem-vindo"
+  message: "Seu cadastro foi concluído."
+  notification_type: "info"
+
+two:
+  user: one
+  title: "Orçamento"
+  message: "Você atingiu 80% do orçamento de Alimentação."
+  notification_type: "warning"

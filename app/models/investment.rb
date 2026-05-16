@@ -9,8 +9,7 @@ class Investment < ApplicationRecord
   validates :asset_type, presence: true, inclusion: { in: %w[stock_br fii fixed_income international crypto treasury_br treasury_intl other] }
   validates :quantity, presence: true, numericality: true
   validates :avg_price, numericality: true
-  validates :current_price, presence: true, on: :update
-  validates :current_price, presence: false, on: :create
+  validates :current_price, numericality: { greater_than_or_equal_to: 0 }, on: :update
 
   def current_value
     quantity * current_price
@@ -51,6 +50,9 @@ class Investment < ApplicationRecord
   def refresh_current_price!
     price = PriceService.fetch_price(ticker, asset_type, user.brapi_token, price_feed_url: price_feed_url)
     update!(current_price: (price * 100).to_i) if price
+  rescue StandardError => e
+    Rails.logger.error "Failed to refresh price for #{ticker}: #{e.message}"
+    nil
   end
 
   private

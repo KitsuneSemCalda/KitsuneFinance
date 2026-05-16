@@ -37,14 +37,14 @@
           <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">DTI</p>
           <p class="text-xs text-zinc-600">Dívida / Renda</p>
         </div>
-        <div class="w-10 h-10 rounded-xl <%= @dti && @dti <= 30 ? 'bg-emerald-500/10' : 'bg-red-500/10' %> flex items-center justify-center">
-          <svg class="w-5 h-5 <%= @dti && @dti <= 30 ? 'text-emerald-400' : 'text-red-400' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="w-10 h-10 rounded-xl <%= @dti && @dti <= User::DTI_GOOD ? 'bg-emerald-500/10' : 'bg-red-500/10' %> flex items-center justify-center">
+          <svg class="w-5 h-5 <%= @dti && @dti <= User::DTI_GOOD ? 'text-emerald-400' : 'text-red-400' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </div>
       </div>
       <p class="text-2xl font-bold text-zinc-100"><%= @dti ? number_to_percentage(@dti, precision: 1) : "—" %></p>
-      <p class="text-xs text-zinc-500 mt-1">Ideal: &lt; 30%</p>
+      <p class="text-xs text-zinc-500 mt-1">Ideal: &lt; <%= User::DTI_GOOD %>%</p>
       <div class="mt-3 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-        <div class="h-full rounded-full <%= @dti && @dti <= 30 ? 'bg-emerald-500' : @dti && @dti <= 40 ? 'bg-amber-500' : 'bg-red-500' %>" style="width: <%= [@dti || 0, 100].min %>%"></div>
+        <div class="h-full rounded-full <%= @dti && @dti <= User::DTI_GOOD ? 'bg-emerald-500' : @dti && @dti <= User::DTI_FAIR ? 'bg-amber-500' : 'bg-red-500' %>" style="width: <%= [@dti || 0, 100].min %>%"></div>
       </div>
     </div>
 
@@ -54,14 +54,14 @@
           <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Gastos vs Salário</p>
           <p class="text-xs text-zinc-600">Relação despesas/receita</p>
         </div>
-        <div class="w-10 h-10 rounded-xl <%= @expense_ratio && @expense_ratio <= 50 ? 'bg-emerald-500/10' : 'bg-red-500/10' %> flex items-center justify-center">
-          <svg class="w-5 h-5 <%= @expense_ratio && @expense_ratio <= 50 ? 'text-emerald-400' : 'text-red-400' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+        <div class="w-10 h-10 rounded-xl <%= @expense_ratio && @expense_ratio <= User::EXPENSE_GOOD ? 'bg-emerald-500/10' : 'bg-red-500/10' %> flex items-center justify-center">
+          <svg class="w-5 h-5 <%= @expense_ratio && @expense_ratio <= User::EXPENSE_GOOD ? 'text-emerald-400' : 'text-red-400' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
         </div>
       </div>
       <p class="text-2xl font-bold text-zinc-100"><%= @expense_ratio ? number_to_percentage(@expense_ratio, precision: 1) : "—" %></p>
-      <p class="text-xs text-zinc-500 mt-1">Ideal: &lt; 50%</p>
+      <p class="text-xs text-zinc-500 mt-1">Ideal: &lt; <%= User::EXPENSE_GOOD %>%</p>
       <div class="mt-3 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-        <div class="h-full rounded-full <%= @expense_ratio && @expense_ratio <= 50 ? 'bg-emerald-500' : @expense_ratio && @expense_ratio <= 75 ? 'bg-amber-500' : 'bg-red-500' %>" style="width: <%= [@expense_ratio || 0, 100].min %>%"></div>
+        <div class="h-full rounded-full <%= @expense_ratio && @expense_ratio <= User::EXPENSE_GOOD ? 'bg-emerald-500' : @expense_ratio && @expense_ratio <= User::EXPENSE_FAIR ? 'bg-amber-500' : 'bg-red-500' %>" style="width: <%= [@expense_ratio || 0, 100].min %>%"></div>
       </div>
     </div>
 
@@ -71,14 +71,14 @@
           <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Taxa de Poupança</p>
           <p class="text-xs text-zinc-600">% do salário poupado</p>
         </div>
-        <div class="w-10 h-10 rounded-xl <%= @savings_rate && @savings_rate >= 10 ? 'bg-emerald-500/10' : 'bg-amber-500/10' %> flex items-center justify-center">
-          <svg class="w-5 h-5 <%= @savings_rate && @savings_rate >= 10 ? 'text-emerald-400' : 'text-amber-400' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        <div class="w-10 h-10 rounded-xl <%= @savings_rate && @savings_rate >= User::SAVINGS_GOOD ? 'bg-emerald-500/10' : 'bg-amber-500/10' %> flex items-center justify-center">
+          <svg class="w-5 h-5 <%= @savings_rate && @savings_rate >= User::SAVINGS_GOOD ? 'text-emerald-400' : 'text-amber-400' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
         </div>
       </div>
       <p class="text-2xl font-bold text-zinc-100"><%= @savings_rate ? number_to_percentage(@savings_rate, precision: 1) : "—" %></p>
-      <p class="text-xs text-zinc-500 mt-1">Ideal: &gt; 10%</p>
+      <p class="text-xs text-zinc-500 mt-1">Ideal: &gt; <%= User::SAVINGS_GOOD %>%</p>
       <div class="mt-3 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-        <div class="h-full rounded-full <%= @savings_rate && @savings_rate >= 20 ? 'bg-emerald-500' : @savings_rate && @savings_rate >= 10 ? 'bg-emerald-400' : @savings_rate && @savings_rate >= 0 ? 'bg-amber-500' : 'bg-red-500' %>" style="width: <%= [[@savings_rate || 0, 0].max, 100].min %>%"></div>
+        <div class="h-full rounded-full <%= @savings_rate && @savings_rate >= User::SAVINGS_EXCELLENT ? 'bg-emerald-500' : @savings_rate && @savings_rate >= User::SAVINGS_GOOD ? 'bg-emerald-400' : @savings_rate && @savings_rate >= 0 ? 'bg-amber-500' : 'bg-red-500' %>" style="width: <%= [[@savings_rate || 0, 0].max, 100].min %>%"></div>
       </div>
     </div>
 
@@ -92,7 +92,7 @@
           <svg class="w-5 h-5 <%= @net_worth >= 0 ? 'text-emerald-400' : 'text-red-400' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
         </div>
       </div>
-      <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@net_worth / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+      <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@net_worth / 100.0) %></p>
       <p class="text-xs text-zinc-500 mt-1"><%= @net_worth_to_annual ? "#{number_to_percentage(@net_worth_to_annual * 100, precision: 0)} da renda anual" : "Configure seu salário" %></p>
     </div>
   </div>
@@ -114,7 +114,7 @@
             <p class="text-xs text-zinc-500"><%= t("date.month_names")[Date.today.month] %></p>
           </div>
         </div>
-        <p class="text-lg font-bold text-emerald-400">+ <%= number_to_currency(@monthly_income / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        <p class="text-lg font-bold text-emerald-400">+ <%= number_to_currency(@monthly_income / 100.0) %></p>
       </div>
       <div class="flex justify-between items-center pb-4 border-b border-zinc-800/60">
         <div class="flex items-center gap-3">
@@ -126,7 +126,7 @@
             <p class="text-xs text-zinc-500"><%= t("date.month_names")[Date.today.month] %></p>
           </div>
         </div>
-        <p class="text-lg font-bold text-red-400">— <%= number_to_currency(@monthly_expense / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        <p class="text-lg font-bold text-red-400">— <%= number_to_currency(@monthly_expense / 100.0) %></p>
       </div>
       <div class="flex justify-between items-center pb-4 border-b border-zinc-800/60">
         <div class="flex items-center gap-3">
@@ -138,7 +138,7 @@
             <p class="text-xs text-zinc-500">parcelas mensais</p>
           </div>
         </div>
-        <p class="text-lg font-bold text-amber-400">— <%= number_to_currency(@monthly_debts / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        <p class="text-lg font-bold text-amber-400">— <%= number_to_currency(@monthly_debts / 100.0) %></p>
       </div>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-3">
@@ -151,7 +151,7 @@
           </div>
         </div>
         <p class="text-lg font-bold <%= @monthly_savings >= 0 ? 'text-sky-400' : 'text-red-400' %>">
-          <%= @monthly_savings >= 0 ? "+" : "" %><%= number_to_currency(@monthly_savings / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+          <%= @monthly_savings >= 0 ? "+" : "" %><%= number_to_currency(@monthly_savings / 100.0) %>
         </p>
       </div>
     </div>
@@ -164,12 +164,12 @@
       <div class="space-y-4">
         <div class="flex justify-between items-center">
           <span class="text-sm text-zinc-300">Valor Total</span>
-          <span class="text-lg font-bold text-zinc-100"><%= number_to_currency(@investments.sum { |i| i.current_value } / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+          <span class="text-lg font-bold text-zinc-100"><%= number_to_currency(@investments.sum { |i| i.current_value } / 100.0) %></span>
         </div>
         <div class="flex justify-between items-center pb-4 border-b border-zinc-800/60">
           <span class="text-sm text-zinc-300">Ganho/Perda Total</span>
           <span class="text-lg font-bold <%= @total_gain_loss >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
-            <%= @total_gain_loss >= 0 ? "+" : "" %><%= number_to_currency(@total_gain_loss / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+            <%= @total_gain_loss >= 0 ? "+" : "" %><%= number_to_currency(@total_gain_loss / 100.0) %>
           </span>
         </div>
         <div>
@@ -221,7 +221,7 @@
               <p class="text-[10px] text-zinc-500"><%= debt.remaining_installments %>/<%= debt.installments_count %> parcelas</p>
             </div>
             <div class="text-right">
-              <p class="text-sm font-bold text-zinc-100"><%= number_to_currency(debt.monthly_payment / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>/mês</p>
+              <p class="text-sm font-bold text-zinc-100"><%= number_to_currency(debt.monthly_payment / 100.0) %>/mês</p>
             </div>
           </div>
         <% end %>

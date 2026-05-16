@@ -28,18 +28,18 @@
       <div class="grid grid-cols-2 gap-4">
         <div class="bg-zinc-950/50 border border-zinc-800/60 rounded-2xl p-5">
           <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Salário Projetado</p>
-          <p class="text-2xl font-black text-emerald-400 tabular-nums"><%= number_to_currency(@results[:projected_salary] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+          <p class="text-2xl font-black text-emerald-400 tabular-nums"><%= number_to_currency(@results[:projected_salary] / 100.0) %></p>
         </div>
         <div class="bg-zinc-950/50 border border-zinc-800/60 rounded-2xl p-5">
           <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Despesas Projetadas</p>
-          <p class="text-2xl font-black text-red-400 tabular-nums"><%= number_to_currency(@results[:projected_expenses] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+          <p class="text-2xl font-black text-red-400 tabular-nums"><%= number_to_currency(@results[:projected_expenses] / 100.0) %></p>
         </div>
       </div>
 
       <div class="mt-4 bg-zinc-950/50 border border-zinc-700/50 rounded-2xl p-6">
         <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Saldo Final Estimado</p>
         <p class="text-3xl font-black tabular-nums <%= @results[:balance] >= 0 ? 'text-sky-400' : 'text-red-500' %>">
-          <%= number_to_currency(@results[:balance] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+          <%= number_to_currency(@results[:balance] / 100.0) %>
         </p>
       </div>
     </div>
@@ -51,7 +51,7 @@
         <% if @results[:debt_payoff_months] %>
           <p class="text-3xl font-black text-amber-400 tabular-nums">~<%= @results[:debt_payoff_months] %> meses</p>
           <p class="text-xs text-zinc-500 mt-2 font-medium">
-            Restam <%= number_to_currency(@results[:total_debt_remaining] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %> a pagar
+            Restam <%= number_to_currency(@results[:total_debt_remaining] / 100.0) %> a pagar
           </p>
         <% else %>
           <p class="text-zinc-500 text-sm">Nenhuma dívida ativa</p>
@@ -60,9 +60,9 @@
       <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl">
         <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Patrimônio em 12 Meses</h3>
         <p class="text-3xl font-black text-indigo-400 tabular-nums">
-          <%= number_to_currency(@results[:projected_net_worth_12m] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+          <%= number_to_currency(@results[:projected_net_worth_12m] / 100.0) %>
         </p>
-        <p class="text-xs text-zinc-500 mt-2 font-medium">Economizando <%= number_to_currency(@results[:monthly_savings] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>/mês</p>
+        <p class="text-xs text-zinc-500 mt-2 font-medium">Economizando <%= number_to_currency(@results[:monthly_savings] / 100.0) %>/mês</p>
       </div>
     </div>
 
@@ -80,7 +80,7 @@
               <div class="text-right">
                 <p class="text-sm font-bold text-zinc-100"><%= g[:estimated_months] ? "~#{g[:estimated_months]} meses" : "—" %></p>
                 <% if g[:monthly_savings_needed] %>
-                  <p class="text-[10px] text-zinc-500 font-medium mt-0.5">Precisa de <%= number_to_currency(g[:monthly_savings_needed] / 100.0, unit: "R$ ").strip %>/mês</p>
+                  <p class="text-[10px] text-zinc-500 font-medium mt-0.5">Precisa de <%= number_to_currency(g[:monthly_savings_needed] / 100.0).strip %>/mês</p>
                 <% end %>
               </div>
             </div>

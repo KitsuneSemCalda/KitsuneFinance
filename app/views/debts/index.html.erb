@@ -23,10 +23,10 @@
               <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter"><%= debt.remaining_installments %> de <%= debt.installments_count %> parcelas restantes</p>
             </td>
             <td class="px-6 py-5 text-right text-sm font-medium text-zinc-400 tabular-nums">
-              <%= number_to_currency(debt.total_amount / 100.0, unit: "R$ ") %>
+              <%= number_to_currency(debt.total_amount / 100.0) %>
             </td>
             <td class="px-6 py-5 text-right text-sm font-black text-zinc-100 tabular-nums">
-              <%= number_to_currency(debt.monthly_payment / 100.0, unit: "R$ ") %>
+              <%= number_to_currency(debt.monthly_payment / 100.0) %>
             </td>
             <td class="px-6 py-5">
               <div class="flex flex-col items-center gap-1.5 min-w-[100px]">

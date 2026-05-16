@@ -35,7 +35,9 @@
 
     <%= render "shared/submit_bar", f: f, cancel_path: dashboard_accounts_path, cancel_label: "Descartar", submit_label: "Salvar Conta" %>
 
-    <%= render "shared/danger_zone", resource: @account, path: dashboard_account_path(@account), confirm_message: "Tem certeza que deseja excluir esta conta? Todas as transações vinculadas serão removidas permanentemente.", button_label: "Excluir Conta Permanentemente" %>
+    <% if @account.persisted? %>
+      <%= render "shared/danger_zone", resource: @account, path: dashboard_account_path(@account), confirm_message: "Tem certeza que deseja excluir esta conta? Todas as transações vinculadas serão removidas permanentemente.", button_label: "Excluir Conta Permanentemente" %>
+    <% end %>
 
   <% end %>
 </div>

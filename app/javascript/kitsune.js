@@ -18,10 +18,17 @@ const Kitsune = {
     this.themeToggle()
     this.billReminderCheckboxes()
     this.receiptPreview()
-    this.inlineEditInvestments()
+    this.toggleRecurrence()
+    this.toggleInstallment()
     this.quickTrade()
     this.transferFormToggle()
     this.formLoadingStates()
+  },
+
+  // Helper para checar elementos
+  ensure(selector, callback) {
+    const el = document.querySelector(selector)
+    if (el) callback(el)
   },
 
   // ──────────────────────────────────────────────
@@ -39,15 +46,18 @@ const Kitsune = {
                 hover:scale-110 active:scale-95
                 transition-all duration-200
                 lg:bottom-8 lg:right-8"
-         aria-label="Nova Transação Rápida"
-         onclick="Kitsune.openQuickTxModal()">
+         aria-label="Nova Transação Rápida">
         <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
       </button>`
     )
-
+    
+    btn.on('click', () => this.openQuickTxModal())
     $("body").append(btn)
+    
+    // ... modal setup remains similar but ensure modal exists/is unique
+  },
 
     const modal = $(`
       <div id="quick-tx-modal"
@@ -495,6 +505,24 @@ const Kitsune = {
         }
       }
       reader.readAsDataURL(file)
+    })
+  },
+
+  // ──────────────────────────────────────────────
+  // 9B. TOGGLE RECURRENCE PERIOD
+  // ──────────────────────────────────────────────
+  toggleRecurrence() {
+    $(document).on("change", "#transaction_recurrent", function () {
+      $("#recurrence-period-field").toggleClass("hidden", !this.checked)
+    })
+  },
+
+  // ──────────────────────────────────────────────
+  // 9C. TOGGLE INSTALLMENT FIELDS
+  // ──────────────────────────────────────────────
+  toggleInstallment() {
+    $(document).on("change", "#transaction_installment", function () {
+      $("#installment-fields").toggleClass("hidden", !this.checked)
     })
   },
 

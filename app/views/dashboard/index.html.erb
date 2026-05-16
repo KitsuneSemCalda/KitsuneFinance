@@ -13,15 +13,15 @@
   <div class="flex flex-wrap items-center gap-3 text-xs">
     <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800/60">
       <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-      Saldo: <strong class="text-zinc-100"><%= number_to_currency(@net_worth / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></strong>
+      Saldo: <strong class="text-zinc-100"><%= number_to_currency(@net_worth / 100.0) %></strong>
     </span>
     <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800/60">
       <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-      Disponível: <strong class="text-zinc-100"><%= number_to_currency(@available_balance / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></strong>
+      Disponível: <strong class="text-zinc-100"><%= number_to_currency(@available_balance / 100.0) %></strong>
     </span>
     <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800/60">
       <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-      Investido: <strong class="text-zinc-100"><%= number_to_currency(@portfolio_total / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></strong>
+      Investido: <strong class="text-zinc-100"><%= number_to_currency(@portfolio_total / 100.0) %></strong>
       <span class="text-zinc-600">(<%= @investment_count %>)</span>
     </span>
     <% if @bills_overdue_count > 0 %>
@@ -32,6 +32,17 @@
     <% end %>
   </div>
 </div>
+
+<% if @insights.any? %>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 animate-fade-in-down">
+    <% @insights.each do |insight| %>
+      <div class="p-4 rounded-2xl border <%= insight[:type] == 'warning' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' : (insight[:type] == 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400') %>">
+        <h4 class="font-bold text-sm mb-1"><%= insight[:title] %></h4>
+        <p class="text-xs opacity-90"><%= insight[:message] %></p>
+      </div>
+    <% end %>
+  </div>
+<% end %>
 
 <%# ═══════════════════════════════════════════════════════════════════════ %>
 <%# ROW 1 — KPI Cards (Full-width, 7 columns on 2xl) %>
@@ -47,7 +58,7 @@
         <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@net_worth / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-zinc-100"><%= number_to_currency(@net_worth / 100.0) %></p>
     <p class="text-xs text-zinc-600 mt-1"><%= @net_worth_to_annual ? "#{number_to_percentage(@net_worth_to_annual * 100, precision: 0)} da renda anual" : "atualizado hoje" %></p>
   </div>
 
@@ -59,7 +70,7 @@
         <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@available_balance / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@available_balance / 100.0) %></p>
     <p class="text-xs text-zinc-600 mt-1">contas corrente + poupança</p>
   </div>
 
@@ -71,7 +82,7 @@
         <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@monthly_income / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-emerald-400"><%= number_to_currency(@monthly_income / 100.0) %></p>
   </div>
 
   <%# Despesas do Mês %>
@@ -82,8 +93,8 @@
         <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-red-400"><%= number_to_currency(@monthly_expense / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
-    <p class="text-xs mt-1 <%= @expense_ratio && @expense_ratio > 50 ? 'text-red-400' : 'text-zinc-600' %>"><%= number_to_percentage(@expense_ratio, precision: 1) %> do salário</p>
+    <p class="text-2xl font-bold text-red-400"><%= number_to_currency(@monthly_expense / 100.0) %></p>
+    <p class="text-xs mt-1 <%= @expense_ratio && @expense_ratio > 50 ? 'text-red-400' : 'text-zinc-600' %>"><%= @expense_ratio ? number_to_percentage(@expense_ratio, precision: 1) : '—' %> do salário</p>
   </div>
 
   <%# Dívidas do Mês %>
@@ -94,7 +105,7 @@
         <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c1.657 0 3 .895 3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-amber-400"><%= number_to_currency(@monthly_debts / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-amber-400"><%= number_to_currency(@monthly_debts / 100.0) %></p>
     <p class="text-xs mt-1 <%= @dti && @dti > 30 ? 'text-red-400' : 'text-zinc-600' %>"><%= number_to_percentage(@dti, precision: 1) if @dti %> DTI</p>
   </div>
 
@@ -106,7 +117,7 @@
         <svg class="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-sky-400"><%= number_to_currency(@monthly_savings / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-sky-400"><%= number_to_currency(@monthly_savings / 100.0) %></p>
     <p class="text-xs mt-1 <%= @savings_rate && @savings_rate > 20 ? 'text-emerald-400' : 'text-zinc-600' %>"><%= number_to_percentage(@savings_rate, precision: 1) if @savings_rate %> poupado</p>
   </div>
 
@@ -118,7 +129,7 @@
         <svg class="w-4 h-4 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       </div>
     </div>
-    <p class="text-2xl font-bold text-rose-400"><%= number_to_currency(@bills_pending / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+    <p class="text-2xl font-bold text-rose-400"><%= number_to_currency(@bills_pending / 100.0) %></p>
     <p class="text-xs mt-1 text-zinc-600"><%= @bills_overdue_count %> vencida(s) este mês</p>
   </div>
 </div>
@@ -176,11 +187,11 @@
         </div>
       </div>
       <div class="text-center xl:text-left">
-        <p class="text-xl font-bold text-zinc-100"><%= number_to_currency(@portfolio_total / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+        <p class="text-xl font-bold text-zinc-100"><%= number_to_currency(@portfolio_total / 100.0) %></p>
         <div class="flex items-center gap-2 mt-1 justify-center xl:justify-start">
           <span class="flex items-center gap-1 text-xs font-medium text-emerald-400">
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5"/></svg>
-            +<%= number_to_currency(@portfolio_change / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+            +<%= number_to_currency(@portfolio_change / 100.0) %>
           </span>
           <span class="text-[10px] text-zinc-500">(<%= @portfolio_change_pct.round(1) %>% total)</span>
         </div>
@@ -191,7 +202,7 @@
       <% color_map_hex = { "stock_br" => "#6366f1", "fixed_income" => "#10b981", "fii" => "#0ea5e9", "international" => "#f59e0b", "crypto" => "#f43f5e", "other" => "#71717a" } %>
       <% asset_labels = { "stock_br" => "Ações BR", "fixed_income" => "Renda Fixa", "fii" => "FIIs", "international" => "Internacional", "crypto" => "Cripto", "other" => "Outros" } %>
       <% @allocation.each do |type, value| %>
-        <% pct = @allocation_total.positive? ? (value / @allocation_total * 100).round(1) : 0 %>
+        <% pct = @allocation_total.positive? ? (value.to_f / @allocation_total * 100).round(1) : 0 %>
         <div class="flex items-center justify-between group">
           <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full" style="background-color: <%= color_map_hex[type] || '#71717a' %>"></span>
@@ -297,7 +308,7 @@
             <div class="flex justify-between text-xs mb-1">
               <span class="text-zinc-400"><%= b[:category] %></span>
               <span class="<%= b[:over] ? 'text-red-400' : 'text-zinc-500' %> font-medium">
-                <%= number_to_currency(b[:spent] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %> / <%= number_to_currency(b[:limit] / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+                <%= number_to_currency(b[:spent] / 100.0) %> / <%= number_to_currency(b[:limit] / 100.0) %>
               </span>
             </div>
             <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
@@ -325,7 +336,7 @@
         </div>
         <div class="text-right">
           <p class="text-xs text-zinc-500">Restante</p>
-          <p class="text-lg font-bold text-zinc-100"><%= number_to_currency(@total_debt_remaining / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+          <p class="text-lg font-bold text-zinc-100"><%= number_to_currency(@total_debt_remaining / 100.0) %></p>
         </div>
       </div>
       <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
@@ -352,15 +363,15 @@
       <% if @salary_present %>
         <div class="flex justify-between">
           <span class="text-zinc-500">DTI</span>
-          <span class="<%= @dti && @dti <= 30 ? 'text-emerald-400' : 'text-red-400' %>"><%= number_to_percentage(@dti, precision: 1) if @dti %></span>
+          <span class="<%= @dti && @dti <= User::DTI_GOOD ? 'text-emerald-400' : 'text-red-400' %>"><%= number_to_percentage(@dti, precision: 1) if @dti %></span>
         </div>
         <div class="flex justify-between">
           <span class="text-zinc-500">Gastos vs Salário</span>
-          <span class="<%= @expense_ratio && @expense_ratio <= 50 ? 'text-emerald-400' : 'text-red-400' %>"><%= number_to_percentage(@expense_ratio, precision: 1) if @expense_ratio %></span>
+          <span class="<%= @expense_ratio && @expense_ratio <= User::EXPENSE_GOOD ? 'text-emerald-400' : 'text-red-400' %>"><%= number_to_percentage(@expense_ratio, precision: 1) if @expense_ratio %></span>
         </div>
         <div class="flex justify-between">
           <span class="text-zinc-500">Taxa de Poupança</span>
-          <span class="<%= @savings_rate && @savings_rate >= 10 ? 'text-emerald-400' : 'text-amber-400' %>"><%= number_to_percentage(@savings_rate, precision: 1) if @savings_rate %></span>
+          <span class="<%= @savings_rate && @savings_rate >= User::SAVINGS_GOOD ? 'text-emerald-400' : 'text-amber-400' %>"><%= number_to_percentage(@savings_rate, precision: 1) if @savings_rate %></span>
         </div>
       <% else %>
         <p class="text-zinc-600 text-center py-2">Configure seu salário nas configurações</p>
@@ -392,7 +403,7 @@
               <p class="text-xs font-medium text-zinc-200 truncate"><%= bill.name %></p>
               <p class="text-[10px] text-zinc-500">Vence <%= l(bill.due_date, format: "%d/%m") %></p>
             </div>
-            <span class="text-xs font-bold text-red-400 shrink-0"><%= number_to_currency(bill.amount / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+            <span class="text-xs font-bold text-red-400 shrink-0"><%= number_to_currency(bill.amount / 100.0) %></span>
           </div>
         <% end %>
       </div>
@@ -401,7 +412,7 @@
     <% end %>
     <div class="mt-3 pt-3 border-t border-zinc-800/60 flex justify-between text-xs">
       <span class="text-zinc-500">Total pendente</span>
-      <span class="font-bold text-zinc-100"><%= number_to_currency(@bills_pending / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+      <span class="font-bold text-zinc-100"><%= number_to_currency(@bills_pending / 100.0) %></span>
     </div>
   </div>
 
@@ -420,7 +431,7 @@
               <p class="text-[10px] text-zinc-500"><%= trade.trade_type == "buy" ? "Compra" : "Venda" %> · <%= trade.date.strftime("%d/%m") %></p>
             </div>
             <span class="text-xs font-bold <%= trade.trade_type == 'buy' ? 'text-emerald-400' : 'text-red-400' %>">
-              <%= trade.trade_type == 'buy' ? '+' : '—' %><%= number_to_currency(trade.quantity * trade.price / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+              <%= trade.trade_type == 'buy' ? '+' : '—' %><%= number_to_currency(trade.quantity * trade.price / 100.0) %>
             </span>
           </div>
         <% end %>
@@ -455,7 +466,7 @@
             <p class="text-xs text-zinc-500"><%= cat_name %> · <%= tx.date.strftime("%d %b") %></p>
           </div>
           <span class="text-sm font-semibold shrink-0 <%= tx_type == :income ? 'text-emerald-400' : 'text-red-400' %>">
-            <%= tx_type == :income ? "+" : "" %><%= number_to_currency(tx.amount.abs / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+            <%= tx_type == :income ? "+" : "" %><%= number_to_currency(tx.amount.abs / 100.0) %>
           </span>
         </div>
       <% end %>
@@ -486,8 +497,8 @@
             </div>
           </div>
           <div class="flex justify-between mt-1">
-            <span class="text-[10px] text-zinc-600"><%= number_to_currency(goal[:current], unit: "R$ ", separator: ",", delimiter: ".") %></span>
-            <span class="text-[10px] text-zinc-600"><%= number_to_currency(goal[:target], unit: "R$ ", separator: ",", delimiter: ".") %></span>
+            <span class="text-[10px] text-zinc-600"><%= number_to_currency(goal[:current] / 100.0) %></span>
+            <span class="text-[10px] text-zinc-600"><%= number_to_currency(goal[:target] / 100.0) %></span>
           </div>
           <% if goal[:estimated_months] %>
             <p class="text-[10px] text-zinc-500 mt-1">~<%= goal[:estimated_months] %> meses (10% do salário)</p>

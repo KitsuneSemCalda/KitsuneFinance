@@ -126,7 +126,7 @@
             <td class="px-6 py-5 text-right whitespace-nowrap">
               <span class="text-sm font-black tabular-nums tracking-tight <%= tx.transaction_type == 'income' ? 'text-emerald-400' : (tx.transaction_type == 'transfer' ? 'text-sky-400' : 'text-red-400') %>">
                 <%= tx.transaction_type == 'income' ? '+' : (tx.transaction_type == 'transfer' ? '⇄' : '—') %>
-                <%= number_to_currency(tx.amount.abs / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>
+                <%= number_to_currency(tx.amount.abs / 100.0) %>
               </span>
             </td>
             <td class="px-6 py-5 text-center">
@@ -170,7 +170,7 @@
           <div class="text-right">
             <p class="text-base font-black tabular-nums tracking-tight <%= tx.transaction_type == 'income' ? 'text-emerald-400' : 'text-red-400' %>">
               <%= tx.transaction_type == 'income' ? '+' : '—' %>
-              <%= number_to_currency(tx.amount.abs / 100.0, unit: "R$ ") %>
+              <%= number_to_currency(tx.amount.abs / 100.0) %>
             </p>
             <p class="text-[9px] font-bold text-zinc-600 uppercase tracking-tighter mt-0.5"><%= tx.account.name %></p>
           </div>

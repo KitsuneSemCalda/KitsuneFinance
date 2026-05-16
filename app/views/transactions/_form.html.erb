@@ -65,6 +65,35 @@
         <%= f.text_area :notes, rows: 3, placeholder: "Detalhes adicionais...", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-200 text-sm focus:border-indigo-500 outline-none transition-all placeholder:text-zinc-700" %>
       <% end %>
 
+      <div class="flex items-center gap-8 flex-wrap">
+        <%= render layout: "shared/field", locals: { f: f, field: :recurrent, label: "" } do %>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <%= f.check_box :recurrent, class: "w-5 h-5 rounded-lg bg-zinc-950 border border-zinc-800 text-indigo-500 focus:ring-indigo-500/30 focus:ring-4 cursor-pointer" %>
+            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Transação Recorrente</span>
+          </label>
+        <% end %>
+
+        <div id="recurrence-period-field" class="<%= 'hidden' unless @transaction.recurrent %> space-y-2 flex-1 min-w-[200px]">
+          <%= f.label :recurrence_period, "Repetir a cada", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.select :recurrence_period, [["Diariamente", "daily"], ["Semanalmente", "weekly"], ["Mensalmente", "monthly"], ["Anualmente", "yearly"]], { prompt: "Selecione o período" }, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all" %>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-8 flex-wrap">
+        <%= render layout: "shared/field", locals: { f: f, field: :installment, label: "" } do %>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" name="installment" id="transaction_installment" value="1" class="w-5 h-5 rounded-lg bg-zinc-950 border border-zinc-800 text-indigo-500 focus:ring-indigo-500/30 focus:ring-4 cursor-pointer" <%= 'checked' if @transaction.total_installments.to_i > 1 %>>
+            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Transação Parcelada</span>
+          </label>
+        <% end %>
+
+        <div id="installment-fields" class="<%= 'hidden' unless @transaction.total_installments.to_i > 1 %> space-y-2 flex-1 min-w-[200px]">
+          <%= f.label :total_installments, "Total de Parcelas", class: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1" %>
+          <%= f.number_field :total_installments, min: 2, max: 999, placeholder: "Ex: 12", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 font-bold focus:border-indigo-500 outline-none transition-all placeholder:text-zinc-700" %>
+          <p class="text-[10px] text-zinc-600 mt-1 ml-1">O valor será dividido igualmente entre as parcelas.</p>
+        </div>
+      </div>
+
       <%= render layout: "shared/field", locals: { f: f, field: :receipt, label: "Comprovante (Foto)" } do %>
         <%= f.file_field :receipt, accept: "image/*", capture: "environment", class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-200 text-sm focus:border-indigo-500 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20" %>
         <div id="receipt-preview" class="mt-2 <%= 'hidden' unless @transaction.receipt.attached? %>">
@@ -77,6 +106,8 @@
 
     <%= render "shared/submit_bar", f: f, cancel_path: dashboard_transactions_path, cancel_label: "Descartar", submit_label: "Salvar Transação" %>
 
-    <%= render "shared/danger_zone", resource: @transaction, path: dashboard_transaction_path(@transaction), confirm_message: "Excluir esta transação permanentemente? O saldo da conta será ajustado automaticamente." %>
+    <% if @transaction.persisted? %>
+      <%= render "shared/danger_zone", resource: @transaction, path: dashboard_transaction_path(@transaction), confirm_message: "Excluir esta transação permanentemente? O saldo da conta será ajustado automaticamente." %>
+    <% end %>
   <% end %>
 </div>

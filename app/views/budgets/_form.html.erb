@@ -21,7 +21,7 @@
         <%= f.number_field :limit_amount, step: 0.01, value: @budget.limit_amount.present? ? @budget.limit_amount / 100.0 : nil, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 outline-none transition-all tabular-nums" %>
         <% if current_user.monthly_salary&.positive? %>
           <% suggested = (current_user.monthly_salary * 0.1).to_i %>
-          <p class="text-xs text-zinc-500 mt-1 ml-1">Sugestão: 10% do salário = <%= number_to_currency(suggested / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+          <p class="text-xs text-zinc-500 mt-1 ml-1">Sugestão: 10% do salário = <%= number_to_currency(suggested / 100.0) %></p>
         <% end %>
       <% end %>
     <% end %>

@@ -1,12 +1,14 @@
 class BrasilApiService
-  BASE_URL = "https://brasilapi.com.br/api/cnpj/v1"
+  BASE_URL = ENV.fetch("BRASIL_API_URL", "https://brasilapi.com.br/api/cnpj/v1")
 
   def self.fetch_company_data(cnpj)
-    # Remove non-digits
     clean_cnpj = cnpj.to_s.gsub(/\D/, "")
     return nil if clean_cnpj.length != 14
 
-    response = Faraday.get("#{BASE_URL}/#{clean_cnpj}")
+    response = Faraday.get("#{BASE_URL}/#{clean_cnpj}") do |req|
+      req.options.timeout = 10
+      req.options.open_timeout = 5
+    end
     return nil unless response.success?
 
     JSON.parse(response.body)
@@ -45,7 +47,10 @@ class BrasilApiService
   end
 
   def self.fetch_banks
-    response = Faraday.get("https://brasilapi.com.br/api/banks/v1")
+    response = Faraday.get("https://brasilapi.com.br/api/banks/v1") do |req|
+      req.options.timeout = 10
+      req.options.open_timeout = 5
+    end
     return [] unless response.success?
 
     JSON.parse(response.body)
@@ -55,7 +60,10 @@ class BrasilApiService
   end
 
   def self.fetch_holidays(year = Date.today.year)
-    response = Faraday.get("https://brasilapi.com.br/api/feriados/v1/#{year}")
+    response = Faraday.get("https://brasilapi.com.br/api/feriados/v1/#{year}") do |req|
+      req.options.timeout = 10
+      req.options.open_timeout = 5
+    end
     return [] unless response.success?
 
     JSON.parse(response.body)

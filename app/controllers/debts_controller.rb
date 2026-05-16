@@ -12,8 +12,7 @@ class DebtsController < ApplicationController
   end
 
   def create
-    params[:debt][:total_amount] = (params[:debt][:total_amount].to_f * 100).to_i if params[:debt][:total_amount].present?
-    params[:debt][:monthly_payment] = (params[:debt][:monthly_payment].to_f * 100).to_i if params[:debt][:monthly_payment].present?
+    convert_to_cents(:total_amount, :monthly_payment)
     @debt = current_user.debts.new(debt_params)
     if @debt.save
       redirect_to dashboard_debts_path, notice: "Dívida cadastrada com sucesso."
@@ -25,8 +24,7 @@ class DebtsController < ApplicationController
   def edit; end
 
   def update
-    params[:debt][:total_amount] = (params[:debt][:total_amount].to_f * 100).to_i if params[:debt][:total_amount].present?
-    params[:debt][:monthly_payment] = (params[:debt][:monthly_payment].to_f * 100).to_i if params[:debt][:monthly_payment].present?
+    convert_to_cents(:total_amount, :monthly_payment)
     if @debt.update(debt_params)
       redirect_to dashboard_debts_path, notice: "Dívida atualizada."
     else

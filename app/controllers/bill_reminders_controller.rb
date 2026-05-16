@@ -5,9 +5,9 @@ class BillRemindersController < ApplicationController
 
   def index
     @page_title = "Contas a Pagar"
-    @bill_reminders = current_user.bill_reminders.this_month.ordered
-    @overdue = current_user.bill_reminders.overdue.ordered
-    @upcoming = current_user.bill_reminders.upcoming.ordered
+    @bill_reminders = current_user.bill_reminders.this_month.ordered.includes(:category)
+    @overdue = current_user.bill_reminders.overdue.ordered.includes(:category)
+    @upcoming = current_user.bill_reminders.upcoming.ordered.includes(:category)
     @total_paid = current_user.bill_reminders.this_month.where(paid: true).sum(:amount)
     @total_pending = current_user.bill_reminders.this_month.where(paid: false).sum(:amount)
   end

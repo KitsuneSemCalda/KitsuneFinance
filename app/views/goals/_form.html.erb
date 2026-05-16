@@ -12,7 +12,7 @@
           <%= f.number_field :target_amount, step: 0.01, value: @goal.target_amount.present? && @goal.target_amount > 0 ? @goal.target_amount / 100.0 : nil, class: "w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-100 text-lg font-bold focus:border-indigo-500 outline-none transition-all tabular-nums" %>
           <% if current_user.monthly_salary&.positive? %>
             <% suggested_monthly = (current_user.monthly_salary * 0.1).to_i %>
-            <p class="text-xs text-zinc-500 mt-1 ml-1">10% do salário = <%= number_to_currency(suggested_monthly / 100.0, unit: "R$ ", separator: ",", delimiter: ".") %>/mês</p>
+            <p class="text-xs text-zinc-500 mt-1 ml-1">10% do salário = <%= number_to_currency(suggested_monthly / 100.0) %>/mês</p>
           <% end %>
         <% end %>
         
@@ -49,6 +49,8 @@
 
     <%= render "shared/submit_bar", f: f, cancel_path: dashboard_goals_path, submit_label: "Salvar Meta" %>
 
-    <%= render "shared/danger_zone", resource: @goal, path: dashboard_goal_path(@goal), confirm_message: "Excluir esta meta permanentemente?", button_label: "Excluir Meta" %>
+    <% if @goal.persisted? %>
+      <%= render "shared/danger_zone", resource: @goal, path: dashboard_goal_path(@goal), confirm_message: "Excluir esta meta permanentemente?", button_label: "Excluir Meta" %>
+    <% end %>
   <% end %>
 </div>

@@ -44,16 +44,16 @@
         <div class="grid grid-cols-3 gap-6 pt-4 border-t border-zinc-800/60">
           <div>
             <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Gasto Atual</span>
-            <p class="text-xl font-black text-zinc-100 tabular-nums"><%= number_to_currency(@budget.spent_amount / 100.0, unit: "R$ ") %></p>
+            <p class="text-xl font-black text-zinc-100 tabular-nums"><%= number_to_currency(@budget.spent_amount / 100.0) %></p>
           </div>
           <div>
             <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Limite</span>
-            <p class="text-xl font-bold text-zinc-400 tabular-nums"><%= number_to_currency(@budget.limit_amount / 100.0, unit: "R$ ") %></p>
+            <p class="text-xl font-bold text-zinc-400 tabular-nums"><%= number_to_currency(@budget.limit_amount / 100.0) %></p>
           </div>
           <div>
             <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Restante</span>
             <p class="text-xl font-black tabular-nums <%= @budget.over_budget? ? 'text-red-400' : 'text-emerald-400' %>">
-              <%= number_to_currency(@budget.remaining_amount / 100.0, unit: "R$ ") %>
+              <%= number_to_currency(@budget.remaining_amount / 100.0) %>
             </p>
           </div>
         </div>
@@ -70,11 +70,11 @@
           </div>
           <div class="flex justify-between">
             <span class="text-zinc-500">Média diária</span>
-            <span class="text-zinc-300 font-bold"><%= number_to_currency((@budget.spent_amount.to_f / [Date.today.day, 1].max) / 100.0, unit: "R$ ") %></span>
+            <span class="text-zinc-300 font-bold"><%= number_to_currency((@budget.spent_amount.to_f / [Date.today.day, 1].max) / 100.0) %></span>
           </div>
           <div class="flex justify-between">
             <span class="text-zinc-500">Projeção mensal</span>
-            <span class="text-zinc-300 font-bold"><%= number_to_currency((@budget.spent_amount.to_f / [Date.today.day, 1].max * Date.new(@budget.year, @budget.month, -1).day) / 100.0, unit: "R$ ") %></span>
+            <span class="text-zinc-300 font-bold"><%= number_to_currency((@budget.spent_amount.to_f / [Date.today.day, 1].max * Date.new(@budget.year, @budget.month, -1).day) / 100.0) %></span>
           </div>
         </div>
       <% end %>
@@ -99,7 +99,7 @@
               <p class="text-xs text-zinc-500"><%= tx.date.strftime("%d %b") %></p>
             </div>
             <span class="text-sm font-semibold shrink-0 text-red-400">
-              <%= number_to_currency(tx.amount.abs / 100.0, unit: "R$ ") %>
+              <%= number_to_currency(tx.amount.abs / 100.0) %>
             </span>
           </div>
         <% end %>

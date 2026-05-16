@@ -1,4 +1,5 @@
 class Investments::TradesController < ApplicationController
+  include InvestmentJson
   before_action :authenticate_user!
   before_action :set_investment
   layout "dashboard"
@@ -60,20 +61,7 @@ class Investments::TradesController < ApplicationController
 
   def trade_params
     params.require(:trade).permit(:trade_type, :quantity, :price, :date, :notes).tap do |p|
-      p[:price] = (p[:price].to_f * 100).to_i if p[:price].present?
+      p[:price] = cents_from_string(p[:price]) if p[:price].present?
     end
-  end
-
-  def investment_json(inv)
-    {
-      id: inv.id,
-      quantity: inv.quantity,
-      avg_price: inv.avg_price,
-      current_price: inv.current_price,
-      current_value: inv.current_value,
-      total_cost: inv.total_cost,
-      gain_loss: inv.gain_loss,
-      gain_loss_pct: inv.gain_loss_pct
-    }
   end
 end

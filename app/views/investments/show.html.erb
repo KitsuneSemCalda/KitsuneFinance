@@ -20,7 +20,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-2">Posição Atual</span>
-    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.current_value / 100.0, unit: "R$ ") %></p>
+    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.current_value / 100.0) %></p>
     <p class="text-[10px] text-zinc-500 mt-1"><%= number_with_delimiter(@investment.quantity) %> unidades acumuladas</p>
   </div>
 
@@ -36,13 +36,13 @@
 
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-2">Preço Médio</span>
-    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.avg_price / 100.0, unit: "R$ ") %></p>
+    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.avg_price / 100.0) %></p>
     <p class="text-[10px] text-zinc-500 mt-1">custo unitário de aquisição</p>
   </div>
 
   <div class="bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-6">
     <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-2">Preço de Mercado</span>
-    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.current_price / 100.0, unit: "R$ ") %></p>
+    <p class="text-2xl font-extrabold text-zinc-100 tabular-nums"><%= number_to_currency(@investment.current_price / 100.0) %></p>
     <p class="text-[10px] text-zinc-500 mt-1">cotação atual sincronizada</p>
   </div>
 </div>
@@ -78,8 +78,8 @@
                 </span>
               </td>
               <td class="px-6 py-4 text-right text-sm font-medium text-zinc-200 tabular-nums"><%= number_with_delimiter(trade.quantity) %></td>
-              <td class="px-6 py-4 text-right text-sm text-zinc-400 tabular-nums"><%= number_to_currency(trade.price / 100.0, unit: "R$ ") %></td>
-              <td class="px-6 py-4 text-right text-sm font-bold text-zinc-100 tabular-nums"><%= number_to_currency(trade.quantity * trade.price / 100.0, unit: "R$ ") %></td>
+              <td class="px-6 py-4 text-right text-sm text-zinc-400 tabular-nums"><%= number_to_currency(trade.price / 100.0) %></td>
+              <td class="px-6 py-4 text-right text-sm font-bold text-zinc-100 tabular-nums"><%= number_to_currency(trade.quantity * trade.price / 100.0) %></td>
             </tr>
           <% end %>
           <% if @trades.empty? %>

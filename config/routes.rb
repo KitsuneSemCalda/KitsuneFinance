@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     resources :categories, except: :show do
       resources :categorization_rules, only: [:index, :create, :destroy], module: :categories
     end
+    resources :categorization_suggestions
+    resources :budget_alerts, only: [:index]
     resources :transactions, except: :show do
       collection do
         get :import
@@ -47,6 +49,8 @@ Rails.application.routes.draw do
     get "reports", to: "dashboard#reports"
     get "simulation", to: "dashboard#simulation"
     get "health", to: "dashboard#health"
+    get "news", to: "dashboard#news"
+    get "indicators", to: "dashboard#indicators"
     get "settings", to: "dashboard#settings"
     patch "settings", to: "dashboard#update_settings"
     get "backup", to: "dashboard#backup"

@@ -1,17 +1,15 @@
 one:
   user: one
   name: "Viagem"
-  icon: "✈️"
-  target_amount: 5000.0
-  current_amount: 0.0
+  target_amount: 500000
+  current_amount: 0
   status: "active"
   color: "indigo"
 
 two:
   user: one
   name: "Reserva de Emergência"
-  icon: "🛡️"
-  target_amount: 10000.0
-  current_amount: 5000.0
+  target_amount: 1000000
+  current_amount: 500000
   status: "active"
   color: "emerald"

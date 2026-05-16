@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_15_231425) do
   create_table "accounts", force: :cascade do |t|
     t.string "account_type", default: "checking", null: false
-    t.integer "balance", default: 0
+    t.integer "balance", default: 0, null: false
     t.string "bank_code"
     t.string "bank_name"
     t.string "color", default: "indigo"
@@ -55,12 +55,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
   end
 
   create_table "balance_snapshots", force: :cascade do |t|
-    t.integer "balance", default: 0
     t.datetime "created_at", null: false
-    t.decimal "net_worth", precision: 15, scale: 2, null: false
+    t.integer "net_worth", default: 0, null: false
     t.date "snapshot_date", null: false
-    t.decimal "total_balance", precision: 15, scale: 2, null: false
-    t.decimal "total_investments", precision: 15, scale: 2, default: "0.0", null: false
+    t.integer "total_balance", default: 0, null: false
+    t.integer "total_investments", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id", "snapshot_date"], name: "index_balance_snapshots_on_user_id_and_snapshot_date", unique: true
@@ -81,6 +80,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["category_id"], name: "index_bill_reminders_on_category_id"
+    t.index ["user_id", "paid"], name: "idx_bill_reminders_on_user_id_paid"
     t.index ["user_id"], name: "index_bill_reminders_on_user_id"
   end
 
@@ -89,7 +89,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
     t.datetime "alert_80_sent_at"
     t.integer "category_id", null: false
     t.datetime "created_at", null: false
-    t.integer "limit_amount", default: 0
+    t.integer "limit_amount", default: 0, null: false
     t.integer "month", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
@@ -108,13 +108,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
     t.string "transaction_type", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["transaction_type"], name: "idx_categories_on_transaction_type"
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
   create_table "categorization_rules", force: :cascade do |t|
     t.integer "category_id", null: false
     t.datetime "created_at", null: false
-    t.string "keyword"
+    t.string "keyword", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["category_id"], name: "index_categorization_rules_on_category_id"
@@ -122,13 +123,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
     t.index ["user_id"], name: "index_categorization_rules_on_user_id"
   end
 
+  create_table "categorization_suggestions", force: :cascade do |t|
+    t.integer "category_id", null: false
+    t.datetime "created_at", null: false
+    t.string "keyword", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["category_id"], name: "index_categorization_suggestions_on_category_id"
+    t.index ["user_id"], name: "index_categorization_suggestions_on_user_id"
+  end
+
   create_table "debts", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "installments_count"
-    t.integer "monthly_payment"
-    t.string "name"
-    t.integer "remaining_installments"
-    t.integer "total_amount"
+    t.integer "installments_count", default: 0, null: false
+    t.integer "monthly_payment", default: 0, null: false
+    t.string "name", null: false
+    t.integer "remaining_installments", default: 0, null: false
+    t.integer "total_amount", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_debts_on_user_id"
@@ -137,21 +148,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
   create_table "goals", force: :cascade do |t|
     t.string "color", default: "indigo"
     t.datetime "created_at", null: false
-    t.integer "current_amount", default: 0
+    t.integer "current_amount", default: 0, null: false
     t.date "deadline"
     t.string "icon", default: "🎯"
     t.string "name", null: false
     t.text "notes"
     t.string "status", default: "active", null: false
-    t.integer "target_amount", default: 0
+    t.integer "target_amount", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["status"], name: "idx_goals_on_status"
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
   create_table "investments", force: :cascade do |t|
     t.string "asset_type", null: false
-    t.integer "avg_price", default: 0
+    t.integer "avg_price", default: 0, null: false
     t.datetime "created_at", null: false
     t.string "currency", default: "BRL", null: false
     t.integer "current_price", default: 0
@@ -163,6 +175,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
     t.string "ticker"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["asset_type"], name: "idx_investments_on_asset_type"
     t.index ["user_id", "ticker"], name: "index_investments_on_user_id_and_ticker"
     t.index ["user_id"], name: "index_investments_on_user_id"
   end
@@ -170,12 +183,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
   create_table "notifications", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "link"
-    t.string "message"
-    t.string "notification_type"
+    t.string "message", null: false
+    t.string "notification_type", null: false
     t.datetime "read_at"
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["user_id", "read_at"], name: "idx_notifications_on_user_id_read_at"
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -191,6 +205,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
     t.integer "user_id", null: false
     t.index ["investment_id", "date"], name: "index_trades_on_investment_id_and_date"
     t.index ["investment_id"], name: "index_trades_on_investment_id"
+    t.index ["user_id", "date"], name: "idx_trades_on_user_id_date"
     t.index ["user_id"], name: "index_trades_on_user_id"
   end
 
@@ -249,6 +264,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_160000) do
   add_foreign_key "categories", "users"
   add_foreign_key "categorization_rules", "categories"
   add_foreign_key "categorization_rules", "users"
+  add_foreign_key "categorization_suggestions", "categories"
+  add_foreign_key "categorization_suggestions", "users"
   add_foreign_key "debts", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "investments", "users"
