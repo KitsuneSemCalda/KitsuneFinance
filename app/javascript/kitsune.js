@@ -3,10 +3,6 @@ import jQuery from "jquery"
 const $ = jQuery
 window.$ = window.jQuery = $
 
-$(function () {
-  Kitsune.init()
-})
-
 const Kitsune = {
   // Retorna o base URL para deploy em subpath (ex: /kitsune)
   baseUrl() {
@@ -846,3 +842,5 @@ const Kitsune = {
 }
 
 window.Kitsune = Kitsune
+
+$(function () { Kitsune.init() })
