@@ -39,4 +39,17 @@ O sistema estará disponível em `http://localhost:13522`.
 
 ## Visão Geral
 
+### Dashboard
 ![Dashboard Kitsune Finance](https://github.com/KitsuneSemCalda/KitsuneFinance/blob/master/assets/screenshot/dashboard.png?raw=true)
+
+### Transações
+![Transações Kitsune Finance](https://github.com/KitsuneSemCalda/KitsuneFinance/blob/master/assets/screenshot/transactions.png?raw=true)
+
+### Orçamentos
+![Orçamentos Kitsune Finance](https://github.com/KitsuneSemCalda/KitsuneFinance/blob/master/assets/screenshot/budgets.png?raw=true)
+
+### Metas
+![Metas Kitsune Finance](https://github.com/KitsuneSemCalda/KitsuneFinance/blob/master/assets/screenshot/goals.png?raw=true)
+
+### Relatórios
+![Relatórios Kitsune Finance](https://github.com/KitsuneSemCalda/KitsuneFinance/blob/master/assets/screenshot/reports.png?raw=true)

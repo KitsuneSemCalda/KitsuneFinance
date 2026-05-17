@@ -1,0 +1,53 @@
+#!/bin/bash
+# Script para desenvolvimento com docker-compose
+# Uso: ./bin/docker-dev [comando]
+
+set -e
+
+case "${1:-up}" in
+  up|start)
+    echo "🚀 Iniciando ambiente de desenvolvimento..."
+    docker compose up --build -d
+    echo "✅ KitsuneFinance rodando em http://localhost:13522"
+    echo "📋 Logs: ./bin/docker-dev logs"
+    echo "⏹  Parar: ./bin/docker-dev stop"
+    ;;
+  down|stop)
+    echo "⏹  Parando ambiente de desenvolvimento..."
+    docker compose down
+    echo "✅ Ambiente parado."
+    ;;
+  build)
+    echo "🔨 Buildando imagem..."
+    docker compose build
+    echo "✅ Build concluído."
+    ;;
+  logs)
+    shift
+    docker compose logs -f "$@"
+    ;;
+  restart)
+    echo "🔄 Reiniciando..."
+    docker compose restart
+    echo "✅ Reiniciado."
+    ;;
+  rails)
+    shift
+    docker compose exec web bin/rails "$@"
+    ;;
+  bash|shell)
+    docker compose exec web bash
+    ;;
+  *)
+    echo "Uso: ./bin/docker-dev [comando]"
+    echo ""
+    echo "Comandos:"
+    echo "  up|start     Iniciar ambiente (padrão)"
+    echo "  down|stop    Parar ambiente"
+    echo "  build        Buildar imagem"
+    echo "  logs         Ver logs"
+    echo "  restart      Reiniciar serviços"
+    echo "  rails <cmd>  Executar comando Rails (ex: ./bin/docker-dev rails db:migrate)"
+    echo "  bash|shell   Abrir terminal no container"
+    ;;
+esac
