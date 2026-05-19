@@ -5,9 +5,16 @@
 set -e
 
 if [ ! -f config/master.key ] && [ -z "${RAILS_MASTER_KEY}" ]; then
-  echo "❌ ERRO: RAILS_MASTER_KEY não definida e config/master.key não encontrado."
-  echo "   Defina a variável ou crie config/master.key"
-  exit 1
+  echo "⚠️  RAILS_MASTER_KEY não definida e config/master.key não encontrado."
+  echo "   Gerando config/master.key automaticamente..."
+  openssl rand -hex 64 > config/master.key
+  echo "✅ config/master.key gerado"
+
+  if [ -f config/credentials.yml.enc ]; then
+    echo "⚠️  credentials.yml.enc existente pode não ser descriptografável com a nova chave."
+    echo "   Removendo — o Rails recriará um arquivo vazio na próxima inicialização."
+    rm config/credentials.yml.enc
+  fi
 fi
 
 BUILD_FLAG=""
